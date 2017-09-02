@@ -30,7 +30,7 @@ mono-devel
 
 Then do
 ```bash
-./compile.sh
+make
 ```
 This will compile the game (lots of warnings still) to ```RogueSurvivor.exe```
 
