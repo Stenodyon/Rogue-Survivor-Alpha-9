@@ -173,6 +173,13 @@ namespace djack.RogueSurvivor.UI
             AddImage(img, x, y);
         }
 
+        /// TODO MAYBE
+        public void AddImageTransform(Image img,
+                                      int x, int y,
+                                      float rotation,
+                                      float scale)
+        {}
+
         public void AddTransparentImage(float alpha, Image img, int x, int y)
         {
             m_Gfxs.Add(new GfxTransparentImage(alpha, img, x, y));

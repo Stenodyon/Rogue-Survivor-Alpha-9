@@ -34,7 +34,11 @@ namespace djack.RogueSurvivor
         {
             get
             {
+                #if LINUX
+                return (Environment.CurrentDirectory + @"\Config\").Replace("\\", "/");
+                #else
                 return Environment.CurrentDirectory + @"\Config\";
+                #endif
             }
         }
 
@@ -42,7 +46,11 @@ namespace djack.RogueSurvivor
         {
             get
             {
+                #if LINUX
+                return (DirPath + @"\setup.dat").Replace("\\", "/");
+                #else
                 return DirPath + @"\setup.dat";
+                #endif
             }
         }
 

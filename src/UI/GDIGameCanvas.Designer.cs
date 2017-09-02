@@ -1,4 +1,4 @@
-﻿namespace djack.WRogue.UI
+﻿namespace djack.RogueSurvivor.UI
 {
     partial class GDIGameCanvas
     {

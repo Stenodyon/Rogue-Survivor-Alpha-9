@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.IO;
 
 using djack.RogueSurvivor.Engine;
 
@@ -954,6 +955,9 @@ namespace djack.RogueSurvivor.Gameplay
         static void Load(string id)
         {
             string file = FOLDER + id + ".png";
+#if LINUX
+            file = file.Replace("\\", "/");
+#endif
             try
             {
                 Bitmap img = new Bitmap(file);

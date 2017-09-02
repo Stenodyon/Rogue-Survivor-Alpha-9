@@ -97,7 +97,11 @@ namespace djack.RogueSurvivor
 
         static string LogFilePath()
         {
+            #if LINUX
+            return (SetupConfig.DirPath + @"\log.txt").Replace("\\", "/");
+            #else
             return SetupConfig.DirPath + @"\log.txt";
+            #endif
         }
 
         static string StageToString(Stage s)

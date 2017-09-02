@@ -42,9 +42,7 @@
             switch (SetupConfig.Video)
             {
                 case SetupConfig.eVideo.VIDEO_MANAGED_DIRECTX:
-                    Logger.WriteLine(Logger.Stage.INIT_MAIN, "DXGameCanvas implementation...");
-                    this.m_GameCanvas = new djack.RogueSurvivor.UI.DXGameCanvas();
-                    break;
+                    goto default;
                 default:
                     Logger.WriteLine(Logger.Stage.INIT_MAIN, "GDIPlusGameCanvas implementation...");
                     this.m_GameCanvas = new djack.RogueSurvivor.UI.GDIPlusGameCanvas();
@@ -70,7 +68,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(800, 600);
             this.Controls.Add(canvasAsUserControl);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            //this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "RogueForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Rogue Survivor";

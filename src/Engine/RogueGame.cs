@@ -681,11 +681,9 @@ namespace djack.RogueSurvivor.Engine
             switch (SetupConfig.Sound)
             {
                 case SetupConfig.eSound.SOUND_MANAGED_DIRECTX:
-                    m_MusicManager = new MDXSoundManager();
-                    break;
+                    goto default;
                 case SetupConfig.eSound.SOUND_SFML:
-                    m_MusicManager = new SFMLSoundManager();
-                    break;
+                    goto default;
                 default:
                     m_MusicManager = new NullSoundManager();
                     break;
@@ -18168,6 +18166,9 @@ namespace djack.RogueSurvivor.Engine
 
         bool CheckDirectory(string path, string description, ref int gy)
         {
+#if LINUX
+            path = path.Replace("\\", "/");
+#endif
             m_UI.UI_DrawString(Color.White, String.Format("{0} : {1}...", description, path), 0, gy);
             gy += BOLD_LINE_SPACING;
             m_UI.UI_Repaint();
@@ -18182,6 +18183,9 @@ namespace djack.RogueSurvivor.Engine
         bool CheckCopyOfManual()
         {
             string src_path = @"Resources\Manual\";
+#if LINUX
+            src_path = src_path.Replace("\\", "/");
+#endif
             string dst_path = GetUserDocsPath();
             string filename = "RS Manual.txt";
 
