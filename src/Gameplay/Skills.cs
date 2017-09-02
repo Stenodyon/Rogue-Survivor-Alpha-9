@@ -148,36 +148,11 @@ namespace djack.RogueSurvivor.Gameplay
         {
             switch(skill)
             {
-                case IDs.AGILE: return "AGILE";
-                case IDs.AWAKE: return "AWAKE";
-                case IDs.BOWS: return "BOWS";
-                case IDs.CARPENTRY: return "CARPENTRY";
-                case IDs.CHARISMATIC: return "CHARISMATIC";
-                case IDs.FIREARMS: return "FIREARMS";
-                case IDs.HARDY: return "HARDY";
-                case IDs.HAULER: return "HAULER";
-                case IDs.HIGH_STAMINA: return "HIGH_STAMINA";
-                case IDs.LEADERSHIP: return "LEADERSHIP";
-                case IDs.LIGHT_EATER: return "LIGHT_EATER";
-                case IDs.LIGHT_FEET: return "LIGHT_FEET";
-                case IDs.LIGHT_SLEEPER: return "LIGHT_SLEEPER";
-                case IDs.MARTIAL_ARTS: return "MARTIAL_ARTS";
-                case IDs.MEDIC: return "MEDIC";
-                case IDs.NECROLOGY: return "NECROLOGY";
-                case IDs.STRONG: return "STRONG";
-                case IDs.STRONG_PSYCHE: return "STRONG_PSYCHE";
-                case IDs.TOUGH: return "TOUGH";
-                case IDs.UNSUSPICIOUS: return "UNSUSPICIOUS";
-                case IDs.Z_AGILE: return "Z_AGILE";
-                case IDs.Z_EATER: return "Z_EATER";
-                case IDs.Z_GRAB: return "Z_GRAB";
-                case IDs.Z_INFECTOR: return "Z_INFECTOR";
-                case IDs.Z_LIGHT_EATER: return "Z_LIGHT_EATER";
-                case IDs.Z_LIGHT_FEET: return "Z_LIGHT_FEET";
-                case IDs.Z_STRONG: return "Z_STRONG";
-                case IDs.Z_TOUGH: return "Z_TOUGH";
-                case IDs.Z_TRACKER: return "Z_TRACKER";
-                default: return "UNDEFINED_SKILL";
+                case IDs._FIRST_LIVING: return "AGILE";
+                case IDs._LAST_LIVING: return "UNSUSPICIOUS";
+                case IDs._FIRST_UNDEAD: return "Z_AGILE";
+                case IDs._LAST_UNDEAD: return "Z_TRACKER";
+                default: return skill.ToString();
             }
         }
 
