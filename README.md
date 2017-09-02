@@ -1,7 +1,8 @@
 Rogue Survivor Linux
 ====================
-Rogue Survivor game original source code from 2012 adapted to run on linux
-(does not work yet).
+Rogue Survivor game original source code from 2012 adapted to run on linux.
+It compiles and run on my machine (XUbuntu 14.04) but I have not tested it
+extensively yet.
 
 
 WHAT IS THIS
@@ -18,3 +19,23 @@ GET THE GAME
 The original blog where you can get the game is still alive, so go there:
 http://roguesurvivor.blogspot.com/
 You'll need this for the resources (data files, images etc...)
+
+BUILDING
+--------
+
+You will need ```gmcs``` and the System libraries to compile. Here are the
+Debian/Ubuntu packages you'll need:
+```
+mono-gmcs
+mono-devel
+```
+
+Then do
+```bash
+./compile.sh
+```
+
+To run the game, simply do
+```
+mono RogueSurvivor
+```
