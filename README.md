@@ -37,6 +37,13 @@ Then do
 ```
 This will compile the game (lots of warnings still) to ```RogueSurvivor.exe```
 
+RUNNING
+-------
+In order to run the game, you will need the Data. Simply download the game
+from [here](https://roguesurvivor.blogspot.fr/p/download.html) and copy the
+Resources folder at the root of the repo. Make sure you do not overwrite
+the already existing Resource files as modifications were needed.
+
 To run the game, simply do
 ```
 mono RogueSurvivor.exe
