@@ -34,8 +34,9 @@ Then do
 ```bash
 ./compile.sh
 ```
+This will compile the game (lots of warnings still) to ```RogueSurvivor.exe```
 
 To run the game, simply do
 ```
-mono RogueSurvivor
+mono RogueSurvivor.exe
 ```
