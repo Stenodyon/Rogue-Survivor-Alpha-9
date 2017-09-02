@@ -18061,7 +18061,11 @@ namespace djack.RogueSurvivor.Engine
         #region Game user data paths
         public static string GetUserBasePath()
         {
+            #if LINUX
+            return SetupConfig.DirPath.Replace("\\", "/");
+            #else
             return SetupConfig.DirPath;
+            #endif
             /*
             string myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             return myDocs + @"\Rogue Survivor\" + SetupConfig.GAME_VERSION + @"\";
@@ -18070,7 +18074,11 @@ namespace djack.RogueSurvivor.Engine
 
         public static string GetUserSavesPath()
         {
+            #if LINUX
+            return (GetUserBasePath() + @"Saves\").Replace("\\", "/");
+            #else
             return GetUserBasePath() + @"Saves\";
+            #endif
         }
 
         public static string GetUserSave()
@@ -18080,12 +18088,20 @@ namespace djack.RogueSurvivor.Engine
 
         public static string GetUserDocsPath()
         {
+            #if LINUX
+            return (GetUserBasePath() + @"Docs\").Replace("\\", "/");
+            #else
             return GetUserBasePath() + @"Docs\";
+            #endif
         }
 
         public static string GetUserGraveyardPath()
         {
+            #if LINUX
+            return (GetUserBasePath() + @"Graveyard\").Replace("\\", "/");
+            #else
             return GetUserBasePath() + @"Graveyard\";
+            #endif
         }
 
         /// <summary>
@@ -18150,11 +18166,22 @@ namespace djack.RogueSurvivor.Engine
 
         public string ScreenshotFilePath(string shotname)
         {
-            return GetUserScreenshotsPath() + shotname + "." + m_UI.UI_ScreenshotExtension();
+            string path = GetUserScreenshotsPath() + shotname + "." + m_UI.UI_ScreenshotExtension();
+            #if LINUX
+            return path.Replace("\\", "/");
+            #else
+            return path;
+            #endif
         }
 
-        bool CreateDirectory(string path)
+        bool CreateDirectory(string _path)
         {
+            #if LINUX
+            string path = _path.Replace("\\", "/");
+            #else
+            string path = _path;
+            #endif
+
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
