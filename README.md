@@ -39,10 +39,13 @@ This will compile the game (lots of warnings still) to ```RogueSurvivor.exe```
 
 RUNNING
 -------
-In order to run the game, you will need the Data. Simply download the game
+In order to run the game, you will need the data. Simply download the game
 from [here](https://roguesurvivor.blogspot.fr/p/download.html) and copy the
-Resources folder at the root of the repo. Make sure you do not overwrite
-the already existing Resource files as modifications were needed.
+Resources folder at the root of the repo.
+<aside class="warning">
+  Make sure you do not overwrite the already existing Resource files
+  (modifications were needed).
+</aside>
 
 To run the game, simply do
 ```
