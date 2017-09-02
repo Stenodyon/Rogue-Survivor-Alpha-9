@@ -34,12 +34,18 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Loading & Saving
-        public bool Load(string fileName)
+        public bool Load(string _filename)
         {
+            #if LINUX
+            string filename = _filename.Replace("\\", "/");
+            #else
+            string filename = _filename;
+            #endif
+
             try
             {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("Loading text file {0}...", fileName));
-                StreamReader inStream = File.OpenText(fileName);
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("Loading text file {0}...", filename));
+                StreamReader inStream = File.OpenText(filename);
                 m_RawLines = new List<string>();
                 while (!inStream.EndOfStream)
                 {
@@ -48,7 +54,7 @@ namespace djack.RogueSurvivor.Engine
                 }               
                 inStream.Close();
 
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("done!", fileName));
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("done!", filename));
                 return true;
             }
             catch (Exception e)
@@ -59,13 +65,19 @@ namespace djack.RogueSurvivor.Engine
 
         }
 
-        public bool Save(string fileName)
+        public bool Save(string _filename)
         {
+            #if LINUX
+            string filename = _filename.Replace("\\", "/");
+            #else
+            string filename = _filename;
+            #endif
+
             try
             {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("Saving text file {0}...", fileName));
-                File.WriteAllLines(fileName, m_RawLines.ToArray());
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("done!", fileName));
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("Saving text file {0}...", filename));
+                File.WriteAllLines(filename, m_RawLines.ToArray());
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("done!", filename));
                 return true;
             }
             catch (Exception e)

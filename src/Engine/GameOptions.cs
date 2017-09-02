@@ -784,10 +784,16 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Saving & Loading
-        public static void Save(GameOptions options, string filepath)
+        public static void Save(GameOptions options, string _filepath)
         {
-            if (filepath == null)
+            if (_filepath == null)
                 throw new ArgumentNullException("filepath");
+
+            #if LINUX
+            string filepath = _filepath.Replace("\\", "/");
+            #else
+            string filepath = _filepath;
+            #endif
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving options...");
 
@@ -805,10 +811,16 @@ namespace djack.RogueSurvivor.Engine
         /// Try to load, null if failed.
         /// </summary>
         /// <returns></returns>
-        public static GameOptions Load(string filepath)
+        public static GameOptions Load(string _filepath)
         {
-            if (filepath == null)
+            if (_filepath == null)
                 throw new ArgumentNullException("filepath");
+
+            #if LINUX
+            string filepath = _filepath.Replace("\\", "/");
+            #else
+            string filepath = _filepath;
+            #endif
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading options...");
 
@@ -839,8 +851,14 @@ namespace djack.RogueSurvivor.Engine
             return new BinaryFormatter();
         }
 
-        static Stream CreateStream(string saveFileName, bool save)
+        static Stream CreateStream(string _saveFileName, bool save)
         {
+            #if LINUX
+            string saveFileName = _saveFileName.Replace("\\", "/");
+            #else
+            string saveFileName = _saveFileName;
+            #endif
+
             return new FileStream(saveFileName,
                 save ? FileMode.Create : FileMode.Open,
                 save ? FileAccess.Write : FileAccess.Read,

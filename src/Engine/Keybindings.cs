@@ -155,10 +155,16 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Saving & Loading
-        public static void Save(Keybindings kb, string filepath)
+        public static void Save(Keybindings kb, string _filepath)
         {
             if (kb == null)
                 throw new ArgumentNullException("kb");
+
+            #if LINUX
+            string filepath = _filepath.Replace("\\", "/");
+            #else
+            string filepath = _filepath
+            #endif
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving keybindings...");
 
@@ -176,8 +182,14 @@ namespace djack.RogueSurvivor.Engine
         /// Attempt to load, if failed return bindings with defaults.
         /// </summary>
         /// <returns></returns>
-        public static Keybindings Load(string filepath)
+        public static Keybindings Load(string _filepath)
         {
+            #if LINUX
+            string filepath = _filepath.Replace("\\", "/");
+            #else
+            string filepath = _filepath
+            #endif
+
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading keybindings...");
 
             Keybindings kb;

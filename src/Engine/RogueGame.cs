@@ -18186,17 +18186,23 @@ namespace djack.RogueSurvivor.Engine
 #if LINUX
             src_path = src_path.Replace("\\", "/");
 #endif
-            string dst_path = GetUserDocsPath();
+            string dst_dir = GetUserDocsPath();
             string filename = "RS Manual.txt";
+
+            #if LINUX
+            string dst_path = (dst_dir + filename).Replace("\\", "/");
+            #else
+            string dst_path = dst_dir + filename;
+            #endif
 
             // copy file.
             bool copied = false;
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "checking for manual...");
-            if (!File.Exists(dst_path + filename))
+            if (!File.Exists(dst_path))
             {
                 Logger.WriteLine(Logger.Stage.INIT_MAIN, "copying manual...");
                 copied = true;
-                File.Copy(src_path + filename, dst_path + filename);
+                File.Copy(src_path + filename, dst_path);
                 Logger.WriteLine(Logger.Stage.INIT_MAIN, "copying manual... done!");
             }
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "checking for manual... done!");
@@ -18206,22 +18212,38 @@ namespace djack.RogueSurvivor.Engine
 
         string GetUserManualFilePath()
         {
+            #if LINUX
+            return (GetUserDocsPath() + "RS Manual.txt").Replace("\\", "/");
+            #else
             return GetUserDocsPath() + "RS Manual.txt";
+            #endif
         }
 
         string GetUserHiScorePath()
         {
+            #if LINUX
+            return GetUserSavesPath().Replace("\\", "/");
+            #else
             return GetUserSavesPath();
+            #endif
         }
 
         string GetUserHiScoreFilePath()
         {
+            #if LINUX
+            return (GetUserHiScorePath() + "hiscores.dat").Replace("\\", "/");
+            #else
             return GetUserHiScorePath() + "hiscores.dat";
+            #endif
         }
 
         string GetUserHiScoreTextFilePath()
         {
+            #if LINUX
+            return (GetUserHiScorePath() + "hiscores.txt").Replace("\\", "/");
+            #else
             return GetUserHiScorePath() + "hiscores.txt";
+            #endif
         }
         #endregion
 
