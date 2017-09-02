@@ -22,7 +22,9 @@ namespace djack.RogueSurvivor
 
             INIT_SOUND,
             RUN_SOUND,
-            CLEAN_SOUND
+            CLEAN_SOUND,
+
+            DEBUG_MESSAGE
         };            
 
         static List<string> s_Lines = new List<string>();
@@ -117,6 +119,7 @@ namespace djack.RogueSurvivor
                 case Stage.RUN_GFX: return "run gfx";
                 case Stage.RUN_MAIN: return "run main";
                 case Stage.RUN_SOUND: return "run sound";
+                case Stage.DEBUG_MESSAGE: return "debug message";
                 default: return "misc";
             }
         }

@@ -1811,7 +1811,7 @@ namespace djack.RogueSurvivor.Engine
             string[] skillDesc = new string[allSkills.Length + 1];
             menuEntries[0] = "*Random*";
             skillDesc[0] = "(picks a skill at random for you)";
-            for (int i = (int)Skills.IDs._FIRST_LIVING; i < (int)Skills.IDs._LAST_LIVING+1; i++)
+            for (int i = (int)Skills.IDs._FIRST_LIVING; i < (int)Skills.IDs._LAST_LIVING + 1; i++)
             {
                 allSkills[i] = (Skills.IDs)i;
                 menuEntries[i + 1] = Skills.Name(allSkills[i]);

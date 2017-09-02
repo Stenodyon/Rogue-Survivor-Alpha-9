@@ -142,6 +142,45 @@ namespace djack.RogueSurvivor.Gameplay
             _COUNT
         }
 
+        /// The ToString method on enums cannot be trusted so we made our own
+        /// :)
+        static private string NameOfSkill(IDs skill)
+        {
+            switch(skill)
+            {
+                case IDs.AGILE: return "AGILE";
+                case IDs.AWAKE: return "AWAKE";
+                case IDs.BOWS: return "BOWS";
+                case IDs.CARPENTRY: return "CARPENTRY";
+                case IDs.CHARISMATIC: return "CHARISMATIC";
+                case IDs.FIREARMS: return "FIREARMS";
+                case IDs.HARDY: return "HARDY";
+                case IDs.HAULER: return "HAULER";
+                case IDs.HIGH_STAMINA: return "HIGH_STAMINA";
+                case IDs.LEADERSHIP: return "LEADERSHIP";
+                case IDs.LIGHT_EATER: return "LIGHT_EATER";
+                case IDs.LIGHT_FEET: return "LIGHT_FEET";
+                case IDs.LIGHT_SLEEPER: return "LIGHT_SLEEPER";
+                case IDs.MARTIAL_ARTS: return "MARTIAL_ARTS";
+                case IDs.MEDIC: return "MEDIC";
+                case IDs.NECROLOGY: return "NECROLOGY";
+                case IDs.STRONG: return "STRONG";
+                case IDs.STRONG_PSYCHE: return "STRONG_PSYCHE";
+                case IDs.TOUGH: return "TOUGH";
+                case IDs.UNSUSPICIOUS: return "UNSUSPICIOUS";
+                case IDs.Z_AGILE: return "Z_AGILE";
+                case IDs.Z_EATER: return "Z_EATER";
+                case IDs.Z_GRAB: return "Z_GRAB";
+                case IDs.Z_INFECTOR: return "Z_INFECTOR";
+                case IDs.Z_LIGHT_EATER: return "Z_LIGHT_EATER";
+                case IDs.Z_LIGHT_FEET: return "Z_LIGHT_FEET";
+                case IDs.Z_STRONG: return "Z_STRONG";
+                case IDs.Z_TOUGH: return "Z_TOUGH";
+                case IDs.Z_TRACKER: return "Z_TRACKER";
+                default: return "UNDEFINED_SKILL";
+            }
+        }
+
         static string[] s_Names = new string[(int)IDs._COUNT];
 
         public static IDs[] UNDEAD_SKILLS = new IDs[]
@@ -230,19 +269,24 @@ namespace djack.RogueSurvivor.Gameplay
         {
             foreach (CSVLine l in table.Lines)
             {
-                if (l[0].ParseText() == skillID.ToString())
+                if (l[0].ParseText() == NameOfSkill(skillID))
                     return l;
             }
 
             return null;
         }
 
-        static _DATA_TYPE_ GetDataFromCSVTable<_DATA_TYPE_>(IRogueUI ui, CSVTable table, Func<CSVLine, _DATA_TYPE_> fn, IDs skillID)
+        static _DATA_TYPE_ GetDataFromCSVTable<_DATA_TYPE_>(IRogueUI ui,
+                                                            CSVTable table,
+                                                            Func<CSVLine,
+                                                            _DATA_TYPE_> fn,
+                                                            IDs skillID)
         {
             // get line for id in table.
             CSVLine line = FindLineForModel(table, skillID);
             if (line == null)
-                throw new InvalidOperationException(String.Format("skill {0} not found", skillID.ToString()));
+                throw new InvalidOperationException(
+                    String.Format("skill {0} not found", NameOfSkill(skillID)));
 
             // get data from line.
             _DATA_TYPE_ data;
@@ -259,11 +303,18 @@ namespace djack.RogueSurvivor.Gameplay
             return data;
         }
 
-        static bool LoadDataFromCSV<_DATA_TYPE_>(IRogueUI ui, string path, string kind, int fieldsCount, Func<CSVLine, _DATA_TYPE_> fn, IDs[] idsToRead, out _DATA_TYPE_[] data)
+        static bool LoadDataFromCSV<_DATA_TYPE_>(IRogueUI ui, string _path,
+                                                 string kind, int fieldsCount,
+                                                 Func<CSVLine, _DATA_TYPE_> fn,
+                                                 IDs[] idsToRead,
+                                                 out _DATA_TYPE_[] data)
         {
             //////////////////////////
             // Read & parse csv file.
             //////////////////////////
+            #if LINUX
+            string path = _path.Replace("\\", "/");
+            #endif
             Notify(ui, kind, "loading file...");
             // read the whole file.
             List<string> allLines = new List<string>();

@@ -1409,6 +1409,9 @@ namespace djack.RogueSurvivor.Gameplay
             //////////////////////////
             // Read & parse csv file.
             //////////////////////////
+            #if LINUX
+            path = path.Replace("\\", "/");
+            #endif
             Notify(ui, kind, "loading file...");
             // read the whole file.
             List<string> allLines = new List<string>();

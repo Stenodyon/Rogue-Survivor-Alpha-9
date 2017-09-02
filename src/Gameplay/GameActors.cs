@@ -961,11 +961,14 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Data loading
-        public bool LoadFromCSV(IRogueUI ui, string path)
+        public bool LoadFromCSV(IRogueUI ui, string _path)
         {
             //////////////////////////
             // Read & parse csv file.
             //////////////////////////
+            #if LINUX
+            string path = _path.Replace("\\", "/");
+            #endif
             Notify(ui, "loading file...");            
             // read the whole file.
             List<string> allLines = new List<string>();
