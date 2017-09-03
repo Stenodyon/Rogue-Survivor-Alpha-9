@@ -83,7 +83,9 @@ namespace djack.RogueSurvivor.Data
         #endregion
 
         #region Init
-        public ActorModel(string imageID, string name, string pluralName, int scoreValue, DollBody body, Abilities abilities, ActorSheet startingSheet, Type defaultController)
+        public ActorModel(string imageID, string name, string pluralName,
+                          int scoreValue, DollBody body, Abilities abilities,
+                          ActorSheet startingSheet, Type defaultController)
         {
             if (name == null)
                 throw new ArgumentNullException("name");

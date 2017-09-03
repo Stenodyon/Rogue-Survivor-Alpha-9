@@ -50,16 +50,7 @@ namespace djack.RogueSurvivor.Data
         #region State
         Inventory m_Inventory = null;
         Doll m_Doll;
-        int m_HitPoints;
-        int m_previousHitPoints;
-        int m_StaminaPoints;
-        int m_previousStamina;
-        int m_FoodPoints;
-        int m_previousFoodPoints;
-        int m_SleepPoints;
-        int m_previousSleepPoints;
-        int m_Sanity;
-        int m_previousSanity;
+        ActorStats stats = new ActorStats();
         Location m_Location;
         int m_ActionPoints;
         int m_LastActionTurn;
@@ -220,62 +211,62 @@ namespace djack.RogueSurvivor.Data
 
         public int HitPoints
         {
-            get { return m_HitPoints; }
-            set { m_HitPoints = value; }
+            get { return stats.GetStat(Stat.HP); }
+            set { stats.SetStat(Stat.HP, value); }
         }
 
         public int PreviousHitPoints
         {
-            get { return m_previousHitPoints; }
-            set { m_previousHitPoints = value; }
+            get { return stats.GetPrevious(Stat.HP); }
+            set { stats.SetPrevious(Stat.HP, value); }
         }
 
         public int StaminaPoints
         {
-            get { return m_StaminaPoints; }
-            set { m_StaminaPoints = value; }
+            get { return stats.GetStat(Stat.STAMINA); }
+            set { stats.SetStat(Stat.STAMINA, value); }
         }
 
         public int PreviousStaminaPoints
         {
-            get { return m_previousStamina; }
-            set { m_previousStamina = value; }
+            get { return stats.GetPrevious(Stat.STAMINA); }
+            set { stats.SetPrevious(Stat.STAMINA, value); }
         }
 
         public int FoodPoints
         {
-            get { return m_FoodPoints; }
-            set { m_FoodPoints = value; }
+            get { return stats.GetStat(Stat.FOOD); }
+            set { stats.SetStat(Stat.FOOD, value); }
         }
 
         public int PreviousFoodPoints
         {
-            get { return m_previousFoodPoints; }
-            set { m_previousFoodPoints = value; }
+            get { return stats.GetPrevious(Stat.FOOD); }
+            set { stats.SetPrevious(Stat.FOOD, value); }
         }
 
         public int SleepPoints
         {
-            get { return m_SleepPoints; }
-            set { m_SleepPoints = value; }
+            get { return stats.GetStat(Stat.SLEEP); }
+            set { stats.SetStat(Stat.SLEEP, value); }
         }
 
         public int PreviousSleepPoints
         {
-            get { return m_previousSleepPoints; }
-            set { m_previousSleepPoints = value; }
+            get { return stats.GetPrevious(Stat.SLEEP); }
+            set { stats.SetPrevious(Stat.SLEEP, value); }
         }
 
         public int Sanity
         {
-            get { return m_Sanity; }
-            set { m_Sanity = value; }
+            get { return stats.GetStat(Stat.SANITY); }
+            set { stats.SetStat(Stat.SANITY, value); }
         }
 
         public int PreviousSanity
         {
-            get { return m_previousSanity; }
-            set { m_previousSanity = value; }
+            get { return stats.GetPrevious(Stat.SANITY); }
+            set { stats.SetPrevious(Stat.SANITY, value); }
         }
 
         public ActorSheet Sheet
@@ -470,11 +461,16 @@ namespace djack.RogueSurvivor.Data
 
             // starting points maxed.
             m_ActionPoints = m_Doll.Body.Speed;
-            m_HitPoints = m_previousHitPoints = m_Sheet.BaseHitPoints;
-            m_StaminaPoints = m_previousStamina = m_Sheet.BaseStaminaPoints;
-            m_FoodPoints = m_previousFoodPoints = m_Sheet.BaseFoodPoints;
-            m_SleepPoints = m_previousSleepPoints = m_Sheet.BaseSleepPoints;
-            m_Sanity = m_previousSanity = m_Sheet.BaseSanity;
+            stats.SetStat(Stat.HP, m_Sheet.BaseHitPoints);
+            stats.SetPrevious(Stat.HP, m_Sheet.BaseHitPoints);
+            stats.SetStat(Stat.STAMINA, m_Sheet.BaseStaminaPoints);
+            stats.SetPrevious(Stat.STAMINA, m_Sheet.BaseStaminaPoints);
+            stats.SetStat(Stat.FOOD, m_Sheet.BaseFoodPoints);
+            stats.SetPrevious(Stat.FOOD, m_Sheet.BaseFoodPoints);
+            stats.SetStat(Stat.SLEEP, m_Sheet.BaseSleepPoints);
+            stats.SetPrevious(Stat.SLEEP, m_Sheet.BaseSleepPoints);
+            stats.SetStat(Stat.SANITY, m_Sheet.BaseSanity);
+            stats.SetPrevious(Stat.SANITY, m_Sheet.BaseSanity);
 
             // create inventory.
             if (model.Abilities.HasInventory)
