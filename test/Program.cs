@@ -1,14 +1,10 @@
 using System;
-using System.IO;
 
-namespace sten_test.RogueSurvivor
+static class Program
 {
-    static class Program
+    static int Main()
     {
-        [STAThread]
-        static void Main()
-        {
-            Console.Out.WriteLine("TEST PROGRAM");
-        }
+        Console.Out.WriteLine("No tests yet");
+        return 0;
     }
 }

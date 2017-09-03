@@ -1,6 +1,4 @@
 
-NUNIT_DLL=$(PWD)/nunit.framework.dll
-
 BINARY=RogueSurvivor.exe
 TEST_BIN=test_$(BINARY)
 
@@ -9,8 +7,8 @@ CSFLAGS = -pkg:dotnet \
 	      -define:LINUX \
 		  -debug
 
-SRC = $(shell find src -name *.cs)
-TEST_SRC = $(filter-out src/Program.cs,$(SRC)) $(shell find test -name *.cs)
+SRC = $(shell find src | grep .cs$$)
+TEST_SRC = $(filter-out src/Program.cs,$(SRC)) $(shell find test | grep .cs$$)
 
 default: $(BINARY)
 
@@ -19,7 +17,6 @@ test: $(TEST_BIN)
 $(BINARY):
 	$(CS) $(CSFLAGS) -out:$(BINARY) $(SRC)
 
-$(TEST_BIN): CSFLAGS += -r:$(NUNIT_DLL)
 $(TEST_BIN):
 	$(CS) $(CSFLAGS) -out:$(TEST_BIN) $(TEST_SRC)
 
