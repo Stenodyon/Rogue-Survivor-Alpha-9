@@ -19,6 +19,12 @@ namespace Tester
     /* Class containing assertion functions to use in test cases */
     public static class Assert
     {
+        /* Makes the test fail */
+        public static void False()
+        {
+            throw new TestFailed("Assertion failed");
+        }
+
         /* Assert lhs and rhs are equal */
         public static void Equal<T>(T lhs, T rhs)
         {
@@ -26,6 +32,17 @@ namespace Tester
             {
                 throw new TestFailed(
                     String.Format("{0} =/= {1}", lhs, rhs)
+                );
+            }
+        }
+
+        /* Assert lhs and rhs are different */
+        public static void NotEqual<T>(T lhs, T rhs)
+        {
+            if(EqualityComparer<T>.Default.Equals(lhs, rhs))
+            {
+                throw new TestFailed(
+                    String.Format("{0} == {1}", lhs, rhs)
                 );
             }
         }

@@ -16,10 +16,10 @@ test: $(TEST_BIN) $(TEST_SRC)
 	mono --debug $(TEST_BIN)
 
 $(BINARY):
-	$(CS) $(CSFLAGS) -out:$(BINARY) $(SRC)
+	@$(CS) $(CSFLAGS) -out:$(BINARY) $(SRC)
 
 $(TEST_BIN):
-	$(CS) $(CSFLAGS) -out:$(TEST_BIN) $(TEST_SRC)
+	@$(CS) $(CSFLAGS) -out:$(TEST_BIN) $(TEST_SRC)
 
 .PHONY: default test clean
 

@@ -42,8 +42,12 @@ namespace djack.RogueSurvivor
             if (SetupConfig.Video == SetupConfig.eVideo.VIDEO_GDI_PLUS) this.Text += " (GDI+)";
             switch (SetupConfig.Sound)
             {
-                case SetupConfig.eSound.SOUND_NOSOUND: this.Text += " (nosound)"; break;
-                case SetupConfig.eSound.SOUND_SFML: this.Text += " (sndSFML)"; break;
+                case SetupConfig.eSound.SOUND_NOSOUND:
+                    this.Text += " (nosound)";
+                    break;
+                case SetupConfig.eSound.SOUND_SFML:
+                    this.Text += " (sndSFML)";
+                    break;
             }
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::SetClientSizeCore...");
             SetClientSizeCore(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);

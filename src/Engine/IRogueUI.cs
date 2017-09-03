@@ -10,7 +10,7 @@ namespace djack.RogueSurvivor.Engine
     /// <summary>
     /// Provides UI functionalities to a Rogue game.
     /// </summary>
-    interface IRogueUI
+    public interface IRogueUI
     {
         #region Input
         KeyEventArgs UI_WaitKey();
