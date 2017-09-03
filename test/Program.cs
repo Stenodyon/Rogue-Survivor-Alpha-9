@@ -1,10 +1,10 @@
-using System;
+using Tester;
 
 static class Program
 {
-    static int Main()
+    static int Main(string[] args)
     {
-        Console.Out.WriteLine("No tests yet");
+        TestRunner.Run();
         return 0;
     }
 }

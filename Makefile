@@ -12,7 +12,8 @@ TEST_SRC = $(filter-out src/Program.cs,$(SRC)) $(shell find test | grep .cs$$)
 
 default: $(BINARY)
 
-test: $(TEST_BIN)
+test: $(TEST_BIN) $(TEST_SRC)
+	mono --debug $(TEST_BIN)
 
 $(BINARY):
 	$(CS) $(CSFLAGS) -out:$(BINARY) $(SRC)
