@@ -20,9 +20,11 @@ namespace Tester
     public static class Assert
     {
         /* Makes the test fail */
-        public static void False()
+        public static void False(string message)
         {
-            throw new TestFailed("Assertion failed");
+            throw new TestFailed(String.Format(
+                "Assertion failed: {0}", message
+            ));
         }
 
         /* Assert lhs and rhs are equal */
