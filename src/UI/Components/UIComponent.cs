@@ -13,6 +13,11 @@ namespace djack.RogueSurvivor.UI.Components
         public int h { get { return area.h; } set { area.h = value; } }
         public int z { get { return area.w; } set { area.w = value; } }
 
+        public UIComponent(Rect _area)
+        {
+            area = _area;
+        }
+
         /* Draw the component using this ui */
         public abstract void Draw(IRogueUI ui);
 
