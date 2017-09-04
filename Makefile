@@ -24,6 +24,6 @@ $(TEST_BIN):
 .PHONY: default test clean
 
 clean:
-	-rm $(BINARY)
-	-rm $(TEST_BIN)
-	-rm *.mdb
+	rm $(BINARY) 2>/dev/null || true
+	rm $(TEST_BIN) 2>/dev/null || true
+	rm *.mdb 2>/dev/null || true
