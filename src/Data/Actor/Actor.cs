@@ -402,16 +402,7 @@ namespace djack.RogueSurvivor.Data
 
             // starting points maxed.
             m_ActionPoints = m_Doll.Body.Speed;
-            stats.SetStat(Stat.HP, m_Sheet.BaseHitPoints);
-            stats.SetPrevious(Stat.HP, m_Sheet.BaseHitPoints);
-            stats.SetStat(Stat.STAMINA, m_Sheet.BaseStaminaPoints);
-            stats.SetPrevious(Stat.STAMINA, m_Sheet.BaseStaminaPoints);
-            stats.SetStat(Stat.FOOD, m_Sheet.BaseFoodPoints);
-            stats.SetPrevious(Stat.FOOD, m_Sheet.BaseFoodPoints);
-            stats.SetStat(Stat.SLEEP, m_Sheet.BaseSleepPoints);
-            stats.SetPrevious(Stat.SLEEP, m_Sheet.BaseSleepPoints);
-            stats.SetStat(Stat.SANITY, m_Sheet.BaseSanity);
-            stats.SetPrevious(Stat.SANITY, m_Sheet.BaseSanity);
+            stats.Initialize(m_Sheet);
 
             // create inventory.
             if (model.Abilities.HasInventory)

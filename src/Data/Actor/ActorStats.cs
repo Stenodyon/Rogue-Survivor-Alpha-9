@@ -50,5 +50,19 @@ namespace djack.RogueSurvivor.Data
         {
             return stats[(int)stat * 2 + 1];
         }
+
+        public void Initialize(ActorSheet sheet)
+        {
+            SetStat(Stat.HP, sheet.BaseHitPoints);
+            SetPrevious(Stat.HP, sheet.BaseHitPoints);
+            SetStat(Stat.STAMINA, sheet.BaseStaminaPoints);
+            SetPrevious(Stat.STAMINA, sheet.BaseStaminaPoints);
+            SetStat(Stat.FOOD, sheet.BaseFoodPoints);
+            SetPrevious(Stat.FOOD, sheet.BaseFoodPoints);
+            SetStat(Stat.SLEEP, sheet.BaseSleepPoints);
+            SetPrevious(Stat.SLEEP, sheet.BaseSleepPoints);
+            SetStat(Stat.SANITY, sheet.BaseSanity);
+            SetPrevious(Stat.SANITY, sheet.BaseSanity);
+        }
     }
 }
