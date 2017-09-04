@@ -9,6 +9,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 {
     partial class BaseTownGenerator
     {
+        /* Generates subway maps */
         private class SubwayGenerator
         {
             BaseTownGenerator parent;
@@ -43,6 +44,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 railY = subway.Width / 2 - 1;
             }
 
+            /// Creates the subway map
             public Map Generate()
             {
                 // 1. Trace rail line.
@@ -64,6 +66,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 return subway;
             }
 
+            /// Create the stip of rails
             private void MakeRails()
             {
                 for (int x = railStartX; x <= railEndX; x++)
@@ -143,6 +146,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 MakeSubwayStationBuilding(subway, false, subwayRoom, surface, stairsPos);
             }
 
+            /// Creates the small tools room
             private void MakeToolsRoom()
             {
                 Direction toolsRoomDir = parent.m_DiceRoller.RollChance(50) ? Direction.N : Direction.S;
@@ -196,6 +200,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 }
             }
 
+            /// Add tags and posters to the walls
             private void MakeWallDeco()
             {
                 for (int x = 0; x < subway.Width; x++)
@@ -223,12 +228,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 }
             }
 
+            /// Creates the station building
             protected virtual void MakeSubwayStationBuilding(Map map, bool isSurface, Block b, Map linkedMap, Point exitPosition)
             {
-                ///////////////
                 // Outer walls.
-                ///////////////
-                #region
                 // if sewers dig room.
                 if (!isSurface)
                     parent.TileFill(map, parent.m_Game.GameTiles.FLOOR_CONCRETE, b.InsideRect);
@@ -238,63 +241,27 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 for (int x = b.InsideRect.Left; x < b.InsideRect.Right; x++)
                     for (int y = b.InsideRect.Top; y < b.InsideRect.Bottom; y++)
                         map.GetTileAt(x, y).IsInside = true;
-                #endregion
 
                 // Entrance
                 RollEntranceDirection(map, b, isSurface);
                 if(isSurface)
                     MakeSationSurfaceEntrance(map, b);
 
-                ///////////////////////////
                 // Stairs to the other map.
-                ///////////////////////////
-                #region
-                // add exits.
                 for (int ex = exitPosition.X - 1; ex <= exitPosition.X + 1; ex++)
                 {
                     Point thisExitPos = new Point(ex, exitPosition.Y);
                     map.GetTileAt(thisExitPos.X, thisExitPos.Y).AddDecoration(isSurface ? GameImages.DECO_STAIRS_DOWN : GameImages.DECO_STAIRS_UP);
                     map.SetExitAt(thisExitPos, new Exit(linkedMap, thisExitPos) { IsAnAIExit = true });
                 }
-                #endregion
 
                 // Undeground part of the station
                 if (!isSurface)
                     MakeStationUnderground(map, b);
 
-                /////////////////////
-                // Furniture & Items.
-                /////////////////////
-                // iron benches in station.
-                #region
-                for (int bx = b.InsideRect.Left; bx < b.InsideRect.Right; bx++)
-                    for (int by = b.InsideRect.Top + 1; by < b.InsideRect.Bottom - 1; by++)
-                    {
-                        // next to walls and no doors.
-                        if (parent.CountAdjWalls(map, bx, by) < 2 || parent.CountAdjDoors(map, bx, by) > 0)
-                            continue;
+                PopulateStation(map, b, isSurface);
 
-                        // not next to stairs.
-                        if (parent.m_Game.Rules.GridDistance(new Point(bx, by), new Point(entryFenceX, entryFenceY)) < 2)
-                            continue;
-
-                        // bench.
-                        map.PlaceMapObjectAt(parent.MakeObjIronBench(GameImages.OBJ_IRON_BENCH), new Point(bx, by));
-                    }
-                #endregion
-
-                /////////////////////////////////////
-                // Add subway police guy on surface.
-                /////////////////////////////////////
-                if (isSurface)
-                {
-                    Actor policeMan = parent.CreateNewPoliceman(0);
-                    parent.ActorPlace(parent.m_DiceRoller, b.Rectangle.Width * b.Rectangle.Height, map, policeMan, b.InsideRect.Left, b.InsideRect.Top, b.InsideRect.Width, b.InsideRect.Height);
-                }
-
-                //////////////
                 // Make zone.
-                //////////////
                 map.AddZone(parent.MakeUniqueZone(RogueGame.NAME_SUBWAY_STATION, b.BuildingRect));
             }
 
@@ -334,7 +301,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     default:
                         throw new ArgumentOutOfRangeException("unhandled roll");
                 }
-                digPos = new Point(entryFenceX, entryFenceY) + digDirection;
             }
 
             /// Creates the door and signs of the station entrance
@@ -373,7 +339,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 Rectangle platformRect = DigPlatform(map, b);
 
                 // - add closed iron gates between corridor and platform.
-                #region
                 Point ironFencePos;
                 if (digDirection == Direction.S)
                     ironFencePos = new Point(entryFenceX, platformRect.Top - 1);
@@ -382,51 +347,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 map.PlaceMapObjectAt(parent.MakeObjIronGate(GameImages.OBJ_GATE_CLOSED), new Point(ironFencePos.X, ironFencePos.Y));
                 map.PlaceMapObjectAt(parent.MakeObjIronGate(GameImages.OBJ_GATE_CLOSED), new Point(ironFencePos.X + 1, ironFencePos.Y));
                 map.PlaceMapObjectAt(parent.MakeObjIronGate(GameImages.OBJ_GATE_CLOSED), new Point(ironFencePos.X - 1, ironFencePos.Y));
-                #endregion
 
                 // - make power room.
-                #region
-                // access in the corridor, going toward the center of the map.
-                Point powerRoomEntry;
-                Rectangle powerRoomRect;
-                const int powerRoomWidth = 4;
-                const int powerRoomHalfHeight = 2;
-                if (entryFenceX > map.Width / 2)
-                {
-                    // west.
-                    powerRoomEntry = new Point(entryFenceX - 2, entryFenceY + powerRoomHalfHeight * digDirection.Vector.Y);
-                    powerRoomRect = Rectangle.FromLTRB(powerRoomEntry.X - powerRoomWidth, powerRoomEntry.Y - powerRoomHalfHeight, powerRoomEntry.X + 1, powerRoomEntry.Y + powerRoomHalfHeight + 1);
-                }
-                else
-                {
-                    // east.
-                    powerRoomEntry = new Point(entryFenceX + 2, entryFenceY + powerRoomHalfHeight * digDirection.Vector.Y);
-                    powerRoomRect = Rectangle.FromLTRB(powerRoomEntry.X, powerRoomEntry.Y - powerRoomHalfHeight, powerRoomEntry.X + powerRoomWidth, powerRoomEntry.Y + powerRoomHalfHeight + 1);
-                }
-
-                // carve power room.
-                parent.TileFill(map, parent.m_Game.GameTiles.FLOOR_CONCRETE, powerRoomRect);
-                parent.TileRectangle(map, parent.m_Game.GameTiles.WALL_STONE, powerRoomRect);
-
-                // add door with signs.
-                parent.PlaceDoor(map, powerRoomEntry.X, powerRoomEntry.Y, parent.m_Game.GameTiles.FLOOR_CONCRETE, parent.MakeObjIronDoor());
-                map.GetTileAt(powerRoomEntry.X, powerRoomEntry.Y - 1).AddDecoration(GameImages.DECO_POWER_SIGN_BIG);
-                map.GetTileAt(powerRoomEntry.X, powerRoomEntry.Y + 1).AddDecoration(GameImages.DECO_POWER_SIGN_BIG);
-
-                // add power generators along wall.
-                parent.MapObjectFill(map, powerRoomRect,
-                    (pt) =>
-                    {
-                        if (!map.GetTileAt(pt).Model.IsWalkable)
-                            return null;
-                        if (parent.CountAdjWalls(map, pt.X, pt.Y) < 3 || parent.CountAdjDoors(map, pt.X, pt.Y) > 0)
-                            return null;
-                        return parent.MakeObjPowerGenerator(GameImages.OBJ_POWERGEN_OFF, GameImages.OBJ_POWERGEN_ON);
-                    });
-
-                #endregion
+                MakePowerRoom(map, b);
             }
 
+            /// Digs the corridor from the station to the platform
             private void DigCorridor(Map map)
             {
                 map.SetTileModelAt(entryFenceX, entryFenceY, parent.m_Game.GameTiles.FLOOR_CONCRETE);
@@ -435,6 +361,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 map.SetTileModelAt(entryFenceX - 2, entryFenceY, parent.m_Game.GameTiles.WALL_STONE);
                 map.SetTileModelAt(entryFenceX + 2, entryFenceY, parent.m_Game.GameTiles.WALL_STONE);
 
+                digPos = new Point(entryFenceX, entryFenceY) + digDirection;
                 while (map.IsInBounds(digPos) && !map.GetTileAt(digPos.X, digPos.Y).Model.IsWalkable)
                 {
                     // corridor.
@@ -486,8 +413,83 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 return platformRect;
             }
 
+            /// Makes the power room with the switches in the station
+            private void MakePowerRoom(Map map, Block b)
+            {
+                // access in the corridor, going toward the center of the map.
+                Point powerRoomEntry;
+                Rectangle powerRoomRect;
+                const int powerRoomWidth = 4;
+                const int powerRoomHalfHeight = 2;
+                if (entryFenceX > map.Width / 2)
+                {
+                    // west.
+                    powerRoomEntry = new Point(entryFenceX - 2, entryFenceY + powerRoomHalfHeight * digDirection.Vector.Y);
+                    powerRoomRect = Rectangle.FromLTRB(powerRoomEntry.X - powerRoomWidth, powerRoomEntry.Y - powerRoomHalfHeight, powerRoomEntry.X + 1, powerRoomEntry.Y + powerRoomHalfHeight + 1);
+                }
+                else
+                {
+                    // east.
+                    powerRoomEntry = new Point(entryFenceX + 2, entryFenceY + powerRoomHalfHeight * digDirection.Vector.Y);
+                    powerRoomRect = Rectangle.FromLTRB(powerRoomEntry.X, powerRoomEntry.Y - powerRoomHalfHeight, powerRoomEntry.X + powerRoomWidth, powerRoomEntry.Y + powerRoomHalfHeight + 1);
+                }
+
+                // carve power room.
+                parent.TileFill(map, parent.m_Game.GameTiles.FLOOR_CONCRETE, powerRoomRect);
+                parent.TileRectangle(map, parent.m_Game.GameTiles.WALL_STONE, powerRoomRect);
+
+                // add door with signs.
+                parent.PlaceDoor(map, powerRoomEntry.X, powerRoomEntry.Y, parent.m_Game.GameTiles.FLOOR_CONCRETE, parent.MakeObjIronDoor());
+                map.GetTileAt(powerRoomEntry.X, powerRoomEntry.Y - 1).AddDecoration(GameImages.DECO_POWER_SIGN_BIG);
+                map.GetTileAt(powerRoomEntry.X, powerRoomEntry.Y + 1).AddDecoration(GameImages.DECO_POWER_SIGN_BIG);
+
+                // add power generators along wall.
+                parent.MapObjectFill(map, powerRoomRect,
+                    (pt) =>
+                    {
+                        if (!map.GetTileAt(pt).Model.IsWalkable)
+                            return null;
+                        if (parent.CountAdjWalls(map, pt.X, pt.Y) < 3 || parent.CountAdjDoors(map, pt.X, pt.Y) > 0)
+                            return null;
+                        return parent.MakeObjPowerGenerator(GameImages.OBJ_POWERGEN_OFF, GameImages.OBJ_POWERGEN_ON);
+                    });
+
+            }
+
+            /// Adds furniture and people to the station
+            private void PopulateStation(Map map, Block b, bool isSurface)
+            {
+                // Furniture & Items.
+                // iron benches in station.
+                #region
+                for (int bx = b.InsideRect.Left; bx < b.InsideRect.Right; bx++)
+                    for (int by = b.InsideRect.Top + 1; by < b.InsideRect.Bottom - 1; by++)
+                    {
+                        // next to walls and no doors.
+                        if (parent.CountAdjWalls(map, bx, by) < 2 || parent.CountAdjDoors(map, bx, by) > 0)
+                            continue;
+
+                        // not next to stairs.
+                        if (parent.m_Game.Rules.GridDistance(new Point(bx, by), new Point(entryFenceX, entryFenceY)) < 2)
+                            continue;
+
+                        // bench.
+                        map.PlaceMapObjectAt(parent.MakeObjIronBench(GameImages.OBJ_IRON_BENCH), new Point(bx, by));
+                    }
+                #endregion
+
+                // Add subway police guy on surface.
+                if (isSurface)
+                {
+                    Actor policeMan = parent.CreateNewPoliceman(0);
+                    parent.ActorPlace(parent.m_DiceRoller, b.Rectangle.Width * b.Rectangle.Height, map, policeMan, b.InsideRect.Left, b.InsideRect.Top, b.InsideRect.Width, b.InsideRect.Height);
+                }
+
+            }
+
         } // SubwayGenerator
 
+        /* Generates the subway map */
         public virtual Map GenerateSubwayMap(int seed, District district)
         {
             SubwayGenerator generator = new SubwayGenerator(this, seed, district);
