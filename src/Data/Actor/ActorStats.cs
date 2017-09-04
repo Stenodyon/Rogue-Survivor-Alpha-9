@@ -3,7 +3,7 @@ using System;
 namespace djack.RogueSurvivor.Data
 {
     /* All the kinds of stats */
-    public enum Stat
+    enum Stat
     {
         HP = 0,
         STAMINA,
@@ -15,7 +15,7 @@ namespace djack.RogueSurvivor.Data
 
     /* Keeps a record of all the stats (current value and previous vaue) */
     [Serializable]
-    public class ActorStats
+    class ActorStats
     {
         private const int stat_count = (int)Stat._END;
 

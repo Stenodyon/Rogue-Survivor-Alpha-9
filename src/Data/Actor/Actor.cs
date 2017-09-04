@@ -15,7 +15,7 @@ namespace djack.RogueSurvivor.Data
     }
 
     [Serializable]
-    class Actor
+    class Actor : ActorState
     {
         #region Flags
         [Flags]
@@ -50,7 +50,6 @@ namespace djack.RogueSurvivor.Data
         #region State
         Inventory m_Inventory = null;
         Doll m_Doll;
-        ActorStats stats = new ActorStats();
         Location m_Location;
         int m_ActionPoints;
         int m_LastActionTurn;
@@ -60,10 +59,12 @@ namespace djack.RogueSurvivor.Data
         Attack m_CurrentMeleeAttack;
         Attack m_CurrentRangedAttack;
         Defence m_CurrentDefence;
+
         Actor m_Leader;
         List<Actor> m_Followers = null;
         int m_TrustInLeader;
         List<TrustRecord> m_TrustList = null;
+
         int m_KillsCount;
         List<Actor> m_AggressorOf = null;
         List<Actor> m_SelfDefenceFrom = null;
@@ -207,66 +208,6 @@ namespace djack.RogueSurvivor.Data
         {
             get { return m_Inventory; }
             set { m_Inventory = value; }
-        }
-
-        public int HitPoints
-        {
-            get { return stats.GetStat(Stat.HP); }
-            set { stats.SetStat(Stat.HP, value); }
-        }
-
-        public int PreviousHitPoints
-        {
-            get { return stats.GetPrevious(Stat.HP); }
-            set { stats.SetPrevious(Stat.HP, value); }
-        }
-
-        public int StaminaPoints
-        {
-            get { return stats.GetStat(Stat.STAMINA); }
-            set { stats.SetStat(Stat.STAMINA, value); }
-        }
-
-        public int PreviousStaminaPoints
-        {
-            get { return stats.GetPrevious(Stat.STAMINA); }
-            set { stats.SetPrevious(Stat.STAMINA, value); }
-        }
-
-        public int FoodPoints
-        {
-            get { return stats.GetStat(Stat.FOOD); }
-            set { stats.SetStat(Stat.FOOD, value); }
-        }
-
-        public int PreviousFoodPoints
-        {
-            get { return stats.GetPrevious(Stat.FOOD); }
-            set { stats.SetPrevious(Stat.FOOD, value); }
-        }
-
-        public int SleepPoints
-        {
-            get { return stats.GetStat(Stat.SLEEP); }
-            set { stats.SetStat(Stat.SLEEP, value); }
-        }
-
-        public int PreviousSleepPoints
-        {
-            get { return stats.GetPrevious(Stat.SLEEP); }
-            set { stats.SetPrevious(Stat.SLEEP, value); }
-        }
-
-        public int Sanity
-        {
-            get { return stats.GetStat(Stat.SANITY); }
-            set { stats.SetStat(Stat.SANITY, value); }
-        }
-
-        public int PreviousSanity
-        {
-            get { return stats.GetPrevious(Stat.SANITY); }
-            set { stats.SetPrevious(Stat.SANITY, value); }
         }
 
         public ActorSheet Sheet
