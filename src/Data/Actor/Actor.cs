@@ -49,7 +49,6 @@ namespace djack.RogueSurvivor.Data
         Activity m_Activity = Activity.IDLE;
         Actor m_TargetActor;
         int m_AudioRangeMod;
-
         int m_Infection;
         Corpse m_DraggedCorpse;
         #endregion
