@@ -2,10 +2,10 @@ using System;
 
 namespace djack.RogueSurvivor.Data
 {
-    [Serializable]
-    class ActorState
+    /* Part of Actor that manages stats such as HP, Food, etc */
+    partial class Actor
     {
-        protected ActorStats stats = new ActorStats();
+        ActorStats stats = new ActorStats();
 
         public int HitPoints
         {
@@ -66,6 +66,5 @@ namespace djack.RogueSurvivor.Data
             get { return stats.GetPrevious(Stat.SANITY); }
             set { stats.SetPrevious(Stat.SANITY, value); }
         }
-
     }
 }
