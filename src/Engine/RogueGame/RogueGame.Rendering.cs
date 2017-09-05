@@ -16,13 +16,6 @@ namespace djack.RogueSurvivor.Engine
     UI system) */
     partial class RogueGame
     {
-        LocationPanel locationPanel;
-        void InitUI()
-        {
-            locationPanel = new LocationPanel(Rectangle.FromLTRB(
-                LOCATIONPANEL_X, LOCATIONPANEL_Y, CANVAS_WIDTH, CANVAS_HEIGHT
-            ), this);
-        }
 #region View
         public void ComputeViewRect(Point mapCenter)
         {
@@ -60,7 +53,7 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_DrawLine(Color.DarkGray, MESSAGES_X, MESSAGES_Y - 1, CANVAS_WIDTH, MESSAGES_Y - 1);
                 m_MessageManager.Draw(m_UI, m_Session.LastTurnPlayerActed, MESSAGES_X, MESSAGES_Y);
 
-                locationPanel.Draw(m_UI);
+                gameLayout.Draw(m_UI);
 
                 // character status.
                 if (m_Player != null)

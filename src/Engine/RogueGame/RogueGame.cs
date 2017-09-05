@@ -13,6 +13,7 @@ using djack.RogueSurvivor.Engine.MapObjects;
 using djack.RogueSurvivor.Gameplay;
 using djack.RogueSurvivor.Gameplay.AI;
 using djack.RogueSurvivor.Gameplay.Generators;
+using djack.RogueSurvivor.UI.Components;
 
 using Message = djack.RogueSurvivor.Data.Message;
 using djack.RogueSurvivor.Engine.Tasks;
@@ -83,6 +84,8 @@ namespace djack.RogueSurvivor.Engine
 
         Object m_SimMutex = new Object();
         Thread m_SimThread;
+
+        GameLayout gameLayout;
 #endregion
 
 #region Properties
@@ -189,7 +192,8 @@ namespace djack.RogueSurvivor.Engine
             m_GameTiles = new GameTiles();
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "initializing UI");
-            InitUI();
+            //InitUI();
+            gameLayout = new GameLayout(this);
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "RogueGame() done.");
         }
