@@ -19,536 +19,9 @@ using djack.RogueSurvivor.Engine.Tasks;
 
 namespace djack.RogueSurvivor.Engine
 {
-    class RogueGame
+    partial class RogueGame
     {
-#region Constants
-        public const int MAP_MAX_HEIGHT = 100;
-        public const int MAP_MAX_WIDTH = 100;
-
-        public const int TILE_SIZE = 32;
-        public const int ACTOR_SIZE = 32;
-        public const int ACTOR_OFFSET = (TILE_SIZE - ACTOR_SIZE) / 2;
-        public const int TILE_VIEW_WIDTH = 21;
-        public const int TILE_VIEW_HEIGHT = 21;
-        const int HALF_VIEW_WIDTH = 10;
-        const int HALF_VIEW_HEIGHT = 10;
-
-        public const int CANVAS_WIDTH = 1024;
-        public const int CANVAS_HEIGHT = 768;
-
-        const int DAMAGE_DX = 10;
-        const int DAMAGE_DY = 10;
-
-#region UI elements
-        const int RIGHTPANEL_X = TILE_SIZE * TILE_VIEW_WIDTH + 4;
-        const int RIGHTPANEL_Y = 0;
-        const int RIGHTPANEL_TEXT_X = RIGHTPANEL_X + 4;
-        const int RIGHTPANEL_TEXT_Y = RIGHTPANEL_Y + 4;
-
-        const int INVENTORYPANEL_X = RIGHTPANEL_TEXT_X;
-        const int INVENTORYPANEL_Y = RIGHTPANEL_TEXT_Y + 156;//142;
-        const int GROUNDINVENTORYPANEL_Y = INVENTORYPANEL_Y + 64;
-        const int CORPSESPANEL_Y = GROUNDINVENTORYPANEL_Y + 64;
-        const int INVENTORY_SLOTS_PER_LINE = 10;
-
-        const int SKILLTABLE_Y = CORPSESPANEL_Y + 64;
-        const int SKILLTABLE_LINES = 10;
-
-        const int LOCATIONPANEL_X = RIGHTPANEL_X;
-        const int LOCATIONPANEL_Y = MESSAGES_Y;
-        const int LOCATIONPANEL_TEXT_X = LOCATIONPANEL_X + 4;
-        const int LOCATIONPANEL_TEXT_Y = LOCATIONPANEL_Y + 4;
-
-        const int MESSAGES_X = 4;
-        const int MESSAGES_Y = TILE_VIEW_HEIGHT * TILE_SIZE + 4;
-        const int MESSAGES_SPACING = 12;
-        const int MESSAGES_FADEOUT = 25;
-        const int MAX_MESSAGES = 7;
-        const int MESSAGES_HISTORY = 59;
-
-        public const int MINITILE_SIZE = 2;
-        const int MINIMAP_X = RIGHTPANEL_X + (CANVAS_WIDTH - RIGHTPANEL_X - MAP_MAX_WIDTH * MINITILE_SIZE) / 2;
-        const int MINIMAP_Y = MESSAGES_Y - MINITILE_SIZE * MAP_MAX_HEIGHT - 1;
-        const int MINI_TRACKER_OFFSET = 1;
-
-        const int DELAY_SHORT = 250;
-        const int DELAY_NORMAL = 500;
-        const int DELAY_LONG = 1000;
-
-        readonly Color POPUP_FILLCOLOR = Color.FromArgb(192, Color.CornflowerBlue);
-
-        readonly string[] CLOSE_DOOR_MODE_TEXT = new string[] { "CLOSE MODE - directions to close, ESC cancels" };
-        readonly string[] BARRICADE_MODE_TEXT = new string[] { "BARRICADE/REPAIR MODE - directions to barricade/repair, ESC cancels" };
-        readonly string[] BREAK_MODE_TEXT = new string[] { "BREAK MODE - directions/wait to break an object, ESC cancels" };
-        readonly string[] BUILD_LARGE_FORT_MODE_TEXT = new string[] { "BUILD LARGE FORTIFICATION MODE - directions to build, ESC cancels" };
-        readonly string[] BUILD_SMALL_FORT_MODE_TEXT = new string[] { "BUILD SMALL FORTIFICATION MODE - directions to build, ESC cancels" };
-        readonly string[] TRADE_MODE_TEXT = new string[] { "TRADE MODE - Y to accept the deal, N to refuse" };
-        readonly string[] INITIATE_TRADE_MODE_TEXT = new string[] { "INITIATE TRADE MODE - directions to offer item to someone, ESC cancels" };
-        readonly string[] UPGRADE_MODE_TEXT = new string[] { "UPGRADE MODE - follow instructions in the message panel" };
-        readonly string[] FIRE_MODE_TEXT = new string[] { "FIRE MODE - F to fire, T next target, M toggle mode, ESC cancels" };
-        readonly string[] SWITCH_PLACE_MODE_TEXT = new string[] { "SWITCH PLACE MODE - directions to switch place with a follower, ESC cancels" };
-        readonly string[] TAKE_LEAD_MODE_TEXT = new string[] { "TAKE LEAD MODE - directions to recruit a follower, ESC cancels" };
-        readonly string[] PUSH_MODE_TEXT = new string[] { "PUSH/SHOVE MODE - directions to push/shove, ESC cancels" };
-        readonly string[] TAG_MODE_TEXT = new string[] { "TAG MODE - directions to tag a wall or on the floor, ESC cancels" };
-        readonly string PUSH_OBJECT_MODE_TEXT = "PUSHING {0} - directions to push, ESC cancels";
-        readonly string SHOVE_ACTOR_MODE_TEXT = "SHOVING {0} - directions to shove, ESC cancels";
-        readonly string[] ORDER_MODE_TEXT = new string[] { "ORDER MODE - follow instructions in the message panel, ESC cancels" };
-        readonly string[] GIVE_MODE_TEXT = new string[] { "GIVE MODE - directions to give item to someone, ESC cancels" };
-        readonly string[] THROW_GRENADE_MODE_TEXT = new string[] { "THROW GRENADE MODE - directions to select, F to fire,  ESC cancels" };
-        readonly string[] MARK_ENEMIES_MODE = new string[] { "MARK ENEMIES MODE - E to make enemy, T next actor, ESC cancels" };
-        readonly Color MODE_TEXTCOLOR = Color.Yellow;
-        readonly Color MODE_BORDERCOLOR = Color.Yellow;
-        readonly Color MODE_FILLCOLOR = Color.FromArgb(192, Color.Gray);
-
-        readonly Color PLAYER_ACTION_COLOR = Color.White;
-        readonly Color OTHER_ACTION_COLOR = Color.Gray;
-        readonly Color SAYOREMOTE_COLOR = Color.Brown;
-        readonly Color PLAYER_AUDIO_COLOR = Color.Green;
-
-        const int LINE_SPACING = 12;
-        const int BOLD_LINE_SPACING = 14;
-        const int CREDIT_CHAR_SPACING = 8;
-        const int CREDIT_LINE_SPACING = LINE_SPACING;
-
-        readonly Color NIGHT_COLOR = Color.Cyan;
-        readonly Color DAY_COLOR = Color.Gold;
-
-        const int TEXTFILE_CHARS_PER_LINE = 120;
-        const int TEXTFILE_LINES_PER_PAGE = 50;
-#endregion
-
-#region Notable Zone names
-        public const string NAME_SUBWAY_STATION = "Subway Station";
-        public const string NAME_SEWERS_MAINTENANCE = "Sewers Maintenance";
-        public const string NAME_SUBWAY_RAILS = "rails";
-        public const string NAME_POLICE_STATION_JAILS_CELL = "jail";
-#endregion
-
-#region Events
-        const int SPAWN_DISTANCE_TO_PLAYER = 10;
-
-#region Zombie invasion
-
-#endregion
-
-#region Sewers invasion
-        const int SEWERS_INVASION_CHANCE = 1;
-        public const float SEWERS_UNDEADS_FACTOR = 0.50f;  // 1.0 for as much as surface undead spawning.
-#endregion
-
-#region DISABLED Subway invasion 
-    #if false 
-        const int SUBWAY_INVASION_CHANCE = 1;
-        public const float SUBWAY_UNDEADS_FACTOR = 0.25f;  // 1.0 for as much as surface undead spawning.
-    #endif
-#endregion
-
-#region Refugees
-        /// <summary>
-        /// How many refugees in each wave, as ratio of max civilians.
-        /// </summary>
-        const float REFUGEES_WAVE_SIZE = 0.20f;
-
-        /// <summary>
-        /// How many random items each new refugee will carry.
-        /// </summary>
-        const int REFUGEES_WAVE_ITEMS = 3;
-
-
-        /// <summary>
-        /// Chance to spawn on the surface vs sewers/subway.
-        /// </summary>
-        const int REFUGEE_SURFACE_SPAWN_CHANCE = 80;
-#endregion
-
-#region Unique NPC refugees
-        const int UNIQUE_REFUGEE_CHECK_CHANCE = 10;
-#endregion
-
-#region National Guard Squad
-        /// <summary>
-        /// Date at which natguard can intervene.
-        /// </summary>
-        public const int NATGUARD_DAY = 3;
-
-        /// <summary>
-        /// Date at which natguard will stop coming.
-        /// </summary>
-        const int NATGUARD_END_DAY = 10;
-
-        /// <summary>
-        /// Date at which the natguard leader will bring Z-Trackers.
-        /// </summary>
-        const int NATGUARD_ZTRACKER_DAY = NATGUARD_DAY + 3;
-
-        /// <summary>
-        /// How many soldiers in each national guard squad.
-        /// </summary>
-        const int NATGUARD_SQUAD_SIZE = 5;
-
-        /// <summary>
-        /// By how many times the undeads must outnumber the livings for the nat guard to intervene.
-        /// Factored by option.
-        /// </summary>
-        const float NATGUARD_INTERVENTION_FACTOR = 5;
-
-        /// <summary>
-        /// How many chance per turn the nat guard intervene (if other conditions are met).
-        /// </summary>
-        const int NATGUARD_INTERVENTION_CHANCE = 1;
-#endregion
-
-#region Army drop supplies
-        /// <summary>
-        /// Date at which army can drop supplies.
-        /// </summary>
-        const int ARMY_SUPPLIES_DAY = 4;
-
-        /// <summary>
-        /// Ratio total map food items nutrition / livings below which the army drop supplies event can fire.
-        /// Factored by option.
-        /// </summary>
-        const float ARMY_SUPPLIES_FACTOR = 0.20f * Rules.FOOD_BASE_POINTS;
-
-        /// <summary>
-        /// Chances per turn the army will drop supply (if other conditions are met).
-        /// </summary>
-        const int ARMY_SUPPLIES_CHANCE = 2;
-
-        /// <summary>
-        /// Radius in which supplies items are dropped.
-        /// One item is dropped per suitable tile in radius.
-        /// </summary>
-        const int ARMY_SUPPLIES_SCATTER = 1;
-
-#endregion
-
-#region Bikers raid
-        /// <summary>
-        /// Date at which bikers will start to raid.
-        /// </summary>
-        public const int BIKERS_RAID_DAY = 2;
-
-        /// <summary>
-        /// Date at which bikers will stop coming.
-        /// </summary>
-        const int BIKERS_END_DAY = 14;
-
-        /// <summary>
-        /// Number of bikers in the raid.
-        /// </summary>
-        const int BIKERS_RAID_SIZE = 6;
-
-        /// <summary>
-        /// Raid chance per turn (if others conditions are met).
-        /// </summary>
-        const int BIKERS_RAID_CHANCE_PER_TURN = 1;
-
-        /// <summary>
-        /// Number of days between each bikers raid.
-        /// </summary>
-        const int BIKERS_RAID_DAYS_GAP = 2;
-#endregion
-
-#region Gangstas raid
-        /// <summary>
-        /// Date at which gangsta will start to raid.
-        /// </summary>
-        public const int GANGSTAS_RAID_DAY = 7;
-
-        /// <summary>
-        /// Date at which gangstas will stop coming.
-        /// </summary>
-        const int GANGSTAS_END_DAY = 21;
-
-        /// <summary>
-        /// Number of gangstas in the raid.
-        /// </summary>
-        const int GANGSTAS_RAID_SIZE = 6;
-
-        /// <summary>
-        /// Raid chance per turn (if others conditions are met).
-        /// </summary>
-        const int GANGSTAS_RAID_CHANCE_PER_TURN = 1;
-
-        /// <summary>
-        /// Number of days between each gangsta raid.
-        /// </summary>
-        const int GANGSTAS_RAID_DAYS_GAP = 3;
-#endregion
-
-#region BlackOps raid
-        /// <summary>
-        /// Date at which blackops will start to raid.
-        /// </summary>
-        const int BLACKOPS_RAID_DAY = 14;
-
-        /// <summary>
-        /// Number of blackops in the raid.
-        /// </summary>
-        const int BLACKOPS_RAID_SIZE = 3;
-
-        /// <summary>
-        /// Raid chances per turn (if others conditions are met).
-        /// </summary>
-        const int BLACKOPS_RAID_CHANCE_PER_TURN = 1;
-
-        /// <summary>
-        /// Delay between each raid.
-        /// </summary>
-        const int BLACKOPS_RAID_DAY_GAP = 5;
-#endregion
-
-#region Band of Survivors 
-        const int SURVIVORS_BAND_DAY = 21;
-        const int SURVIVORS_BAND_SIZE = 5;
-        const int SURVIVORS_BAND_CHANCE_PER_TURN = 1;
-        const int SURVIVORS_BAND_DAY_GAP = 5;
-#endregion
-
-#endregion
-
-#region Undeads evolution
-        const int ZOMBIE_LORD_EVOLUTION_MIN_DAY = 7;
-        const int DISCIPLE_EVOLUTION_MIN_DAY = 7;
-#endregion
-
-#region Map color tints for day phases
-        readonly Color TINT_DAY = Color.White;
-        readonly Color TINT_SUNSET = Color.FromArgb(235, 235, 235);
-        readonly Color TINT_EVENING = Color.FromArgb(215, 215, 215);
-        readonly Color TINT_MIDNIGHT = Color.FromArgb(195, 195, 195);
-        readonly Color TINT_NIGHT = Color.FromArgb(205, 205, 205);
-        readonly Color TINT_SUNRISE = Color.FromArgb(225, 225, 225);
-#endregion
-
-#region Hearing chances - avoid spamming messages.
-        const int PLAYER_HEAR_FIGHT_CHANCE = 25;
-        const int PLAYER_HEAR_SCREAMS_CHANCE = 10;
-        const int PLAYER_HEAR_PUSH_CHANCE = 25;
-        const int PLAYER_HEAR_BASH_CHANCE = 25;
-        const int PLAYER_HEAR_BREAK_CHANCE = 50;
-        const int PLAYER_HEAR_EXPLOSION_CHANCE = 100;
-#endregion
-
-#region Blood splatting
-        const int BLOOD_WALL_SPLAT_CHANCE = 20;
-#endregion
-
-#region NPC player sleeping snoring message chance
-        public const int MESSAGE_NPC_SLEEP_SNORE_CHANCE = 10;
-#endregion
-
-#region Weather
-        const int WEATHER_CHANGE_CHANCE = 33;
-#endregion
-
-#region World Gen
-        const int DISTRICT_EXIT_CHANCE_PER_TILE = 15;
-#endregion
-
-#region Common verbs
-        readonly Verb VERB_ACCEPT_THE_DEAL = new Verb("accept the deal", "accepts the deal");
-        readonly Verb VERB_ACTIVATE = new Verb("activate");
-        readonly Verb VERB_AVOID = new Verb("avoid");
-        readonly Verb VERB_BARRICADE = new Verb("barricade");
-        readonly Verb VERB_BASH = new Verb("bash", "bashes");
-        readonly Verb VERB_BE = new Verb("are", "is");
-        readonly Verb VERB_BUILD = new Verb("build");
-        readonly Verb VERB_BREAK = new Verb("break");
-        readonly Verb VERB_BUTCHER = new Verb("butcher");
-        readonly Verb VERB_CATCH = new Verb("catch", "catches");
-        readonly Verb VERB_CHAT_WITH = new Verb("chat with", "chats with");
-        readonly Verb VERB_CLOSE = new Verb("close");
-        readonly Verb VERB_COLLAPSE = new Verb("collapse");
-        readonly Verb VERB_CRUSH = new Verb("crush", "crushes");
-        readonly Verb VERB_DESACTIVATE = new Verb("desactivate");
-        readonly Verb VERB_DESTROY = new Verb("destroy");
-        readonly Verb VERB_DIE = new Verb("die");
-        readonly Verb VERB_DIE_FROM_STARVATION = new Verb("die from starvation", "dies from starvation");
-        readonly Verb VERB_DISCARD = new Verb("discard");
-        readonly Verb VERB_DRAG = new Verb("drag");
-        readonly Verb VERB_DROP = new Verb("drop");
-        readonly Verb VERB_EAT = new Verb("eat");
-        readonly Verb VERB_ENJOY = new Verb("enjoy");
-        readonly Verb VERB_ENTER = new Verb("enter");
-        readonly Verb VERB_ESCAPE = new Verb("escape");
-        readonly Verb VERB_FAIL = new Verb("fail");
-        readonly Verb VERB_FEAST_ON = new Verb("feast on", "feasts on");
-        readonly Verb VERB_FEEL = new Verb("feel");
-        readonly Verb VERB_GIVE = new Verb("give");
-        readonly Verb VERB_GRAB = new Verb("grab");
-        readonly Verb VERB_EQUIP = new Verb("equip");
-        readonly Verb VERB_HAVE = new Verb("have", "has");
-        readonly Verb VERB_HELP = new Verb("help");
-        readonly Verb VERB_PERSUADE = new Verb("persuade");
-        readonly Verb VERB_HEAL_WITH = new Verb("heal with", "heals with");
-        readonly Verb VERB_JUMP_ON = new Verb("jump on", "jumps on");
-        readonly Verb VERB_KILL = new Verb("kill");
-        readonly Verb VERB_LEAVE = new Verb("leave");
-        readonly Verb VERB_MISS = new Verb("miss", "misses");
-        readonly Verb VERB_MURDER = new Verb("murder");
-        readonly Verb VERB_OFFER = new Verb("offer");
-        readonly Verb VERB_OPEN = new Verb("open");
-        readonly Verb VERB_ORDER = new Verb("order");
-        readonly Verb VERB_PUSH = new Verb("push", "pushes");
-        readonly Verb VERB_RAISE_ALARM = new Verb("raise the alarm", "raises the alarm");
-        readonly Verb VERB_REFUSE_THE_DEAL = new Verb("refuse the deal", "refuses the deal");
-        readonly Verb VERB_RELOAD = new Verb("reload");
-        readonly Verb VERB_RECHARGE = new Verb("recharge");
-        readonly Verb VERB_REPAIR = new Verb("repair");
-        readonly Verb VERB_REVIVE = new Verb("revive");
-        readonly Verb VERB_SEE = new Verb("see");
-        readonly Verb VERB_SHOUT = new Verb("shout");
-        readonly Verb VERB_SHOVE = new Verb("shove");
-        readonly Verb VERB_SNORE = new Verb("snore");
-        readonly Verb VERB_SPRAY = new Verb("spray");
-        readonly Verb VERB_START = new Verb("start");
-        readonly Verb VERB_STOP = new Verb("stop");
-        readonly Verb VERB_STUMBLE = new Verb("stumble");
-        readonly Verb VERB_SWITCH = new Verb("switch", "switches");
-        readonly Verb VERB_SWITCH_PLACE_WITH = new Verb("switch place with", "switches place with");
-        readonly Verb VERB_TAKE = new Verb("take");
-        readonly Verb VERB_THROW = new Verb("throw");
-        readonly Verb VERB_TRANSFORM_INTO = new Verb("transform into", "transforms into");
-        readonly Verb VERB_UNEQUIP = new Verb("unequip");
-        readonly Verb VERB_VOMIT = new Verb("vomit");
-        readonly Verb VERB_WAIT = new Verb("wait");
-        readonly Verb VERB_WAKE_UP = new Verb("wake up", "wakes up");
-#endregion
-
-#endregion
-
 #region Types
-#region Overlays
-        abstract class Overlay
-        {
-            public abstract void Draw(IRogueUI ui);
-        }
-
-        class OverlayImage : Overlay
-        {
-            public Point ScreenPosition { get; set; }
-            public string ImageID { get; set; }
-
-            public OverlayImage(Point screenPosition, string imageID)
-            {
-                this.ScreenPosition = screenPosition;
-                this.ImageID = imageID;
-            }
-
-            public override void Draw(IRogueUI ui)
-            {
-                ui.UI_DrawImage(ImageID, ScreenPosition.X, ScreenPosition.Y);
-            }
-        }
-
-        class OverlayTransparentImage : Overlay
-        {
-            public float Alpha { get; set; }
-            public Point ScreenPosition { get; set; }
-            public string ImageID { get; set; }
-
-            public OverlayTransparentImage(float alpha, Point screenPosition, string imageID)
-            {
-                this.Alpha = alpha;
-                this.ScreenPosition = screenPosition;
-                this.ImageID = imageID;
-            }
-
-            public override void Draw(IRogueUI ui)
-            {
-                ui.UI_DrawTransparentImage(Alpha, ImageID, ScreenPosition.X, ScreenPosition.Y);
-            }
-        }
-
-        class OverlayText : Overlay
-        {
-            public Point ScreenPosition { get; set; }
-            public string Text { get; set; }
-            public Color Color { get; set; }
-            public Color? ShadowColor { get; set; }
-
-            public OverlayText(Point screenPosition, Color color, string text)
-                : this(screenPosition, color, text, null)
-            {
-            }
-
-            public OverlayText(Point screenPosition, Color color, string text, Color? shadowColor)
-            {
-                this.ScreenPosition = screenPosition;
-                this.Color = color;
-                this.ShadowColor = shadowColor;
-                this.Text = text;
-            }
-
-            public override void Draw(IRogueUI ui)
-            {
-                if (ShadowColor.HasValue)
-                    ui.UI_DrawString(ShadowColor.Value, Text, ScreenPosition.X + 1, ScreenPosition.Y + 1);
-                ui.UI_DrawString(Color, Text, ScreenPosition.X, ScreenPosition.Y);
-            }
-        }
-
-        class OverlayLine : Overlay
-        {
-            public Point ScreenFrom { get; set; }
-            public Point ScreenTo { get; set; }
-            public Color Color { get; set; }
-
-            public OverlayLine(Point screenFrom, Color color, Point screenTo)
-            {
-                ScreenFrom = screenFrom;
-                ScreenTo = screenTo;
-                Color = color;
-            }
-
-            public override void Draw(IRogueUI ui)
-            {
-                ui.UI_DrawLine(Color, ScreenFrom.X, ScreenFrom.Y, ScreenTo.X, ScreenTo.Y);
-            }
-        }
-
-        class OverlayRect : Overlay
-        {
-            public Rectangle Rectangle { get; set; }
-            public Color Color { get; set; }
-
-            public OverlayRect(Color color, Rectangle rect)
-            {
-                this.Rectangle = rect;
-                this.Color = color;
-            }
-
-            public override void Draw(IRogueUI ui)
-            {
-                ui.UI_DrawRect(this.Color, this.Rectangle);
-            }
-        }
-
-        class OverlayPopup : Overlay
-        {
-            public Point ScreenPosition { get; set; }
-            public Color TextColor { get; set; }
-            public Color BoxBorderColor { get; set; }
-            public Color BoxFillColor { get; set; }
-            public string[] Lines { get; set; }
-
-            public OverlayPopup(string[] lines, Color textColor, Color boxBorderColor, Color boxFillColor, Point screenPos)
-            {
-                this.ScreenPosition = screenPos;
-                this.TextColor = textColor;
-                this.BoxBorderColor = boxBorderColor;
-                this.BoxFillColor = boxFillColor;
-                this.Lines = lines;
-            }
-
-            public override void Draw(IRogueUI ui)
-            {
-                ui.UI_DrawPopup(Lines, TextColor, BoxBorderColor, BoxFillColor, ScreenPosition.X, ScreenPosition.Y);
-            }
-        }
-#endregion
 
 #region Character generation
         struct CharGen
@@ -719,269 +192,6 @@ namespace djack.RogueSurvivor.Engine
         }
 #endregion
 
-#region Messaging & Grammar helpers
-        public void AddMessage(Message msg)
-        {
-            // ignore empty messages
-            if (msg.Text.Length == 0)
-                return;
-
-            // Clear if too much messages.
-            if (m_MessageManager.Count >= MAX_MESSAGES)
-                m_MessageManager.Clear();
-
-            // Format message: <turn> <Text>           
-            msg.Text = String.Format("{0} {1}", m_Session.WorldTime.TurnCounter, Capitalize(msg.Text));
-
-            // Add.
-            m_MessageManager.Add(msg);
-        }
-
-        /// <summary>
-        /// Adds the message if it is audible by the player and redraws the screen.
-        /// </summary>
-        public void AddMessageIfAudibleForPlayer(Location location, Message msg)
-        {
-            if (msg == null)
-                throw new ArgumentNullException("msg");
-
-            // 1. Audible to player?
-            if (m_Player != null)
-            {
-                // if sleeping can't hear.
-                if (m_Player.IsSleeping)
-                    return;
-
-                // can't hear if not same map.
-                if (location.Map != m_Player.Location.Map)
-                    return;
-
-                // can hear if close enough.
-                if (m_Rules.StdDistance(m_Player.Location.Position, location.Position) <= m_Player.AudioRange)
-                {
-                    // hear.
-                    msg.Color = PLAYER_AUDIO_COLOR;
-                    AddMessage(msg);
-
-                    // if waiting, interupt.
-                    if (m_IsPlayerLongWait)
-                        m_IsPlayerLongWaitForcedStop = true;
-
-                    // redraw.
-                    RedrawPlayScreen();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Make a message with the text: [eventText] DISTANCE tiles to the DIRECTION.
-        /// </summary>
-        /// <param name="eventText"></param>
-        /// <param name="position"></param>
-        /// <returns></returns>
-        Message MakePlayerCentricMessage(string eventText, Point position)
-        {
-            Point vDir = new Point(position.X - m_Player.Location.Position.X, position.Y - m_Player.Location.Position.Y);
-            string text = String.Format("{0} {1} tiles to the {2}.", eventText, (int)m_Rules.StdDistance(vDir), Direction.ApproximateFromVector(vDir));
-            return new Message(text, m_Session.WorldTime.TurnCounter);
-        }
-
-        Message MakeErrorMessage(string text)
-        {
-            return new Message(text, m_Session.WorldTime.TurnCounter, Color.Red);
-        }
-
-        Message MakeYesNoMessage(string question)
-        {
-            return new Message(String.Format("{0}? Y to confirm, N to cancel", question), m_Session.WorldTime.TurnCounter, Color.Yellow);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="actor"></param>
-        /// <returns>"someone" if not visible to the player; TheName if visible.</returns>
-        string ActorVisibleIdentity(Actor actor)
-        {
-            return IsVisibleToPlayer(actor) ? actor.TheName : "someone";
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="mapObj"></param>
-        /// <returns>"someone" if not visible to the player; TheName if visible.</returns>
-        string ObjectVisibleIdentity(MapObject mapObj)
-        {
-            return IsVisibleToPlayer(mapObj) ? mapObj.TheName : "something";
-        }
-
-        Message MakeMessage(Actor actor, string doWhat)
-        {
-            return MakeMessage(actor, doWhat, OTHER_ACTION_COLOR);
-        }
-
-        Message MakeMessage(Actor actor, string doWhat, Color color)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(ActorVisibleIdentity(actor));
-            sb.Append(" ");
-            sb.Append(doWhat);
-
-            Message msg = new Message(sb.ToString(), m_Session.WorldTime.TurnCounter);
-            if (actor.IsPlayer)
-                msg.Color = PLAYER_ACTION_COLOR;
-            else
-                msg.Color = color;
-
-            return msg;
-        }
-
-        Message MakeMessage(Actor actor, string doWhat, Actor target)
-        {
-            return MakeMessage(actor, doWhat, target, ".");
-        }
-
-        Message MakeMessage(Actor actor, string doWhat, Actor target, string phraseEnd)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(ActorVisibleIdentity(actor));
-            sb.Append(" ");
-            sb.Append(doWhat);
-            sb.Append(" ");
-            sb.Append(ActorVisibleIdentity(target));
-            sb.Append(phraseEnd);
-
-            Message msg = new Message(sb.ToString(), m_Session.WorldTime.TurnCounter);
-            if (actor.IsPlayer || target.IsPlayer)
-                msg.Color = PLAYER_ACTION_COLOR;
-            else
-                msg.Color = OTHER_ACTION_COLOR;
-
-            return msg;
-        }
-
-        Message MakeMessage(Actor actor, string doWhat, MapObject target)
-        {
-            return MakeMessage(actor, doWhat, target, ".");
-        }
-
-        Message MakeMessage(Actor actor, string doWhat, MapObject target, string phraseEnd)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(ActorVisibleIdentity(actor));
-            sb.Append(" ");
-            sb.Append(doWhat);
-            sb.Append(" ");
-            sb.Append(ObjectVisibleIdentity(target));
-            sb.Append(phraseEnd);
-
-            Message msg = new Message(sb.ToString(), m_Session.WorldTime.TurnCounter);
-            if (actor.IsPlayer)
-                msg.Color = PLAYER_ACTION_COLOR;
-            else
-                msg.Color = OTHER_ACTION_COLOR;
-
-            return msg;
-        }
-
-        Message MakeMessage(Actor actor, string doWhat, Item target)
-        {
-            return MakeMessage(actor, doWhat, target, ".");
-        }
-
-        Message MakeMessage(Actor actor, string doWhat, Item target, string phraseEnd)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(ActorVisibleIdentity(actor));
-            sb.Append(" ");
-            sb.Append(doWhat);
-            sb.Append(" ");
-            sb.Append(target.TheName);
-            sb.Append(phraseEnd);
-
-            Message msg = new Message(sb.ToString(), m_Session.WorldTime.TurnCounter);
-            if (actor.IsPlayer)
-                msg.Color = PLAYER_ACTION_COLOR;
-            else
-                msg.Color = OTHER_ACTION_COLOR;
-
-            return msg;
-        }    
-
-        void ClearMessages()
-        {
-            m_MessageManager.Clear();
-        }
-
-        void ClearMessagesHistory()
-        {
-            m_MessageManager.ClearHistory();
-        }
-
-        void RemoveLastMessage()
-        {
-            m_MessageManager.RemoveLastMessage();
-        }
-
-        void AddMessagePressEnter()
-        {
-            AddMessage(new Message("<press ENTER>", m_Session.WorldTime.TurnCounter, Color.Yellow));
-            RedrawPlayScreen();
-            WaitEnter();
-            RemoveLastMessage();
-            RedrawPlayScreen();
-        }
-
-        string Conjugate(Actor actor, string verb)
-        {
-            return actor.IsProperName && !actor.IsPluralName ? verb + "s" : verb;
-        }
-
-        string Conjugate(Actor actor, Verb verb)
-        {
-            return actor.IsProperName && !actor.IsPluralName ? verb.HeForm : verb.YouForm;
-        }
-
-        string Capitalize(string text)
-        {
-            if (text == null)
-                return "";
-            if (text.Length == 1)
-                return String.Format("{0}", Char.ToUpper(text[0]));
-
-            return String.Format("{0}{1}", Char.ToUpper(text[0]), text.Substring(1));
-        }
-
-        string HisOrHer(Actor actor)
-        {
-            return actor.Model.DollBody.IsMale ? "his" : "her";
-        }
-
-        string HeOrShe(Actor actor)
-        {
-            return actor.Model.DollBody.IsMale ? "he" : "she";
-        }
-
-        string HimOrHer(Actor actor)
-        {
-            return actor.Model.DollBody.IsMale ? "him" : "her";
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <returns>"a/an name"</returns>
-        string AorAn(string name)
-        {
-            char c = name[0];
-            return (c == 'a' || c == 'e' || c == 'i' || c == 'u' ? "an " : "a ") + name;
-        }
-
-        string TruncateString(string s, int maxLength)
-        {
-            return s.Length <= maxLength ? s : s.Substring(0, maxLength);
-        }
-#endregion
 
 #region Anim Delay
         void AnimDelay(int msecs)
@@ -1275,608 +485,6 @@ namespace djack.RogueSurvivor.Engine
             while (loop);
         }
 
-#region Character creation
-        bool HandleNewCharacter()
-        {
-            DiceRoller roller = new DiceRoller();
-
-            /////////////////
-            // Reset session
-            /////////////////
-            m_Session.Reset();
-
-            ///////////////
-            // Game Mode //
-            ///////////////
-            if (!HandleNewGameMode())
-                return false;
-
-            ////////////////////////
-            // Choose living/undead 
-            ////////////////////////
-            bool isUndead;
-            if (!HandleNewCharacterRace(roller, out isUndead))
-                return false;
-            m_CharGen.IsUndead = isUndead;
-
-            /////////////////////////////
-            // Choose gender/undead type
-            /////////////////////////////
-            if (isUndead)
-            {
-                GameActors.IDs modelID;
-                if (!HandleNewCharacterUndeadType(roller, out modelID))
-                    return false;
-                m_CharGen.UndeadModel = modelID;
-            }
-            else
-            {
-                bool isMale;
-                if (!HandleNewCharacterGender(roller, out isMale))
-                    return false;
-                m_CharGen.IsMale = isMale;
-            }
-
-            /////////////////////////////
-            // Choose skill (living only)
-            /////////////////////////////
-            if (!isUndead)
-            {
-                Skills.IDs skID;
-                if (!HandleNewCharacterSkill(roller, out skID))
-                    return false;
-                m_CharGen.StartingSkill = skID;
-                // scoring : starting skill.
-                m_Session.Scoring.StartingSkill = skID;
-            }
-            else
-            {
-                // udead.
-            }
-
-            // done
-            return true;
-        }
-
-        bool HandleNewGameMode()
-        {
-            string[] menuEntries = new string[]
-            {
-                Session.DescGameMode(GameMode.GM_STANDARD),
-                Session.DescGameMode(GameMode.GM_CORPSES_INFECTION),
-                Session.DescGameMode(GameMode.GM_VINTAGE)
-            };
-            string[] descs = new string[]
-            {
-                "Rogue Survivor standard game.",
-                "Don't get a cold. Keep an eye on your deceased diseased friends.",
-                "The classic zombies next door."
-            };
-
-            bool loop = true;
-            bool choiceDone = false;
-            int selected = 0;
-            do
-            {
-                // display.
-                m_UI.UI_Clear(Color.Black);
-                int gx, gy;
-                gx = gy = 0;
-                m_UI.UI_DrawStringBold(Color.Yellow, "New Game - Choose Game Mode", gx, gy);
-                gy += 2 * BOLD_LINE_SPACING;
-                DrawMenuOrOptions(selected, Color.White, menuEntries, Color.LightGray, descs, gx, ref gy);
-                gy += 2 * BOLD_LINE_SPACING;
-
-                string[] descMode = { };
-                switch (selected)
-                {
-                    case 0:
-                        descMode = new string[] {
-                            "This is the standard game setting:",
-                            "- All the kinds of undeads.",
-                            "- Undeads can evolve.", 
-                            "- Livings can zombify instantly when dead."
-                        };
-                        break;
-                    case 1:
-                        descMode = new string[] {
-                            "This is the standard game setting with corpses and infection: ",
-                            "- All the kinds of undeads.",
-                            "- Undeads can evolve.",
-                            "- Some undeads can infect livings when damaging them.",
-                            "- Livings become corpses when dead.",
-                            "- Corpses will slowy rot... but may rise as undead if infected."
-                        };
-                        break;
-                    case 2:
-                        descMode = new string[] {
-                            "This is the zombie game for classic hardcore fans: ",
-                            "- Undeads are only zombified men and women.",
-                            "- Undeads don't evolve.", 
-                            "- Some undeads can infect livings when damaging them.",
-                            "- Livings become corpses when dead.",
-                            "- Corpses will slowy rot... but may rise as undead if infected.",
-                            "",
-                            "NOTE:",
-                            "This mode force some options OFF.",
-                            "Remember to set them back ON again when you play other modes!"
-                        };
-                        break;
-                }
-                foreach (String str in descMode)
-                {
-                    m_UI.UI_DrawStringBold(Color.Gray, str, gx, gy);
-                    gy += BOLD_LINE_SPACING;
-                }
-
-
-                DrawFootnote(Color.White, "cursor to move, ENTER to select, ESC to cancel");
-                m_UI.UI_Repaint();
-
-                // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
-                {
-                    case Keys.Up:       // move up
-                        if (selected > 0) --selected;
-                        else selected = menuEntries.Length - 1;
-                        break;
-                    case Keys.Down:     // move down
-                        selected = (selected + 1) % menuEntries.Length;
-                        break;
-
-                    case Keys.Escape:
-                        choiceDone = false;
-                        loop = false;
-                        break;
-
-                    case Keys.Enter:    // validate
-                        {
-                            switch (selected)
-                            {
-                                case 0: // standard
-                                    m_Session.GameMode = GameMode.GM_STANDARD;
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-
-                                case 1: // corpses & infection
-                                    m_Session.GameMode = GameMode.GM_CORPSES_INFECTION;
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-
-                                case 2: // vintage
-                                    m_Session.GameMode = GameMode.GM_VINTAGE;
-                                    
-                                    // force some options off.
-                                    s_Options.AllowUndeadsEvolution = false;
-                                    s_Options.ShamblersUpgrade = false;
-                                    s_Options.RatsUpgrade = false;
-                                    s_Options.SkeletonsUpgrade = false;
-                                    ApplyOptions(false);
-
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-                            }
-                            break;
-                        }
-                }
-
-            }
-            while (loop);
-
-            // done.
-            return choiceDone;
-        }
-
-        bool HandleNewCharacterRace(DiceRoller roller, out bool isUndead)
-        {
-            string[] menuEntries = new string[]
-            {
-                "*Random*",
-                "Living",
-                "Undead"
-            };
-            string[] descs = new string[]
-            {
-                "(picks a race at random for you)",
-                "Try to survive.",
-                "Eat brains and die again."
-            };
-
-            isUndead = false;
-            bool loop = true;
-            bool choiceDone = false;
-            int selected = 0;
-            do
-            {
-                // display.
-                m_UI.UI_Clear(Color.Black);
-                int gx, gy;
-                gx = gy = 0;
-                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("[{0}] New Character - Choose Race", Session.DescGameMode(m_Session.GameMode)), gx, gy);
-                gy += 2 * BOLD_LINE_SPACING;
-                DrawMenuOrOptions(selected, Color.White, menuEntries, Color.LightGray, descs, gx, ref gy);
-                gy += 2 * BOLD_LINE_SPACING;
-
-                DrawFootnote(Color.White, "cursor to move, ENTER to select, ESC to cancel");
-                m_UI.UI_Repaint();
-
-                // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
-                {
-                    case Keys.Up:       // move up
-                        if (selected > 0) --selected;
-                        else selected = menuEntries.Length - 1;
-                        break;
-                    case Keys.Down:     // move down
-                        selected = (selected + 1) % menuEntries.Length;
-                        break;
-
-                    case Keys.Escape:
-                        choiceDone = false;
-                        loop = false;
-                        break;
-
-                    case Keys.Enter:    // validate
-                        {
-                            switch (selected)
-                            {
-                                case 0: // random
-                                    isUndead = roller.RollChance(50);
-
-                                    gy += BOLD_LINE_SPACING;
-                                    m_UI.UI_DrawStringBold(Color.White, String.Format("Race : {0}.", isUndead ? "Undead" : "Living"), gx, gy);
-                                    gy += BOLD_LINE_SPACING;
-                                    m_UI.UI_DrawStringBold(Color.Yellow, "Is that OK? Y to confirm, N to cancel.", gx, gy);
-                                    m_UI.UI_Repaint();
-                                    if (WaitYesOrNo())
-                                    {
-                                        choiceDone = true;
-                                        loop = false;
-                                    }
-                                    break;
-
-                                case 1: // living
-                                    isUndead = false;
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-
-                                case 2: // undead
-                                    isUndead = true;
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-                            }
-                            break;
-                        }
-                }
-
-            }
-            while (loop);
-
-            // done.
-            return choiceDone;
-        }
-
-        bool HandleNewCharacterGender(DiceRoller roller, out bool isMale)
-        {
-            ActorModel maleModel = GameActors.MaleCivilian;
-            ActorModel femaleModel = GameActors.FemaleCivilian;
-
-            string[] menuEntries = new string[]
-            {
-                "*Random*",
-                "Male",
-                "Female"
-            };
-            string[] descs = new string[]
-            {
-                "(picks a gender at random for you)",
-                String.Format("HP:{0:D2}  Def:{1:D2}  Dmg:{2:D1}", maleModel.StartingSheet.BaseHitPoints, maleModel.StartingSheet.BaseDefence.Value,  maleModel.StartingSheet.UnarmedAttack.DamageValue),
-                String.Format("HP:{0:D2}  Def:{1:D2}  Dmg:{2:D1}", femaleModel.StartingSheet.BaseHitPoints, femaleModel.StartingSheet.BaseDefence.Value, femaleModel.StartingSheet.UnarmedAttack.DamageValue),
-            };
-
-            isMale = true;
-            bool loop = true;
-            bool choiceDone = false;
-            int selected = 0;
-            do
-            {
-                // display.
-                m_UI.UI_Clear(Color.Black);
-                int gx, gy;
-                gx = gy = 0;
-                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("[{0}] New Living - Choose Gender", Session.DescGameMode(m_Session.GameMode)), gx, gy);
-                gy += 2 * BOLD_LINE_SPACING;
-                DrawMenuOrOptions(selected, Color.White, menuEntries, Color.LightGray, descs, gx, ref gy);
-                DrawFootnote(Color.White, "cursor to move, ENTER to select, ESC to cancel");
-                m_UI.UI_Repaint();
-
-                // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
-                {
-                    case Keys.Up:       // move up
-                        if (selected > 0) --selected;
-                        else selected = menuEntries.Length - 1;
-                        break;
-                    case Keys.Down:     // move down
-                        selected = (selected + 1) % menuEntries.Length;
-                        break;
-
-                    case Keys.Escape:
-                        choiceDone = false;
-                        loop = false;
-                        break;
-
-                    case Keys.Enter:    // validate
-                        {
-                            switch (selected)
-                            {
-                                case 0: // random
-                                    isMale = roller.RollChance(50);
-
-                                    gy += BOLD_LINE_SPACING;
-                                    m_UI.UI_DrawStringBold(Color.White, String.Format("Gender : {0}.", isMale ? "Male" : "Female"), gx, gy);
-                                    gy += BOLD_LINE_SPACING;
-                                    m_UI.UI_DrawStringBold(Color.Yellow, "Is that OK? Y to confirm, N to cancel.", gx, gy);
-                                    m_UI.UI_Repaint();
-                                    if (WaitYesOrNo())
-                                    {
-                                        choiceDone = true;
-                                        loop = false;
-                                    }
-                                    break;
-
-                                case 1: // male
-                                    isMale = true;
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-
-                                case 2: // female
-                                    isMale = false;
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-                            }
-                            break;
-                        }
-                }
-                
-            }
-            while (loop);
-
-            // done.
-            return choiceDone;
-        }
-
-        string DescribeUndeadModelStatLine(ActorModel m)
-        {
-            return String.Format("HP:{0:D3}  Spd:{1:F2}  Atk:{2:D2}  Def:{3:D2}  Dmg:{4:D2}  FoV:{5:D1}  Sml:{6:F2}",
-                m.StartingSheet.BaseHitPoints, m.DollBody.Speed / 100f,
-                m.StartingSheet.UnarmedAttack.HitValue, m.StartingSheet.BaseDefence.Value, m.StartingSheet.UnarmedAttack.DamageValue,
-                m.StartingSheet.BaseViewRange, m.StartingSheet.BaseSmellRating);
-        }
-
-        bool HandleNewCharacterUndeadType(DiceRoller roller, out GameActors.IDs modelID)
-        {
-            ActorModel skeletonModel = GameActors.Skeleton;
-            ActorModel shamblerModel = GameActors.Zombie;
-            ActorModel maleModel = GameActors.MaleZombified;
-            ActorModel femaleModel = GameActors.FemaleZombified;
-            ActorModel masterModel = GameActors.ZombieMaster;
-
-            string[] menuEntries = new string[]
-            {
-                "*Random*",
-                skeletonModel.Name,
-                shamblerModel.Name,
-                maleModel.Name,
-                femaleModel.Name,
-                masterModel.Name,
-            };
-            string[] descs = new string[]
-            {
-                "(picks a type at random for you)",
-                DescribeUndeadModelStatLine(skeletonModel),
-                DescribeUndeadModelStatLine(shamblerModel),
-                DescribeUndeadModelStatLine(maleModel),
-                DescribeUndeadModelStatLine(femaleModel),
-                DescribeUndeadModelStatLine(masterModel)
-            };
-
-            modelID = GameActors.IDs.UNDEAD_MALE_ZOMBIFIED;
-            bool loop = true;
-            bool choiceDone = false;
-            int selected = 0;
-            do
-            {
-                // display.
-                m_UI.UI_Clear(Color.Black);
-                int gx, gy;
-                gx = gy = 0;
-                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("[{0}] New Undead - Choose Type", Session.DescGameMode(m_Session.GameMode)), gx, gy);
-                gy += 2 * BOLD_LINE_SPACING;
-                DrawMenuOrOptions(selected, Color.White, menuEntries, Color.LightGray, descs, gx, ref gy);
-                DrawFootnote(Color.White, "cursor to move, ENTER to select, ESC to cancel");
-                m_UI.UI_Repaint();
-
-                // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
-                {
-                    case Keys.Up:       // move up
-                        if (selected > 0) --selected;
-                        else selected = menuEntries.Length - 1;
-                        break;
-                    case Keys.Down:     // move down
-                        selected = (selected + 1) % menuEntries.Length;
-                        break;
-
-                    case Keys.Escape:
-                        choiceDone = false;
-                        loop = false;
-                        break;
-
-                    case Keys.Enter:    // validate
-                        {
-                            switch (selected)
-                            {
-                                case 0: // random
-                                    selected = roller.Roll(0, 5);
-                                    switch (selected)
-                                    {
-                                        case 0: modelID = GameActors.IDs.UNDEAD_SKELETON; break;
-                                        case 1: modelID = GameActors.IDs.UNDEAD_ZOMBIE; break;
-                                        case 2: modelID = GameActors.IDs.UNDEAD_MALE_ZOMBIFIED; break;
-                                        case 3: modelID = GameActors.IDs.UNDEAD_FEMALE_ZOMBIFIED; break;
-                                        case 4: modelID = GameActors.IDs.UNDEAD_ZOMBIE_MASTER; break;
-                                        default:
-                                            throw new ArgumentOutOfRangeException("unhandled select "+selected);
-                                    }
-
-                                    gy += BOLD_LINE_SPACING;
-                                    m_UI.UI_DrawStringBold(Color.White, String.Format("Type : {0}.", GameActors[modelID].Name), gx, gy);
-                                    gy += BOLD_LINE_SPACING;
-                                    m_UI.UI_DrawStringBold(Color.Yellow, "Is that OK? Y to confirm, N to cancel.", gx, gy);
-                                    m_UI.UI_Repaint();
-                                    if (WaitYesOrNo())
-                                    {
-                                        choiceDone = true;
-                                        loop = false;
-                                    }
-                                    break;
-
-                                case 1: // skeleton
-                                    modelID = GameActors.IDs.UNDEAD_SKELETON;
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-
-                                case 2: // shambler
-                                    modelID = GameActors.IDs.UNDEAD_ZOMBIE;
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-
-                                case 3: // male zombified
-                                    modelID = GameActors.IDs.UNDEAD_MALE_ZOMBIFIED;
-                                    m_CharGen.IsMale = true;
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-
-                                case 4: // female zombified
-                                    modelID = GameActors.IDs.UNDEAD_FEMALE_ZOMBIFIED;
-                                    m_CharGen.IsMale = false;
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-
-                                case 5: // zm
-                                    modelID = GameActors.IDs.UNDEAD_ZOMBIE_MASTER;
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-                            }
-                            break;
-                        }
-                }
-
-            }
-            while (loop);
-
-            // done.
-            return choiceDone;
-        }
-
-        bool HandleNewCharacterSkill(DiceRoller roller, out Skills.IDs skID)
-        {
-            /////////////////////////////
-            // Make table of all skills.
-            /////////////////////////////
-            Skills.IDs[] allSkills = new Skills.IDs[(int)Skills.IDs._LAST_LIVING + 1];
-            string[] menuEntries = new string[allSkills.Length + 1];
-            string[] skillDesc = new string[allSkills.Length + 1];
-            menuEntries[0] = "*Random*";
-            skillDesc[0] = "(picks a skill at random for you)";
-            for (int i = (int)Skills.IDs._FIRST_LIVING; i < (int)Skills.IDs._LAST_LIVING + 1; i++)
-            {
-                allSkills[i] = (Skills.IDs)i;
-                menuEntries[i + 1] = Skills.Name(allSkills[i]);
-                skillDesc[i + 1] = String.Format("{0} max - {1}", Skills.MaxSkillLevel(i), DescribeSkillShort(allSkills[i]));
-            }
-
-            //////////////////////////
-            // Loop until choice done
-            //////////////////////////
-            skID = Skills.IDs._FIRST;
-            bool loop = true;
-            bool choiceDone = false;
-            int selected = 0;
-            do
-            {
-                // display.
-                m_UI.UI_Clear(Color.Black);
-                int gx, gy;
-                gx = gy = 0;
-                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("[{0}] New {1} Character - Choose Starting Skill", 
-                    Session.DescGameMode(m_Session.GameMode),
-                    m_CharGen.IsMale ? "Male" : "Female"), gx, gy);
-                gy += 2 * BOLD_LINE_SPACING;
-                DrawMenuOrOptions(selected, Color.White, menuEntries, Color.LightGray, skillDesc, gx, ref gy);
-                DrawFootnote(Color.White, "cursor to move, ENTER to select, ESC to cancel");
-                m_UI.UI_Repaint();
-
-                // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
-                {
-                    case Keys.Up:       // move up
-                        if (selected > 0) --selected;
-                        else selected = menuEntries.Length - 1;
-                        break;
-                    case Keys.Down:     // move down
-                        selected = (selected + 1) % menuEntries.Length;
-                        break;
-
-                    case Keys.Escape:
-                        choiceDone = false;
-                        loop = false;
-                        break;
-
-                    case Keys.Enter:    // validate
-                        if (selected == 0) // random
-                            skID = Skills.RollLiving(roller);
-                        else
-                            skID = (Skills.IDs)(selected - 1 + (int)Skills.IDs._FIRST);
-
-                        gy += BOLD_LINE_SPACING;
-                        m_UI.UI_DrawStringBold(Color.White, String.Format("Skill : {0}.", Skills.Name(skID)), gx, gy);
-                        gy += BOLD_LINE_SPACING;
-                        m_UI.UI_DrawStringBold(Color.Yellow, "Is that OK? Y to confirm, N to cancel.", gx, gy);
-                        m_UI.UI_Repaint();
-                        if (WaitYesOrNo())
-                        {
-                            choiceDone = true;
-                            loop = false;
-                        }
-                        break;
-                }
-            }
-            while (loop);
-
-            // done.
-            return choiceDone;
-        }
-#endregion
-
 #region Manual
         void LoadManual()
         {
@@ -1911,113 +519,6 @@ namespace djack.RogueSurvivor.Engine
 
             m_UI.UI_Clear(Color.Black);
             m_UI.UI_DrawStringBold(Color.White, "Game manual... done!", 0, gy);
-            m_UI.UI_Repaint();
-        }
-#endregion
-
-#region HiScore
-        void HandleHiScores(bool saveToTextfile)
-        {
-            TextFile file = null;
-            if (saveToTextfile)
-                file = new TextFile();
-
-            m_UI.UI_Clear(Color.Black);
-            int gy = 0;
-            DrawHeader();
-            gy += BOLD_LINE_SPACING;
-            m_UI.UI_DrawStringBold(Color.Yellow, "Hi Scores", 0, gy);
-            gy += BOLD_LINE_SPACING;
-            m_UI.UI_DrawStringBold(Color.White, "---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+", 0, gy);
-            gy += BOLD_LINE_SPACING;
-
-            // display.
-            m_UI.UI_DrawStringBold(Color.White, "Rank | Name, Skills, Death       |  Score |Difficulty|Survival|  Kills |Achievm.|      Game Time | Playing time", 0, gy);
-            gy += BOLD_LINE_SPACING;
-
-            // text.
-            if (saveToTextfile)
-            {
-                file.Append(String.Format("ROGUE SURVIVOR {0}", SetupConfig.GAME_VERSION));
-                file.Append("Hi Scores");
-                file.Append("Rank | Name, Skills, Death       |  Score |Difficulty|Survival|  Kills |Achievm.|      Game Time | Playing time");
-            }
-
-            // individual entries.
-            for (int i = 0; i < m_HiScoreTable.Count; i++)
-            {
-                // display.
-                Color rankColor = (i==0 ? Color.LightYellow: i == 1 ? Color.LightCyan : i == 2 ? Color.LightGreen : Color.DimGray);
-                m_UI.UI_DrawStringBold(rankColor, "------------------------------------------------------------------------------------------------------------------------", 0, gy);
-                gy += BOLD_LINE_SPACING;
-                HiScore hi = m_HiScoreTable[i];
-                string line = String.Format("{0,3}. | {1,-25} | {2,6} |     {3,3}% | {4,6} | {5,6} | {6,6} | {7,14} | {8}",
-                    i + 1, TruncateString(hi.Name, 25),
-                    hi.TotalPoints, hi.DifficultyPercent, hi.SurvivalPoints, hi.KillPoints, hi.AchievementPoints,
-                    new WorldTime(hi.TurnSurvived).ToString(), TimeSpanToString(hi.PlayingTime));
-                m_UI.UI_DrawStringBold(rankColor, line, 0, gy);
-                gy += BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(rankColor, String.Format("     | {0}.", hi.SkillsDescription), 0, gy);
-                gy += BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(rankColor, String.Format("     | {0}.", hi.Death), 0, gy);
-                gy += BOLD_LINE_SPACING;
-
-                // text.
-                if (saveToTextfile)
-                {
-                    file.Append("------------------------------------------------------------------------------------------------------------------------");
-                    file.Append(line);
-                    file.Append(String.Format("     | {0}", hi.SkillsDescription));
-                    file.Append(String.Format("     | {0}", hi.Death));
-                }
-            }
-
-            // save.
-            string textfilePath = GetUserHiScoreTextFilePath();
-            if (saveToTextfile)              
-                file.Save(textfilePath);
-            
-            // display.
-            m_UI.UI_DrawStringBold(Color.White, "---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+", 0, gy);
-            gy += BOLD_LINE_SPACING;
-            if (saveToTextfile)
-            {
-                m_UI.UI_DrawStringBold(Color.White, textfilePath, 0, gy);
-                gy += BOLD_LINE_SPACING;
-            }
-            DrawFootnote(Color.White, "press ESC to leave");
-            m_UI.UI_Repaint();
-            WaitEscape();
-        }
-
-        void LoadHiScoreTable()
-        {
-            m_UI.UI_Clear(Color.Black);
-            m_UI.UI_DrawStringBold(Color.White, "Loading hiscores table...", 0, 0);
-            m_UI.UI_Repaint();
-
-            m_HiScoreTable = HiScoreTable.Load(GetUserHiScoreFilePath());
-            if (m_HiScoreTable == null)
-            {
-                m_HiScoreTable = new HiScoreTable(HiScoreTable.DEFAULT_MAX_ENTRIES);
-                m_HiScoreTable.Clear();
-            }
-
-            m_UI.UI_Clear(Color.Black);
-            m_UI.UI_DrawStringBold(Color.White, "Loading hiscores table... done!", 0, 0);
-            m_UI.UI_Repaint();
-        }
-
-        void SaveHiScoreTable()
-        {
-            m_UI.UI_Clear(Color.Black);
-            m_UI.UI_DrawStringBold(Color.White, "Saving hiscores table...", 0, 0);
-            m_UI.UI_Repaint();
-
-            HiScoreTable.Save(m_HiScoreTable, GetUserHiScoreFilePath());
-            
-            m_UI.UI_Clear(Color.Black);
-            m_UI.UI_DrawStringBold(Color.White, "Saving hiscores table... done!", 0, 0);
             m_UI.UI_Repaint();
         }
 #endregion
@@ -2119,575 +620,11 @@ namespace djack.RogueSurvivor.Engine
             WaitEscape();
         }
 
-        void HandleOptions(bool ingame)
-        {
-            GameOptions prevOptions = s_Options;
-
-#region
-            GameOptions.IDs[] list = new GameOptions.IDs[]
-            {
-                    // display & sounds
-                   GameOptions.IDs.UI_MUSIC,
-                   GameOptions.IDs.UI_MUSIC_VOLUME,
-                   GameOptions.IDs.UI_ANIM_DELAY,
-                   GameOptions.IDs.UI_SHOW_MINIMAP,
-                   GameOptions.IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP,
-                   // helpers
-                   GameOptions.IDs.UI_ADVISOR,
-                   GameOptions.IDs.UI_COMBAT_ASSISTANT,
-                   GameOptions.IDs.UI_SHOW_PLAYER_TARGETS,
-                   GameOptions.IDs.UI_SHOW_TARGETS,
-                   // sim
-                   GameOptions.IDs.GAME_SIM_THREAD,
-                   GameOptions.IDs.GAME_SIMULATE_DISTRICTS,
-                   GameOptions.IDs.GAME_SIMULATE_SLEEP,
-                   // death
-                   GameOptions.IDs.GAME_DEATH_SCREENSHOT,
-                   GameOptions.IDs.GAME_PERMADEATH,
-                   // maps
-                   GameOptions.IDs.GAME_CITY_SIZE,
-                   GameOptions.IDs.GAME_DISTRICT_SIZE,
-                   GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT,
-                   // living
-                   GameOptions.IDs.GAME_MAX_CIVILIANS,
-                   GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE,
-                   GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS,
-                   GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH,
-                   GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE,
-                   // undeads
-                   GameOptions.IDs.GAME_MAX_UNDEADS,
-                   GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION,
-                   GameOptions.IDs.GAME_DAY_ZERO_UNDEADS_PERCENT,
-                   GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE,
-                   GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS,
-                   GameOptions.IDs.GAME_SHAMBLERS_UPGRADE,
-                   GameOptions.IDs.GAME_SKELETONS_UPGRADE,
-                   GameOptions.IDs.GAME_RATS_UPGRADE,
-                   // events
-                   GameOptions.IDs.GAME_NATGUARD_FACTOR,
-                   GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR,
-                   // reinc
-                   GameOptions.IDs.GAME_MAX_REINCARNATIONS,
-                   GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED,
-                   GameOptions.IDs.GAME_REINCARNATE_AS_RAT,
-                   GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS
-            };
-#endregion
-
-            string[] menuEntries = new string[list.Length];
-            string[] values = new string[list.Length];
-            for (int i = 0; i < list.Length; i++)
-                menuEntries[i] = GameOptions.Name(list[i]);
-
-            bool loop = true;
-            int selected = 0;
-            do
-            {
-                for (int i = 0; i < list.Length; i++)
-                    values[i] = s_Options.DescribeValue(m_Session.GameMode, list[i]);
-
-                int gx, gy;
-                gx = gy = 0;
-                m_UI.UI_Clear(Color.Black);
-                DrawHeader();
-                gy += BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("[{0}] - Options", Session.DescGameMode(m_Session.GameMode)), 0, gy);
-                gy += 2 * BOLD_LINE_SPACING;
-                DrawMenuOrOptions(selected, Color.White, menuEntries, Color.LightGreen, values, gx, ref gy, 400);
-
-                // caution.
-                gy += BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(Color.Red, "* Caution : increasing these values makes the game runs slower and saving/loading longer.", gx, gy);
-                gy += BOLD_LINE_SPACING;
-
-                // difficulty rating.               
-                gy += BOLD_LINE_SPACING;
-                int diffForSurvivor = (int)(100 * Scoring.ComputeDifficultyRating(s_Options, DifficultySide.FOR_SURVIVOR, 0));
-                int diffforUndead = (int)(100 * Scoring.ComputeDifficultyRating(s_Options, DifficultySide.FOR_UNDEAD, 0));
-                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("Difficulty Rating : {0}% as survivor / {1}% as undead.", diffForSurvivor, diffforUndead), gx, gy);
-                gy += BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(Color.White, "Difficulty used for scoring automatically decrease with each reincarnation.", gx, gy);
-                gy += 2 * BOLD_LINE_SPACING;
-
-                // footnote.
-                DrawFootnote(Color.White, "cursor to move and change values, R to restore previous values, ESC to save and leave");
-                m_UI.UI_Repaint();
-
-                // handle
-                // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
-                {
-                    case Keys.Up:       // move up
-                        if (selected > 0) --selected;
-                        else selected = menuEntries.Length - 1;
-                        break;
-                    case Keys.Down:     // move down
-                        selected = (selected + 1) % menuEntries.Length;
-                        break;
-
-                    case Keys.R:        // restore previous.
-                        s_Options = prevOptions;
-                        break;
-
-                    case Keys.Escape:   // validate and leave
-                        loop = false;
-                        break;
-
-                    case Keys.Left:
-                        switch ((GameOptions.IDs)list[selected])
-                        {
-                            case GameOptions.IDs.GAME_DISTRICT_SIZE: s_Options.DistrictSize -= 5; break;
-                            case GameOptions.IDs.UI_MUSIC: s_Options.PlayMusic = !s_Options.PlayMusic; break;
-                            case GameOptions.IDs.UI_MUSIC_VOLUME: s_Options.MusicVolume -= 5; break;
-                            case GameOptions.IDs.UI_ANIM_DELAY: s_Options.IsAnimDelayOn = !s_Options.IsAnimDelayOn; break;
-                            case GameOptions.IDs.UI_SHOW_MINIMAP: s_Options.IsMinimapOn = !s_Options.IsMinimapOn; break;
-                            case GameOptions.IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP: s_Options.ShowPlayerTagsOnMinimap = !s_Options.ShowPlayerTagsOnMinimap; break;
-                            case GameOptions.IDs.UI_ADVISOR: s_Options.IsAdvisorEnabled = !s_Options.IsAdvisorEnabled; break;
-                            case GameOptions.IDs.UI_COMBAT_ASSISTANT: s_Options.IsCombatAssistantOn = !s_Options.IsCombatAssistantOn; break;
-                            case GameOptions.IDs.UI_SHOW_TARGETS: s_Options.ShowTargets = !s_Options.ShowTargets; break;
-                            case GameOptions.IDs.UI_SHOW_PLAYER_TARGETS: s_Options.ShowPlayerTargets = !s_Options.ShowPlayerTargets; break;
-                            case GameOptions.IDs.GAME_MAX_CIVILIANS: s_Options.MaxCivilians -= 5; break;
-                            case GameOptions.IDs.GAME_MAX_DOGS: --s_Options.MaxDogs; break;
-                            case GameOptions.IDs.GAME_MAX_UNDEADS: s_Options.MaxUndeads -= 10; break;
-                            case GameOptions.IDs.GAME_DAY_ZERO_UNDEADS_PERCENT: s_Options.DayZeroUndeadsPercent -= 5; break;
-                            case GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE: --s_Options.ZombieInvasionDailyIncrease; break;
-                            case GameOptions.IDs.GAME_CITY_SIZE: s_Options.CitySize -= 1; break;
-                            case GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH: s_Options.NPCCanStarveToDeath = !s_Options.NPCCanStarveToDeath; break;
-                            case GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE: s_Options.StarvedZombificationChance -= 5; break;
-                            case GameOptions.IDs.GAME_SIMULATE_DISTRICTS:
-                                if (s_Options.SimulateDistricts != GameOptions.SimRatio.OFF)
-                                    s_Options.SimulateDistricts = (GameOptions.SimRatio)(s_Options.SimulateDistricts - 1);
-                                break;
-                            case GameOptions.IDs.GAME_SIMULATE_SLEEP: s_Options.SimulateWhenSleeping = !s_Options.SimulateWhenSleeping; break;
-                            case GameOptions.IDs.GAME_SIM_THREAD: s_Options.SimThread = !s_Options.SimThread; break;
-                            case GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE: s_Options.ZombificationChance -= 5; break;
-                            case GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT: s_Options.RevealStartingDistrict = !s_Options.RevealStartingDistrict; break;
-                            case GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
-                                    s_Options.AllowUndeadsEvolution = false;
-                                else
-                                    s_Options.AllowUndeadsEvolution = !s_Options.AllowUndeadsEvolution; 
-                               break;
-                            case GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS:
-                                if (s_Options.ZombifiedsUpgradeDays != GameOptions.ZupDays._FIRST)
-                                    s_Options.ZombifiedsUpgradeDays = (GameOptions.ZupDays)(s_Options.ZombifiedsUpgradeDays - 1);
-                                break;
-                            case GameOptions.IDs.GAME_MAX_REINCARNATIONS: --s_Options.MaxReincarnations; break;
-                            case GameOptions.IDs.GAME_REINCARNATE_AS_RAT: s_Options.CanReincarnateAsRat = !s_Options.CanReincarnateAsRat; break;
-                            case GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS: s_Options.CanReincarnateToSewers = !s_Options.CanReincarnateToSewers; break;
-                            case GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED: s_Options.IsLivingReincRestricted = !s_Options.IsLivingReincRestricted; break;
-                            case GameOptions.IDs.GAME_PERMADEATH: s_Options.IsPermadeathOn = !s_Options.IsPermadeathOn; break;
-                            case GameOptions.IDs.GAME_DEATH_SCREENSHOT: s_Options.IsDeathScreenshotOn = !s_Options.IsDeathScreenshotOn; break;
-                            case GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS: s_Options.IsAggressiveHungryCiviliansOn = !s_Options.IsAggressiveHungryCiviliansOn; break;
-                            case GameOptions.IDs.GAME_NATGUARD_FACTOR: s_Options.NatGuardFactor -= 10; break;
-                            case GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor -= 10; break;
-                            case GameOptions.IDs.GAME_RATS_UPGRADE:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
-                                    s_Options.RatsUpgrade = false;
-                                else
-                                    s_Options.RatsUpgrade = !s_Options.RatsUpgrade; 
-                                break;
-                            case GameOptions.IDs.GAME_SHAMBLERS_UPGRADE:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
-                                    s_Options.ShamblersUpgrade = false;
-                                else
-                                    s_Options.ShamblersUpgrade = !s_Options.ShamblersUpgrade; 
-                                break;
-                            case GameOptions.IDs.GAME_SKELETONS_UPGRADE:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
-                                    s_Options.SkeletonsUpgrade = false;
-                                else
-                                    s_Options.SkeletonsUpgrade = !s_Options.SkeletonsUpgrade; 
-                                break;                            
-                        }
-                        break;
-                    case Keys.Right:
-                        switch ((GameOptions.IDs)list[selected])
-                        {
-                            case GameOptions.IDs.GAME_DISTRICT_SIZE: s_Options.DistrictSize += 5; break;
-                            case GameOptions.IDs.UI_MUSIC: s_Options.PlayMusic = !s_Options.PlayMusic; break;
-                            case GameOptions.IDs.UI_MUSIC_VOLUME: s_Options.MusicVolume += 5; break;
-                            case GameOptions.IDs.UI_ANIM_DELAY: s_Options.IsAnimDelayOn = !s_Options.IsAnimDelayOn; break;
-                            case GameOptions.IDs.UI_SHOW_MINIMAP: s_Options.IsMinimapOn = !s_Options.IsMinimapOn; break;
-                            case GameOptions.IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP: s_Options.ShowPlayerTagsOnMinimap = !s_Options.ShowPlayerTagsOnMinimap; break;
-                            case GameOptions.IDs.UI_ADVISOR: s_Options.IsAdvisorEnabled = !s_Options.IsAdvisorEnabled; break;
-                            case GameOptions.IDs.UI_COMBAT_ASSISTANT: s_Options.IsCombatAssistantOn = !s_Options.IsCombatAssistantOn; break;
-                            case GameOptions.IDs.UI_SHOW_TARGETS: s_Options.ShowTargets = !s_Options.ShowTargets; break;
-                            case GameOptions.IDs.UI_SHOW_PLAYER_TARGETS: s_Options.ShowPlayerTargets = !s_Options.ShowPlayerTargets; break;
-                            case GameOptions.IDs.GAME_MAX_CIVILIANS: s_Options.MaxCivilians += 5; break;
-                            case GameOptions.IDs.GAME_MAX_DOGS: ++s_Options.MaxDogs; break;
-                            case GameOptions.IDs.GAME_MAX_UNDEADS: s_Options.MaxUndeads += 10; break;
-                            case GameOptions.IDs.GAME_DAY_ZERO_UNDEADS_PERCENT: s_Options.DayZeroUndeadsPercent += 5; break;
-                            case GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE: ++s_Options.ZombieInvasionDailyIncrease; break;
-                            case GameOptions.IDs.GAME_CITY_SIZE: s_Options.CitySize += 1; break;
-                            case GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH: s_Options.NPCCanStarveToDeath = !s_Options.NPCCanStarveToDeath; break;
-                            case GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE: s_Options.StarvedZombificationChance += 5; break;
-                            case GameOptions.IDs.GAME_SIMULATE_DISTRICTS:
-                                if (s_Options.SimulateDistricts != GameOptions.SimRatio.FULL)
-                                {
-                                    s_Options.SimulateDistricts = (GameOptions.SimRatio)(s_Options.SimulateDistricts + 1);
-                                }
-                                break;
-                            case GameOptions.IDs.GAME_SIMULATE_SLEEP: s_Options.SimulateWhenSleeping = !s_Options.SimulateWhenSleeping; break;
-                            case GameOptions.IDs.GAME_SIM_THREAD: s_Options.SimThread = !s_Options.SimThread; break;
-                            case GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE: s_Options.ZombificationChance += 5; break;
-                            case GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT: s_Options.RevealStartingDistrict = !s_Options.RevealStartingDistrict; break;
-                            case GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
-                                    s_Options.AllowUndeadsEvolution = false;
-                                else
-                                    s_Options.AllowUndeadsEvolution = !s_Options.AllowUndeadsEvolution; 
-                                break;
-                            case GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS: 
-                                if (s_Options.ZombifiedsUpgradeDays != GameOptions.ZupDays._COUNT-1)
-                                    s_Options.ZombifiedsUpgradeDays = (GameOptions.ZupDays)(s_Options.ZombifiedsUpgradeDays + 1);
-                                break;
-                            case GameOptions.IDs.GAME_MAX_REINCARNATIONS: ++s_Options.MaxReincarnations; break;
-                            case GameOptions.IDs.GAME_REINCARNATE_AS_RAT: s_Options.CanReincarnateAsRat = !s_Options.CanReincarnateAsRat; break;
-                            case GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS: s_Options.CanReincarnateToSewers = !s_Options.CanReincarnateToSewers; break;
-                            case GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED: s_Options.IsLivingReincRestricted = !s_Options.IsLivingReincRestricted; break;
-                            case GameOptions.IDs.GAME_PERMADEATH: s_Options.IsPermadeathOn = !s_Options.IsPermadeathOn; break;
-                            case GameOptions.IDs.GAME_DEATH_SCREENSHOT: s_Options.IsDeathScreenshotOn = !s_Options.IsDeathScreenshotOn; break;
-                            case GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS: s_Options.IsAggressiveHungryCiviliansOn = !s_Options.IsAggressiveHungryCiviliansOn; break;
-                            case GameOptions.IDs.GAME_NATGUARD_FACTOR: s_Options.NatGuardFactor += 10; break;
-                            case GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor += 10; break;
-                            case GameOptions.IDs.GAME_RATS_UPGRADE:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
-                                    s_Options.RatsUpgrade = false;
-                                else
-                                    s_Options.RatsUpgrade = !s_Options.RatsUpgrade; 
-                                break;
-                            case GameOptions.IDs.GAME_SHAMBLERS_UPGRADE:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
-                                    s_Options.ShamblersUpgrade = false;
-                                else
-                                    s_Options.ShamblersUpgrade = !s_Options.ShamblersUpgrade; 
-                                break;
-                            case GameOptions.IDs.GAME_SKELETONS_UPGRADE:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
-                                    s_Options.SkeletonsUpgrade = false;
-                                    s_Options.SkeletonsUpgrade = !s_Options.SkeletonsUpgrade; 
-                                break;    
-                        }
-                        break;
-                }
-
-                // force some options combinations.
-                if (s_Options.SimThread)
-                    s_Options.SimulateWhenSleeping = false;
-                // apply options.
-                ApplyOptions(false);
-            }
-            while (loop);
-
-            // save.
-            SaveOptions();
-        }
-
-        void HandleRedefineKeys()
-        {
-            bool loop = true;
-            int selected = 0;
-            bool conflict = false;
-            do
-            {
-                // check for conflict.
-                conflict = s_KeyBindings.CheckForConflict();
-
-                // draw
-                string[] menuEntries = new string[]
-                {
-                    "Move N",
-                    "Move NE",
-                    "Move E",
-                    "Move SE",
-                    "Move S",
-                    "Move SW",
-                    "Move W",
-                    "Move NW",
-                    "Wait",
-                    "Wait 1 hour",
-                    "Abandon Game",
-                    "Advisor Hint",
-                    "Barricade",
-                    "Break",
-                    "Build Large Fortification",
-                    "Build Small Fortification",
-                    "City Info",
-                    "Close",
-                    "Fire",
-                    "Give",
-                    "Help",
-                    "Hints screen",
-                    "Initiate Trade",
-                    "Item 1 slot",
-                    "Item 2 slot",
-                    "Item 3 slot",
-                    "Item 4 slot",
-                    "Item 5 slot",
-                    "Item 6 slot",
-                    "Item 7 slot",
-                    "Item 8 slot",
-                    "Item 9 slot",
-                    "Item 10 slot",
-                    "Lead",
-                    "Load Game",
-                    "Mark Enemies",
-                    "Messages Log",
-                    "Options",
-                    "Order",
-                    "Push",
-                    "Quit Game",
-                    "Redefine Keys",
-                    "Run",
-                    "Save Game",
-                    "Screenshot",
-                    "Shout",
-                    "Sleep",
-                    "Switch Place",
-                    "Use Exit",
-                    "Use Spray",
-                };
-                const int O_MOVE_N = 0;
-                const int O_MOVE_NE = 1;
-                const int O_MOVE_E = 2;
-                const int O_MOVE_SE = 3;
-                const int O_MOVE_S = 4;
-                const int O_MOVE_SW = 5;
-                const int O_MOVE_W = 6;
-                const int O_MOVE_NW = 7;
-                const int O_WAIT = 8;
-                const int O_WAIT_LONG = 9;
-                const int O_ABANDON = 10;
-                const int O_ADVISOR = 11;
-                const int O_BARRICADE = 12;
-                const int O_BREAK = 13;
-                const int O_BUILD_LARGE_F = 14;
-                const int O_BUILD_SMALL_F = 15;
-                const int O_CITYINFO = 16;
-                const int O_CLOSE = 17;
-                const int O_FIRE = 18;
-                const int O_GIVE = 19;
-                const int O_HELP = 20;
-                const int O_HINTS_SCREEN = 21;
-                const int O_INIT_TRADE = 22;
-                const int O_ITEM_1 = 23;
-                const int O_ITEM_2 = 24;
-                const int O_ITEM_3 = 25;
-                const int O_ITEM_4 = 26;
-                const int O_ITEM_5 = 27;
-                const int O_ITEM_6 = 28;
-                const int O_ITEM_7 = 29;
-                const int O_ITEM_8 = 30;
-                const int O_ITEM_9 = 31;
-                const int O_ITEM_10 = 32;
-                const int O_LEAD = 33;
-                const int O_LOAD = 34;
-                const int O_MARKENEMY = 35;
-                const int O_LOG = 36;
-                const int O_OPTIONS = 37;
-                const int O_ORDER = 38;
-                const int O_PUSH = 39;
-                const int O_QUIT = 40;
-                const int O_REDEFKEYS = 41;
-                const int O_RUN = 42;
-                const int O_SAVE = 43;
-                const int O_SCREENSHOT = 44;
-                const int O_SHOUT = 45;
-                const int O_SLEEP = 46;
-                const int O_SWITCH = 47;
-                const int O_USE_EXIT = 48;
-                const int O_USE_SPRAY= 49;
-                string[] values = new string[]
-                {
-                    s_KeyBindings.Get(PlayerCommand.MOVE_N).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_NE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_E).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_SE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_S).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_SW).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_W).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_NW).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.WAIT_OR_SELF).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.WAIT_LONG).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ABANDON_GAME).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ADVISOR).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.BARRICADE_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.BREAK_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.BUILD_LARGE_FORTIFICATION).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.BUILD_SMALL_FORTIFICATION).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.CITY_INFO).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.CLOSE_DOOR).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.FIRE_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.GIVE_ITEM).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.HELP_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.HINTS_SCREEN_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.INITIATE_TRADE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_0).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_1).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_2).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_3).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_4).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_5).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_6).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_7).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_8).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_9).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.LEAD_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.LOAD_GAME).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MARK_ENEMIES_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MESSAGE_LOG).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ORDER_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.PUSH_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.QUIT_GAME).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.RUN_TOGGLE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.SAVE_GAME).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.SCREENSHOT).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.SHOUT).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.SLEEP).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.SWITCH_PLACE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.USE_EXIT).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.USE_SPRAY).ToString(),
-                };
-
-                int gx, gy;
-                gx = gy = 0;
-                m_UI.UI_Clear(Color.Black);
-                DrawHeader();
-                gy += BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(Color.Yellow, "Redefine keys", 0, gy);
-                gy += BOLD_LINE_SPACING;
-                DrawMenuOrOptions(selected, Color.White, menuEntries, Color.LightGreen, values, gx, ref gy);
-                if (conflict)
-                {
-                    m_UI.UI_DrawStringBold(Color.Red, "Conflicting keys. Please redefine the keys so the commands don't overlap.", gx, gy);
-                    gy += BOLD_LINE_SPACING;
-                }
-                DrawFootnote(Color.White, "cursor to move, ENTER to rebind a key, ESC to save and leave");
-                m_UI.UI_Repaint();
-
-                // handle
-                // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
-                {
-                    case Keys.Up:       // move up
-                        if (selected > 0) --selected;
-                        else selected = menuEntries.Length - 1;
-                        break;
-                    case Keys.Down:     // move down
-                        selected = (selected + 1) % menuEntries.Length;
-                        break;
-
-                    case Keys.Escape:   // leave.
-                        if (!conflict)
-                        {
-                            loop = false;
-                        }
-                        break;
-
-                    case Keys.Enter: // rebind
-                        // say.
-                        m_UI.UI_DrawStringBold(Color.Yellow, String.Format("rebinding {0}, press the new key.", menuEntries[selected]), gx, gy);
-                        m_UI.UI_Repaint();
-
-                        // read new key.
-                        bool loopNewKey = true;
-                        Keys newKeyData = Keys.None;
-                        do
-                        {
-                            KeyEventArgs newKey = m_UI.UI_WaitKey();
-                            // ignore Shift and Control alone.
-                            if (newKey.KeyCode == Keys.ShiftKey || newKey.KeyCode == Keys.ControlKey)
-                                continue;
-                            // always ignore Alt.
-                            if (newKey.Alt)
-                                continue;
-                            // done!
-                            newKeyData = newKey.KeyData;
-                            loopNewKey = false;
-                        }
-                        while (loopNewKey);
-
-                        // get command.
-                        PlayerCommand command;
-                        switch (selected)
-                        {
-                            case O_MOVE_N: command = PlayerCommand.MOVE_N; break;
-                            case O_MOVE_NE: command = PlayerCommand.MOVE_NE; break;
-                            case O_MOVE_E: command = PlayerCommand.MOVE_E; break;
-                            case O_MOVE_SE: command = PlayerCommand.MOVE_SE; break;
-                            case O_MOVE_S: command = PlayerCommand.MOVE_S; break;
-                            case O_MOVE_SW: command = PlayerCommand.MOVE_SW; break;
-                            case O_MOVE_W: command = PlayerCommand.MOVE_W; break;
-                            case O_MOVE_NW: command = PlayerCommand.MOVE_NW; break;
-                            case O_WAIT: command = PlayerCommand.WAIT_OR_SELF; break;
-                            case O_WAIT_LONG: command = PlayerCommand.WAIT_LONG; break;
-                            case O_ABANDON: command = PlayerCommand.ABANDON_GAME; break;
-                            case O_ADVISOR: command = PlayerCommand.ADVISOR; break;
-                            case O_BARRICADE: command = PlayerCommand.BARRICADE_MODE; break;
-                            case O_BREAK: command = PlayerCommand.BREAK_MODE; break;
-                            case O_BUILD_LARGE_F: command = PlayerCommand.BUILD_LARGE_FORTIFICATION; break;
-                            case O_BUILD_SMALL_F: command = PlayerCommand.BUILD_SMALL_FORTIFICATION; break;
-                            case O_CITYINFO: command = PlayerCommand.CITY_INFO; break;
-                            case O_CLOSE: command = PlayerCommand.CLOSE_DOOR; break;
-                            case O_FIRE: command = PlayerCommand.FIRE_MODE; break;
-                            case O_GIVE: command = PlayerCommand.GIVE_ITEM; break;
-                            case O_HELP: command = PlayerCommand.HELP_MODE; break;
-                            case O_HINTS_SCREEN: command = PlayerCommand.HINTS_SCREEN_MODE; break;
-                            case O_INIT_TRADE: command = PlayerCommand.INITIATE_TRADE; break;
-                            case O_ITEM_1: command = PlayerCommand.ITEM_SLOT_0; break;
-                            case O_ITEM_2: command = PlayerCommand.ITEM_SLOT_1; break;
-                            case O_ITEM_3: command = PlayerCommand.ITEM_SLOT_2; break;
-                            case O_ITEM_4: command = PlayerCommand.ITEM_SLOT_3; break;
-                            case O_ITEM_5: command = PlayerCommand.ITEM_SLOT_4; break;
-                            case O_ITEM_6: command = PlayerCommand.ITEM_SLOT_5; break;
-                            case O_ITEM_7: command = PlayerCommand.ITEM_SLOT_6; break;
-                            case O_ITEM_8: command = PlayerCommand.ITEM_SLOT_7; break;
-                            case O_ITEM_9: command = PlayerCommand.ITEM_SLOT_8; break;
-                            case O_ITEM_10: command = PlayerCommand.ITEM_SLOT_9; break;
-                            case O_LEAD: command = PlayerCommand.LEAD_MODE; break;
-                            case O_LOAD: command = PlayerCommand.LOAD_GAME; break;
-                            case O_MARKENEMY: command = PlayerCommand.MARK_ENEMIES_MODE; break;
-                            case O_LOG: command = PlayerCommand.MESSAGE_LOG; break;
-                            case O_OPTIONS: command = PlayerCommand.OPTIONS_MODE; break;
-                            case O_ORDER: command = PlayerCommand.ORDER_MODE; break;
-                            case O_PUSH: command = PlayerCommand.PUSH_MODE; break;
-                            case O_QUIT: command = PlayerCommand.QUIT_GAME; break;
-                            case O_REDEFKEYS: command = PlayerCommand.KEYBINDING_MODE; break;
-                            case O_RUN: command = PlayerCommand.RUN_TOGGLE; break;
-                            case O_SAVE: command = PlayerCommand.SAVE_GAME; break;
-                            case O_SCREENSHOT: command = PlayerCommand.SCREENSHOT; break;
-                            case O_SHOUT: command = PlayerCommand.SHOUT; break;
-                            case O_SLEEP: command = PlayerCommand.SLEEP; break;
-                            case O_SWITCH: command = PlayerCommand.SWITCH_PLACE; break;
-                            case O_USE_EXIT: command = PlayerCommand.USE_EXIT; break;
-                            case O_USE_SPRAY: command = PlayerCommand.USE_SPRAY; break;
-                            default:
-                                throw new InvalidOperationException("unhandled selected");
-                        }
-
-                        // bind it.                      
-                        s_KeyBindings.Set(command, newKeyData);
-
-                        break;
-
-                }
-            }
-            while (loop);
-
-            // Save.
-            SaveKeybindings();
-        }
-
         void AdvancePlay(District district, SimFlags sim)
         {
-    #if DEBUG_STATS
+            #if DEBUG_STATS
             Session.UpdateStats(district);
-    #endif
+            #endif
 
             // 0. Remember if current district.
             bool wasNight = m_Session.WorldTime.IsNight;
@@ -2695,7 +632,7 @@ namespace djack.RogueSurvivor.Engine
 
             // 1. Advance all maps.
             // if player quit/loaded at any time, don't bother!
-#region
+            #region
             foreach (Map map in district.Maps)
             {
                 int prevLocalTurn = map.LocalTime.TurnCounter;
@@ -2712,12 +649,12 @@ namespace djack.RogueSurvivor.Engine
                 }
                 while (map.LocalTime.TurnCounter == prevLocalTurn);
             }
-#endregion
+            #endregion
 
             // 2. Advance district.
-#region
+            #region
             // 2.1. Advance world time if current district.
-#region
+            #region
             if (district == m_Session.CurrentMap.District)
             {
                 ++m_Session.WorldTime.TurnCounter;
@@ -2739,11 +676,11 @@ namespace djack.RogueSurvivor.Engine
                     AddMessage(new Message(String.Format("Time passes, it is now {0}...", DescribeDayPhase(newPhase)), m_Session.WorldTime.TurnCounter, isNight ? NIGHT_COLOR : DAY_COLOR));
                 }
             }
-#endregion
+            #endregion
 
             // 2.2. Check for events.
 
-#region Entry/Surface map
+            #region Entry/Surface map
             // 1 Invasion?
             if (CheckForEvent_ZombieInvasion(district.EntryMap))
             {
@@ -2784,18 +721,18 @@ namespace djack.RogueSurvivor.Engine
             {
                 FireEvent_BandOfSurvivors(district.EntryMap);
             }
-#endregion
+            #endregion
             
-#region Sewers
+            #region Sewers
             // 1 Sewers Invasion?
             if (CheckForEvent_SewersInvasion(district.SewersMap))
             {
                 FireEvent_SewersInvasion(district.SewersMap);
             }
-#endregion
+            #endregion
 
-#region DISABLED Subway
-    #if false
+            #region DISABLED Subway
+                #if false
             if (district.SubwayMap != null)
             {
                 // 1 Subway Invasion?
@@ -2804,18 +741,18 @@ namespace djack.RogueSurvivor.Engine
                     FireEvent_SubwayInvasion(district.SubwayMap);
                 }
             }
-    #endif
-#endregion
-#endregion
+                #endif
+            #endregion
+            #endregion
 
             // 3. Simulate nearby districts?
-#region
+            #region
             // if player is sleeping in this map and option enabled.
             if (s_Options.IsSimON && m_Player != null && m_Player.IsSleeping && s_Options.SimulateWhenSleeping && m_Player.Location.Map.District == district)
             {
                 SimulateNearbyDistricts(district);
             }
-#endregion
+            #endregion
         }
 
         void NotifyOrderablesAI(Map map, RaidType raid, Point position)
@@ -2839,31 +776,31 @@ namespace djack.RogueSurvivor.Engine
             //////////////////////////////////////////////////////////
 
             // 0. Secret maps.
-#region
+             #region
             if (map.IsSecret)
             {
                 // don't play the map at all, jump in time.
                 ++map.LocalTime.TurnCounter;
                 return;
             }
-#endregion
+             #endregion
 
             // 1. Get next actor to Act.
-#region
+             #region
             Actor actor = m_Rules.GetNextActorToAct(map, map.LocalTime.TurnCounter);
-#endregion
+             #endregion
 
             // 2. If none move to next turn and return.
-#region
+             #region
             if (actor == null)
             {
                 NextMapTurn(map, sim);
                 return;
             }
-#endregion
+             #endregion
 
             // 3. Ask actor to act. Handle player and AI differently.
-#region
+             #region
             actor.PreviousStaminaPoints = actor.StaminaPoints;
             if (actor.Controller == null)
             {
@@ -2886,7 +823,7 @@ namespace djack.RogueSurvivor.Engine
             actor.PreviousFoodPoints = actor.FoodPoints;
             actor.PreviousSleepPoints = actor.SleepPoints;
             actor.PreviousSanity = actor.Sanity;
-#endregion
+             #endregion
         }
 
         void SpendActorActionPoints(Actor actor, int actionCost)
@@ -2971,7 +908,7 @@ namespace djack.RogueSurvivor.Engine
             ////////////////////////////////////////
 
             // TEST CORPSES   
-    #if false
+                 #if false
             if (map.LocalTime.TurnCounter < 2 && map == m_Player.Location.Map)
             {
                 for (int i = 0; i < 10; i++)
@@ -2993,16 +930,16 @@ namespace djack.RogueSurvivor.Engine
                 KillActor(null, a, "TEST CORPSES");
                 break;
             }
-    #endif
+                 #endif
             if (!isLoDetail)
             {
                 // 0. Raise the deads; Check infections (non STD)
-#region
+             #region
                 bool hasCorpses = Rules.HasCorpses(m_Session.GameMode);
                 bool hasInfection = Rules.HasInfection(m_Session.GameMode);
                 if (hasCorpses || hasInfection)
                 {
-#region Corpses
+             #region Corpses
                     if (hasCorpses && map.CountCorpses > 0)
                     {
                         // decide who zombify or rots.
@@ -3061,9 +998,9 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+             #endregion
 
-#region Infection effects
+             #region Infection effects
                     if (hasInfection)
                     {
                         List<Actor> infectedToKill = null;
@@ -3073,7 +1010,7 @@ namespace djack.RogueSurvivor.Engine
                             {
                                 int infectionP = m_Rules.ActorInfectionPercent(a);
 
-#region
+             #region
                                 if (m_Rules.Roll(0, 1000) < m_Rules.InfectionEffectTriggerChance1000(infectionP))
                                 {
                                     bool isVisible = IsVisibleToPlayer(a);
@@ -3158,7 +1095,7 @@ namespace djack.RogueSurvivor.Engine
                                         infectedToKill.Add(a);
                                     }
                                 } // trigged effect
-#endregion
+             #endregion
                             } // is infected
                         } // each actor
 
@@ -3186,13 +1123,13 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+             #endregion
                 }  // non STD game.
-#endregion
+             #endregion
 
                 // 1. Update odors.
                 //      1.1 Odor suppression/generation.
-#region
+             #region
                 List<OdorScent> scentGenerated = new List<OdorScent>();
                 foreach (OdorScent scent in map.Scents)
                 {
@@ -3211,10 +1148,10 @@ namespace djack.RogueSurvivor.Engine
                 }
                 foreach (OdorScent genScent in scentGenerated)
                     map.ModifyScentAt(genScent.Odor, genScent.Strength, genScent.Position);
-#endregion
+             #endregion
 
                 //      1.2 Odors decay.
-#region
+             #region
                 List<OdorScent> scentGarbage = null;
                 foreach (OdorScent scent in map.Scents)
                 {
@@ -3262,16 +1199,16 @@ namespace djack.RogueSurvivor.Engine
                         map.RemoveScent(scent);
                     scentGarbage = null;
                 }
-#endregion
+             #endregion
 
                 //      1.3 Drop new scents.
-#region
+             #region
                 foreach (Actor actor in map.Actors)
                     DropActorScent(actor);
-#endregion
+             #endregion
 
                 // 2. Regen actors AP & STA
-#region
+             #region
                 // regen.
                 foreach (Actor actor in map.Actors)
                 {
@@ -3283,10 +1220,10 @@ namespace djack.RogueSurvivor.Engine
                 }
                 // reset actor index.
                 map.CheckNextActorIndex = 0;
-#endregion
+             #endregion
 
                 // 3. Stop tired actors from running.
-#region
+             #region
                 foreach (Actor actor in map.Actors)
                 {
                     if (actor.IsRunning)
@@ -3302,15 +1239,15 @@ namespace djack.RogueSurvivor.Engine
                         }
                     }
                 }
-#endregion
+             #endregion
 
                 // 4. Actor gauges & states
-#region
+             #region
                 List<Actor> actorsStarvedToDeath = null;
                 foreach (Actor actor in map.Actors)
                 {
                     // hunger && rot.
-#region
+             #region
                     if (actor.Model.Abilities.HasToEat)
                     {
                         // food points loss.
@@ -3363,10 +1300,10 @@ namespace djack.RogueSurvivor.Engine
                                 DoLooseRandomSkill(actor);
                         }
                     }
-#endregion
+                #endregion
 
                     // sleep.
-#region
+                    #region
                     if (actor.Model.Abilities.HasToSleep)
                     {
                         // sleep vs sleep points loss.
@@ -3403,7 +1340,7 @@ namespace djack.RogueSurvivor.Engine
                         }
 
                         //      4.2 Handle sleeping actors.
-#region
+                        #region
                         if (actor.IsSleeping)
                         {
                             bool isOnCouch = m_Rules.IsOnCouch(actor);
@@ -3452,10 +1389,10 @@ namespace djack.RogueSurvivor.Engine
                                 }
                             }
                         }
-#endregion
+                        #endregion
 
                         //      4.3 Exhausted actors might collapse.
-#region
+                        #region
                         if (m_Rules.IsActorExhausted(actor))
                         {
                             if (m_Rules.RollChance(Rules.SLEEP_EXHAUSTION_COLLAPSE_CHANCE))
@@ -3479,21 +1416,21 @@ namespace djack.RogueSurvivor.Engine
                                 }
                             }
                         }
-#endregion
+                    #endregion
                     }
-#endregion
+                    #endregion
 
                     // sanity.
-#region
+                    #region
                     if (actor.Model.Abilities.HasSanity)
                     {
                         // sanity loss.
                         if (--actor.Sanity <= 0) actor.Sanity = 0;
                     }
-#endregion
+                    #endregion
 
                     // leader trust & leader/follower bond.
-#region
+                    #region
                     if (actor.HasLeader)
                     {
                         // trust.
@@ -3511,11 +1448,11 @@ namespace djack.RogueSurvivor.Engine
                                             Conjugate(actor.Leader, VERB_FEEL), actor.Name, HimOrHer(actor.Leader))));
                         }
                     }
-#endregion
+                #endregion
 
                 }
-#endregion
-#region Kill (zombify) starved actors.
+                #endregion
+                #region Kill (zombify) starved actors.
                 if (actorsStarvedToDeath != null)
                 {
                     foreach (Actor actor in actorsStarvedToDeath)
@@ -3547,10 +1484,10 @@ namespace djack.RogueSurvivor.Engine
                         }
                     }
                 }
-#endregion
+                #endregion
 
                 // 5. Check batteries : lights, trackers.
-#region
+                #region
                 foreach (Actor actor in map.Actors)
                 {
                     Item leftItem = actor.GetEquippedItem(DollPart.LEFT_HAND);
@@ -3593,13 +1530,13 @@ namespace djack.RogueSurvivor.Engine
                         continue;
                     }
                 }
-#endregion
+                #endregion
 
                 // 6. Check explosives.
-#region
+                #region
                 // 6.1 Update fuses.
                 bool hasExplosivesToExplode = false;
-#region
+                #region
                 // on ground.
                 foreach (Inventory groundInv in map.GroundInventories)
                 {
@@ -3639,10 +1576,10 @@ namespace djack.RogueSurvivor.Engine
                             hasExplosivesToExplode = true;
                     }
                 }
-#endregion
+                #endregion
 
                 // 6.2 Explode.
-#region
+                #region
                 if (hasExplosivesToExplode)
                 {
                     bool hasExplodedSomething = false;
@@ -3711,14 +1648,14 @@ namespace djack.RogueSurvivor.Engine
 
                     while (hasExplodedSomething);
                 }
-#endregion
-#endregion
+                #endregion
+                #endregion
 
                 // 7. Check fires.
-#region
+                #region
                 // 7.1 Rain has a chance to put out fires.
                 // FIXME there still the weather bug when simulating = weather used is current world weather, not map weather.
-#region
+                #region
                 // Check?
                 if (m_Rules.IsWeatherRain(m_Session.World.Weather) && m_Rules.RollChance(Rules.FIRE_RAIN_TEST_CHANCE))
                 {
@@ -3737,12 +1674,12 @@ namespace djack.RogueSurvivor.Engine
                         }
                     }
                 }
-#endregion
-#endregion
+            #endregion
+            #endregion
             }   // skipped in lodetail turns.
 
             // -- Check timers.
-#region
+            #region
             if (map.CountTimers > 0)
             {
                 List<TimedTask> timersGarbage = null;
@@ -3761,17 +1698,17 @@ namespace djack.RogueSurvivor.Engine
                         map.RemoveTimer(t);
                 }                
             }
-#endregion
+            #endregion
 
             // -- Advance local time.
-#region
+            #region
             bool wasLocalNight = map.LocalTime.IsNight;
             ++map.LocalTime.TurnCounter;
             bool isLocalDay = !map.LocalTime.IsNight;
-#endregion
+            #endregion
 
             // -- Check for NPC upgrade.
-#region
+            #region
             if (wasLocalNight && isLocalDay)
             {
                 HandleLivingNPCsUpgrade(map);
@@ -3780,7 +1717,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 HandleUndeadNPCsUpgrade(map);
             }
-#endregion
+            #endregion
         }
 
 
@@ -3912,749 +1849,6 @@ namespace djack.RogueSurvivor.Engine
 
             return false;
         }
-#endregion
-
-#region Events
-#region Zombie Invasion
-        bool CheckForEvent_ZombieInvasion(Map map)
-        {
-            // when midnight strikes only.
-            if (!map.LocalTime.IsStrikeOfMidnight)
-                return false;
-
-            // if not enough zombies only.
-            int undeads = CountUndeads(map);
-            if (undeads >= s_Options.MaxUndeads)
-                return false;
-
-            // clear.
-            return true;
-        }
-
-        void FireEvent_ZombieInvasion(Map map)
-        {
-            // announce.
-            if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
-            {
-                // message.
-                AddMessage(new Message("It is Midnight! Zombies are invading!", m_Session.WorldTime.TurnCounter, Color.Crimson));
-                RedrawPlayScreen();
-            }
-
-            // do it.
-            int undeads = CountUndeads(map);
-            float invasionRatio = Math.Min(1.0f, (map.LocalTime.Day * s_Options.ZombieInvasionDailyIncrease + s_Options.DayZeroUndeadsPercent) / 100.0f);
-            int targetUndeadsCount = 1 + (int)(invasionRatio * s_Options.MaxUndeads);
-            int undeadsToSpawn = targetUndeadsCount - undeads;
-            for (int i = 0; i < undeadsToSpawn; i++)
-                SpawnNewUndead(map, map.LocalTime.Day);
-
-        }
-#endregion
-
-#region Sewers Invasion
-        bool CheckForEvent_SewersInvasion(Map map)
-        {
-            // check game mode.
-            if (!Rules.HasZombiesInSewers(m_Session.GameMode))
-                return false;
-
-            // randomly.
-            if (!m_Rules.RollChance(SEWERS_INVASION_CHANCE))
-                return false;
-
-            // if not enough zombies only.
-            int undeads = CountUndeads(map);
-            if (undeads >= s_Options.MaxUndeads * SEWERS_UNDEADS_FACTOR)
-                return false;
-
-            // clear.
-            return true;
-        }
-
-        void FireEvent_SewersInvasion(Map map)
-        {
-            // do it silently.
-            int undeads = CountUndeads(map);
-            float invasionRatio = Math.Min(1.0f, (map.LocalTime.Day * s_Options.ZombieInvasionDailyIncrease + s_Options.DayZeroUndeadsPercent) / 100.0f);
-            int targetUndeadsCount = 1 + (int)(invasionRatio * s_Options.MaxUndeads * SEWERS_UNDEADS_FACTOR);
-            int undeadsToSpawn = targetUndeadsCount - undeads;
-            for (int i = 0; i < undeadsToSpawn; i++)
-                SpawnNewSewersUndead(map, map.LocalTime.Day);
-
-        }
-#endregion
-
-#region DISABLED Subway Invasion
-    #if false
-        bool CheckForEvent_SubwayInvasion(Map map)
-        {
-            // randomly.
-            if (!m_Rules.RollChance(SUBWAY_INVASION_CHANCE))
-                return false;
-
-            // if not enough zombies only.
-            int undeads = CountUndeads(map);
-            if (undeads >= s_Options.MaxUndeads * SUBWAY_UNDEADS_FACTOR)
-                return false;
-
-            // clear.
-            return true;
-        }
-
-        void FireEvent_SubwayInvasion(Map map)
-        {
-            // do it silently.
-            int undeads = CountUndeads(map);
-            float invasionRatio = Math.Min(1.0f, (map.LocalTime.Day * s_Options.ZombieInvasionDailyIncrease + s_Options.DayZeroUndeadsPercent) / 100.0f);
-            int targetUndeadsCount = 1 + (int)(invasionRatio * s_Options.MaxUndeads * SUBWAY_UNDEADS_FACTOR);
-            int undeadsToSpawn = targetUndeadsCount - undeads;
-            for (int i = 0; i < undeadsToSpawn; i++)
-                SpawnNewSubwayUndead(map, map.LocalTime.Day);
-
-        }
-    #endif
-#endregion
-
-#region Refugees wave
-        bool CheckForEvent_RefugeesWave(Map map)
-        {
-            // when midday strikes only.
-            if (!map.LocalTime.IsStrikeOfMidday)
-                return false;
-
-            // if not enough civs only.
-    #if false // TEST: disabled
-            int civs = CountActors(map, (a) => a.Faction == GameFactions.TheCivilians || a.Faction == GameFactions.ThePolice);
-            if (civs >= Options.MaxCivilians)
-                return false;
-    #endif
-
-            // clear.
-            return true;
-        }
-
-        /// <summary>
-        /// Double factor on city borders, half factor in city center, normal factor in all other districts.
-        /// </summary> 
-        /// <param name="d"></param>
-        /// <returns></returns>
-        float RefugeesEventDistrictFactor(District d)
-        {
-            int dx = d.WorldPosition.X;
-            int dy = d.WorldPosition.Y;
-            int border = m_Session.World.Size - 1;
-            int center = border / 2;
-
-            return (dx == 0 || dy == 0 || dx == border || dy == border ? 2f :
-                dx == center && dy == center ? 0.5f :
-                1f);
-        }
-
-        void FireEvent_RefugeesWave(District district)
-        {
-            // announce.
-            if (district == m_Player.Location.Map.District && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
-            {
-                // message.
-                AddMessage(new Message("A new wave of refugees has arrived!", m_Session.WorldTime.TurnCounter, Color.Pink));
-                RedrawPlayScreen();
-            }
-            
-            // Spawn most on the surface and a small number in sewers and subway.
-            int civilians = CountActors(district.EntryMap, (a) => a.Faction == GameFactions.TheCivilians || a.Faction == GameFactions.ThePolice);
-            int size = 1 + (int)(REFUGEES_WAVE_SIZE * RefugeesEventDistrictFactor(district) * s_Options.MaxCivilians);
-            int civiliansToSpawn = Math.Min(size, s_Options.MaxCivilians - civilians);
-            Map spawnMap = null;
-            for (int i = 0; i < civiliansToSpawn; i++)
-            {
-                // map: surface or sewers/subway.
-                if (m_Rules.RollChance(REFUGEE_SURFACE_SPAWN_CHANCE))
-                    spawnMap = district.EntryMap;
-                else
-                {
-                    // 50% sewers and 50% subway, but some districts have no subway.
-                    if (district.HasSubway)
-                        spawnMap = m_Rules.RollChance(50) ? district.SubwayMap : district.SewersMap;
-                    else
-                        spawnMap = district.SewersMap;
-                }
-                // do it.
-                SpawnNewRefugee(spawnMap);
-            }
-
-            // check for uniques, always in surface.
-            if (m_Rules.RollChance(UNIQUE_REFUGEE_CHECK_CHANCE))
-            {
-                lock (m_Session) // thread safe
-                {
-                    UniqueActor[] array = m_Session.UniqueActors.ToArray();
-                    UniqueActor[] mayArrive = Array.FindAll(array,
-                        (UniqueActor a) =>
-                        {
-                            return a.IsWithRefugees && !a.IsSpawned && !a.TheActor.IsDead;
-                        });
-                    if (mayArrive != null && mayArrive.Length > 0)
-                    {
-                        int iArrive = m_Rules.Roll(0, mayArrive.Length);
-                        FireEvent_UniqueActorArrive(district.EntryMap, mayArrive[iArrive]);
-                    }
-                }
-            }
-        }
-
-        void FireEvent_UniqueActorArrive(Map map, UniqueActor unique)
-        {
-            // try to find a spot.
-            bool spawned = SpawnActorOnMapBorder(map, unique.TheActor, SPAWN_DISTANCE_TO_PLAYER, true);
-
-            // if failed, cancel.
-            if (!spawned)
-                return;
-
-            // mark as spawned.
-            unique.IsSpawned = true;
-
-            // announce.
-            if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
-            {
-                // message and music.
-                if (unique.EventMessage != null)
-                {
-                    if (unique.EventThemeMusic != null)
-                    {
-                        m_MusicManager.StopAll();
-                        m_MusicManager.Play(unique.EventThemeMusic);
-                    }
-                    // message.
-                    ClearMessages();
-                    AddMessage(new Message(unique.EventMessage, m_Session.WorldTime.TurnCounter, Color.Pink));
-                    AddMessage(MakePlayerCentricMessage("Seems to come from", unique.TheActor.Location.Position));
-                    AddMessagePressEnter();
-                    ClearMessages();
-                }
-                // scoring event.
-                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, unique.TheActor.Name + " arrived.");
-            }
-        }
-#endregion
-
-#region National guard
-        bool CheckForEvent_NationalGuard(Map map)
-        {
-            // if option zeroed, don't bother.
-            if (s_Options.NatGuardFactor == 0)
-                return false;
-
-            // during day only.
-            if (map.LocalTime.IsNight)
-                return false;
-
-            // date.
-            if (map.LocalTime.Day < NATGUARD_DAY)
-                return false;
-            if (map.LocalTime.Day >= NATGUARD_END_DAY)
-                return false;
-
-            // check chance.
-            if (!m_Rules.RollChance(NATGUARD_INTERVENTION_CHANCE))
-                return false;
-
-            // if zombies significantly outnumber livings only (army count as 2 livings).
-            int livings = CountLivings(map) + CountFaction(map, GameFactions.TheArmy);
-            int undeads = CountUndeads(map);
-            float undeadsPerLiving = (float)undeads / (float)livings;
-            if (undeadsPerLiving * (s_Options.NatGuardFactor / 100f) < NATGUARD_INTERVENTION_FACTOR)
-                return false;
-
-            // clear.
-            return true;
-        }
-
-        void FireEvent_NationalGuard(Map map)
-        {
-            // do it.
-            // spawn squad leader then troopers.
-            Actor squadLeader = SpawnNewNatGuardLeader(map);
-            if (squadLeader != null)
-            {
-                for (int i = 0; i < NATGUARD_SQUAD_SIZE - 1; i++)
-                {
-                    // spawn trooper.
-                    Actor trooper = SpawnNewNatGuardTrooper(map, squadLeader.Location.Position);
-                    // add to leader squad.
-                    if (trooper != null)
-                        squadLeader.AddFollower(trooper);
-                }
-            }
-            if (squadLeader == null)
-                return;
-
-            // notify AI.
-            NotifyOrderablesAI(map, RaidType.NATGUARD, squadLeader.Location.Position);
-
-            // announce.
-            if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
-            {
-                // music.
-                m_MusicManager.StopAll();
-                m_MusicManager.Play(GameMusics.ARMY);
-
-                // message.
-                ClearMessages();
-                AddMessage(new Message("A National Guard squad has arrived!", m_Session.WorldTime.TurnCounter, Color.LightGreen));
-                AddMessage(MakePlayerCentricMessage("Soldiers seem to come from", squadLeader.Location.Position));
-                AddMessagePressEnter();
-                ClearMessages();
-            }
-
-            // scoring event.
-            if (map == m_Player.Location.Map)
-            {
-                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "A National Guard squad arrived.");
-            }
-
-        }
-#endregion
-
-#region Army drop supplies
-        bool CheckForEvent_ArmySupplies(Map map)
-        {
-            // if option zeroed, don't bother.
-            if (s_Options.SuppliesDropFactor == 0)
-                return false;
-
-            // during day only.
-            if (map.LocalTime.IsNight)
-                return false;
-
-            // date.
-            if (map.LocalTime.Day < ARMY_SUPPLIES_DAY)
-                return false;
-
-            // check chance.
-            if (!m_Rules.RollChance(ARMY_SUPPLIES_CHANCE))
-                return false;
-
-            // count food items vs livings.
-            int livingsNeedFood = 1 + CountActors(map, (a) => !a.Model.Abilities.IsUndead && a.Model.Abilities.HasToEat && a.Faction == GameFactions.TheCivilians);
-            int food = 1 + CountFoodItemsNutrition(map);
-            float foodPerLiving = (float)food / (float)livingsNeedFood;
-            if (foodPerLiving >= (s_Options.SuppliesDropFactor / 100f) * ARMY_SUPPLIES_FACTOR)
-                return false;
-            
-            // clear.
-            return true;
-        }
-
-        void FireEvent_ArmySupplies(Map map)
-        {
-            ////////////////////////////
-            // Do it.
-            // 1. Pick drop point.
-            // 2. Drop scattered items.
-            ////////////////////////////
-
-            // 1. Pick drop point.
-            Point dropPoint;
-            bool dropped = FindDropSuppliesPoint(map, out dropPoint);
-            if (!dropped)
-                return;
-
-            // 2. Drop scattered items.
-            // only outside and free of actor and objects.
-            int xmin = dropPoint.X - ARMY_SUPPLIES_SCATTER;
-            int xmax = dropPoint.X + ARMY_SUPPLIES_SCATTER;
-            int ymin = dropPoint.Y - ARMY_SUPPLIES_SCATTER;
-            int ymax = dropPoint.Y + ARMY_SUPPLIES_SCATTER;
-            map.TrimToBounds(ref xmin, ref ymin);
-            map.TrimToBounds(ref xmax, ref ymax);
-            for(int sx = xmin; sx <= xmax; sx++)
-                for (int sy = ymin; sy <= ymax; sy++)
-                {
-                    if (!IsSuitableDropSuppliesPoint(map, sx, sy))
-                        continue;
-
-                    // drop stuff.
-                    Item it = m_Rules.RollChance(80) ? m_TownGenerator.MakeItemArmyRation() : m_TownGenerator.MakeItemMedikit();
-                    map.DropItemAt(it, sx, sy);
-                }
-
-            // notify AI.
-            NotifyOrderablesAI(map, RaidType.ARMY_SUPLLIES, dropPoint);
-
-            // announce.
-            if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
-            {
-                // music.
-                m_MusicManager.StopAll();
-                m_MusicManager.Play(GameMusics.ARMY);
-
-                // message.
-                ClearMessages();
-                AddMessage(new Message("An Army chopper has dropped supplies!", m_Session.WorldTime.TurnCounter, Color.LightGreen));
-                AddMessage(MakePlayerCentricMessage("The drop point seems to be", dropPoint));
-                AddMessagePressEnter();
-                ClearMessages();
-            }
-
-            // scoring event.
-            if (map == m_Player.Location.Map)
-            {
-                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "An army chopper dropped supplies.");
-            }
-        }
-
-        bool IsSuitableDropSuppliesPoint(Map map, int x, int y)
-        {
-            //////////////////////////////
-            // Must be:
-            // 1. In bounds.
-            // 2. Outside & walkable.
-            // 3. No actor nor object.
-            // 4. Far enough from player.
-            //////////////////////////////
-
-            // 1. In bounds.
-            if (!map.IsInBounds(x, y))
-                return false;
-
-            // 2. Outside & walkable.
-            Tile tile = map.GetTileAt(x, y);
-            if (tile.IsInside || !tile.Model.IsWalkable)
-                return false;
-
-            // 3. No actor nor object.
-            if (map.GetActorAt(x, y) != null || map.GetMapObjectAt(x, y) != null)
-                return false;
-
-            // 4. Far enough from player.
-            if (DistanceToPlayer(map, x, y) < SPAWN_DISTANCE_TO_PLAYER)
-                return false;
-
-            // all clear.
-            return true;
-        }
-
-        bool FindDropSuppliesPoint(Map map, out Point dropPoint)
-        {
-            dropPoint = new Point();
-
-            // try to find a suitable point.
-            int maxAttempts = 4 * map.Width;
-            for (int attempt = 0; attempt < maxAttempts; attempt++)
-            {
-                // roll.
-                dropPoint.X = m_Rules.RollX(map);
-                dropPoint.Y = m_Rules.RollY(map);
-
-                // suitable?
-                if(!IsSuitableDropSuppliesPoint(map, dropPoint.X,dropPoint.Y))
-                    continue;
-
-                // we're good.
-                return true;
-            }
-
-            // failed
-            return false;
-        }
-#endregion
-
-#region Timed raids
-        bool HasRaidHappenedSince(RaidType raid, District district, WorldTime mapTime, int sinceNTurns)
-        {
-            return m_Session.HasRaidHappened(raid, district) && mapTime.TurnCounter - m_Session.LastRaidTime(raid, district) < sinceNTurns;
-        }
-
-#region Bikers raid
-        bool CheckForEvent_BikersRaid(Map map)
-        {
-            // date.
-            if (map.LocalTime.Day < BIKERS_RAID_DAY)
-                return false;
-            if (map.LocalTime.Day >= BIKERS_END_DAY)
-                return false;
-
-            // last time : at least N day
-            if (HasRaidHappenedSince(RaidType.BIKERS, map.District, map.LocalTime, BIKERS_RAID_DAYS_GAP * WorldTime.TURNS_PER_DAY))
-                return false;
-
-            // check chance.
-            if (!m_Rules.RollChance(BIKERS_RAID_CHANCE_PER_TURN))
-                return false;
-
-            // if no bikers.
-    #if false
-            disabled to take advantage of the new rival gang feature.
-            if(HasActorOfModelID(map, GameActors.IDs.BIKER_MAN))
-                return false;
-    #endif
-
-            // clear.
-            return true;
-        }
-
-        void FireEvent_BikersRaid(Map map)
-        {
-            // remember time.
-            m_Session.SetLastRaidTime(RaidType.BIKERS, map.District, map.LocalTime.TurnCounter);
-
-            // roll a random gang.
-            GameGangs.IDs gangId = GameGangs.BIKERS[m_Rules.Roll(0, GameGangs.BIKERS.Length)];
-
-            // do it.
-            // spawn raid leader then squadies.
-            Actor raidLeader = SpawnNewBikerLeader(map, gangId);
-            if (raidLeader != null)
-            {
-                for (int i = 0; i < BIKERS_RAID_SIZE - 1; i++)
-                {
-                    // spawn squadie.
-                    Actor squadie = SpawnNewBiker(map, gangId, raidLeader.Location.Position);
-                    // add to leader squad.
-                    if (squadie != null)
-                        raidLeader.AddFollower(squadie);
-                }
-            }
-            if (raidLeader == null)
-                return;
-
-            // notify AI.
-            NotifyOrderablesAI(map, RaidType.BIKERS, raidLeader.Location.Position);
-
-            // announce.
-            if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
-            {
-                // music.
-                m_MusicManager.StopAll();
-                m_MusicManager.Play(GameMusics.BIKER);
-
-                // message.
-                ClearMessages();
-                AddMessage(new Message("You hear the sound of roaring engines!", m_Session.WorldTime.TurnCounter, Color.LightGreen));
-                AddMessage(MakePlayerCentricMessage("Motorbikes seem to come from", raidLeader.Location.Position));
-                AddMessagePressEnter();
-                ClearMessages();
-            }
-
-            // scoring event.
-            if (map == m_Player.Location.Map)
-            {
-                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Bikers raided the district.");
-            }
-        }
-#endregion
-
-#region Gangsta raid
-        bool CheckForEvent_GangstasRaid(Map map)
-        {
-            // date.
-            if (map.LocalTime.Day < GANGSTAS_RAID_DAY)
-                return false;
-            if (map.LocalTime.Day >= GANGSTAS_END_DAY)
-                return false;
-
-            // last time : at least N day
-            if (HasRaidHappenedSince(RaidType.GANGSTA, map.District, map.LocalTime, GANGSTAS_RAID_DAYS_GAP * WorldTime.TURNS_PER_DAY))
-                return false;
-
-            // check chance.
-            if (!m_Rules.RollChance(GANGSTAS_RAID_CHANCE_PER_TURN))
-                return false;
-
-            // if no gangsta.
-    #if false
-            disabled to take advantage of the new rival gang feature.
-            if (HasActorOfModelID(map, GameActors.IDs.GANGSTA_MAN))
-                return false;
-    #endif
-
-            // clear.
-            return true;
-        }
-
-        void FireEvent_GangstasRaid(Map map)
-        {
-            // remember time.
-            m_Session.SetLastRaidTime(RaidType.GANGSTA, map.District, map.LocalTime.TurnCounter);
-
-            // roll a random gang.
-            GameGangs.IDs gangId = GameGangs.GANGSTAS[m_Rules.Roll(0, GameGangs.GANGSTAS.Length)];
-
-            // do it.
-            // spawn raid leader then squadies.
-            Actor raidLeader = SpawnNewGangstaLeader(map, gangId);
-            if (raidLeader != null)
-            {
-                for (int i = 0; i < GANGSTAS_RAID_SIZE - 1; i++)
-                {
-                    // spawn squadie.
-                    Actor squadie = SpawnNewGangsta(map, gangId, raidLeader.Location.Position);
-                    // add to leader squad.
-                    if (squadie != null)
-                        raidLeader.AddFollower(squadie);
-                }
-            }
-            if (raidLeader == null)
-                return;
-
-            // notify AI.
-            NotifyOrderablesAI(map, RaidType.GANGSTA, raidLeader.Location.Position);
-
-            // announce.
-            if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
-            {
-                // music.
-                m_MusicManager.StopAll();
-                m_MusicManager.Play(GameMusics.GANGSTA);
-
-                // message.
-                ClearMessages();
-                AddMessage(new Message("You hear obnoxious loud music!", m_Session.WorldTime.TurnCounter, Color.LightGreen));
-                AddMessage(MakePlayerCentricMessage("Cars seem to come from", raidLeader.Location.Position));
-                AddMessagePressEnter();
-                ClearMessages();
-            }
-
-            // scoring event.
-            if (map == m_Player.Location.Map)
-            {
-                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Gangstas raided the district.");
-            }
-        }
-#endregion
-
-#region BlackOps raid
-        bool CheckForEvent_BlackOpsRaid(Map map)
-        {
-            // date.
-            if (map.LocalTime.Day < BLACKOPS_RAID_DAY)
-                return false;
-
-            // last time : at least N day
-            if (HasRaidHappenedSince(RaidType.BLACKOPS, map.District, map.LocalTime, BLACKOPS_RAID_DAY_GAP * WorldTime.TURNS_PER_DAY))
-                return false;
-
-            // check chance.
-            if (!m_Rules.RollChance(BLACKOPS_RAID_CHANCE_PER_TURN))
-                return false;
-
-            // clear.
-            return true;
-        }
-
-        void FireEvent_BlackOpsRaid(Map map)
-        {
-            // remember time.
-            m_Session.SetLastRaidTime(RaidType.BLACKOPS, map.District, map.LocalTime.TurnCounter);
-
-            // do it.
-            // spawn raid leader then squadies.
-            Actor raidLeader = SpawnNewBlackOpsLeader(map);
-            if (raidLeader != null)
-            {
-                for (int i = 0; i < BLACKOPS_RAID_SIZE - 1; i++)
-                {
-                    // spawn squadie.
-                    Actor squadie = SpawnNewBlackOpsTrooper(map, raidLeader.Location.Position);
-                    // add to leader squad.
-                    if (squadie != null)
-                        raidLeader.AddFollower(squadie);
-                }
-            }
-            if (raidLeader == null)
-                return;
-
-            // notify AI.
-            NotifyOrderablesAI(map, RaidType.BLACKOPS, raidLeader.Location.Position);
-
-            // announce.
-            if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
-            {
-                // music.
-                m_MusicManager.StopAll();
-                m_MusicManager.Play(GameMusics.ARMY);
-
-                // message.
-                ClearMessages();
-                AddMessage(new Message("You hear a chopper flying over the city!", m_Session.WorldTime.TurnCounter, Color.LightGreen));
-                AddMessage(MakePlayerCentricMessage("The chopper has dropped something", raidLeader.Location.Position));
-                AddMessagePressEnter();
-                ClearMessages();
-            }
-
-            // scoring event.
-            if (map == m_Player.Location.Map)
-            {
-                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "BlackOps raided the district.");
-            }
-        }
-#endregion
-
-#region Band of Survivors
-        bool CheckForEvent_BandOfSurvivors(Map map)
-        {
-            // date.
-            if (map.LocalTime.Day < SURVIVORS_BAND_DAY)
-                return false;
-
-            // last time : at least N day
-            if (HasRaidHappenedSince(RaidType.SURVIVORS, map.District, map.LocalTime, SURVIVORS_BAND_DAY_GAP * WorldTime.TURNS_PER_DAY))
-                return false;
-
-            // check chance.
-            if (!m_Rules.RollChance(SURVIVORS_BAND_CHANCE_PER_TURN))
-                return false;
-
-            // clear.
-            return true;
-        }
-
-        void FireEvent_BandOfSurvivors(Map map)
-        {
-            // remember time.
-            m_Session.SetLastRaidTime(RaidType.SURVIVORS, map.District, map.LocalTime.TurnCounter);
-
-            // do it.
-            // spawn dudes.
-            Actor bandScout = SpawnNewSurvivor(map);
-            if (bandScout != null)
-            {
-                for (int i = 0; i < SURVIVORS_BAND_SIZE - 1; i++)
-                    SpawnNewSurvivor(map, bandScout.Location.Position);
-            }
-            if (bandScout == null)
-                return;
-
-            // notify AI.
-            NotifyOrderablesAI(map, RaidType.SURVIVORS, bandScout.Location.Position);
-
-            // announce.
-            if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
-            {
-                // music.
-                m_MusicManager.StopAll();
-                m_MusicManager.Play(GameMusics.SURVIVORS);
-
-                // message.
-                ClearMessages();
-                AddMessage(new Message("You hear shooting and honking in the distance.", m_Session.WorldTime.TurnCounter, Color.LightGreen));
-                AddMessage(MakePlayerCentricMessage("A van has stopped", bandScout.Location.Position));
-                AddMessagePressEnter();
-                ClearMessages();
-            }
-
-            // scoring event.
-            if (map == m_Player.Location.Map)
-            {
-                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "A Band of Survivors entered the district.");
-            }
-        }
-#endregion
-
-#endregion
-
 #endregion
 
 #region Spawning new actors
@@ -5096,7 +2290,7 @@ namespace djack.RogueSurvivor.Engine
             m_Session.Scoring.TurnsSurvived = m_Session.WorldTime.TurnCounter;
 
             // Check if long wait.
-#region
+            #region
             if (m_IsPlayerLongWait)
             {
                 if (CheckPlayerWaitLong(player))
@@ -5122,7 +2316,7 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             /////////////////////////////////////////////////
             // Loop until the player has made a valid choice
@@ -5184,7 +2378,7 @@ namespace djack.RogueSurvivor.Engine
                     //////////////
                     // Handle key
                     //////////////
-#region
+                    #region
                     PlayerCommand command = InputTranslator.KeyToCommand(inKey);
                     if (command == PlayerCommand.QUIT_GAME)    // quit game.
                     {
@@ -5202,7 +2396,7 @@ namespace djack.RogueSurvivor.Engine
                     {
                         switch (command)
                         {
-#region options, menu etc...
+                            #region options, menu etc...
                             case PlayerCommand.ABANDON_GAME:
                                 if (HandleAbandonGame())
                                 {
@@ -5264,9 +2458,9 @@ namespace djack.RogueSurvivor.Engine
                             case PlayerCommand.CITY_INFO:
                                 HandleCityInfo();
                                 break;
-#endregion
+                            #endregion
 
-#region actual game actions.
+                            #region actual game actions.
                             case PlayerCommand.WAIT_OR_SELF:
                                 if (TryPlayerInsanity())
                                 {
@@ -5604,7 +2798,7 @@ namespace djack.RogueSurvivor.Engine
                                 }
                                 loop = !HandlePlayerReviveCorpse(player, mousePos);
                                 break;                       
-#endregion
+                            #endregion
 
                             case PlayerCommand.NONE:
                                 break;
@@ -5613,14 +2807,14 @@ namespace djack.RogueSurvivor.Engine
                                 throw new ArgumentException("command unhandled");
                         }
                     }
-#endregion
+                #endregion
                 } // has key
                 else
                 {
                     ////////////////
                     // Handle mouse
                     ////////////////
-#region
+                    #region
                     // Look?
                     bool isLooking = HandleMouseLook(mousePos);
                     if (isLooking)
@@ -5654,7 +2848,7 @@ namespace djack.RogueSurvivor.Engine
 
                     // Neither look nor inventory nor corpses, cleanup.
                     ClearOverlays();
-#endregion
+                #endregion
                 }
             }
             while (loop);
@@ -6007,20 +3201,20 @@ namespace djack.RogueSurvivor.Engine
             /////////////////////
             if (m_Player.Model.Abilities.IsUndead)
             {
-#region Undead : no info
+            #region Undead : no info
                 m_UI.UI_DrawStringBold(Color.Red, "You can't remember where you are...", gx, gy);
                 gy += BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(Color.Red, "Must be that rotting brain of yours...", gx, gy);
                 gy += 2 * BOLD_LINE_SPACING;
-#endregion
+            #endregion
             }
             else
             {
-#region Living : show info
+                #region Living : show info
                 ////////////
                 // City map
                 ////////////
-#region
+                #region
                 m_UI.UI_DrawStringBold(Color.White, "> DISTRICTS LAYOUT", gx, gy);
                 gy += BOLD_LINE_SPACING;
 
@@ -6088,12 +3282,12 @@ namespace djack.RogueSurvivor.Engine
                 gy += LINE_SPACING;
                 m_UI.UI_DrawString(Color.White, "  =   - Subway Line", gx, gy);
                 gy += LINE_SPACING;
-#endregion
+                #endregion
 
                 /////////////////////
                 // Notable locations
                 /////////////////////
-#region
+                #region
                 gy += BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(Color.White, "> NOTABLE LOCATIONS", gx, gy);
                 gy += BOLD_LINE_SPACING;
@@ -6181,8 +3375,8 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
-#endregion
+                #endregion
+                #endregion
             }
 
             DrawFootnote(Color.White, "press ESC to leave");
@@ -7494,7 +4688,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // List all visible actors.
-#region
+            #region
             Map map = player.Location.Map;
             List<Actor> visibleActors = new List<Actor>();
             foreach (Point p in m_PlayerFOV)
@@ -7510,7 +4704,7 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
                 return;
             }
-#endregion
+            #endregion
 
             // Loop.
             bool loop = true;
@@ -8554,7 +5748,7 @@ namespace djack.RogueSurvivor.Engine
                 else if (choice >= 0 && choice <= 9)
                 {
 
-#region
+                    #region
                     switch (choice)
                     {
                         case 0: // cancel current order
@@ -8632,10 +5826,10 @@ namespace djack.RogueSurvivor.Engine
                             break;
 
                     }
-#endregion
+                    #endregion
                 }
                 // second set of choices A-xxx
-#region
+                #region
                 else 
                 {
                     switch (key.KeyCode)
@@ -8673,7 +5867,7 @@ namespace djack.RogueSurvivor.Engine
                             break;
                     }
                 }
-#endregion
+                #endregion
             }
             while (loop);
 
@@ -9260,878 +6454,6 @@ namespace djack.RogueSurvivor.Engine
             }
             else
                 throw new InvalidOperationException("AI returned null action.");
-        }
-#endregion
-
-#region Advisor hints.
-        void HandleAdvisor(Actor player)
-        {
-            ///////////////////////////////
-            // If all hints given, say so.
-            ///////////////////////////////
-            if (s_Hints.HasAdvisorGivenAllHints())
-            {
-                ShowAdvisorMessage(
-                    "YOU KNOW THE BASICS!",
-                    new string[] { 
-                        "The Advisor has given you all the hints.", 
-                        "You can disable the advisor in the options.",
-                        "Read the manual or discover the rest of the game by yourself.", 
-                        "Good luck and have fun!",                    
-                        String.Format("To REDEFINE THE KEYS : <{0}>.", s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE).ToString()),
-                        String.Format("To CHANGE OPTIONS    : <{0}>.", s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE).ToString()),
-                        String.Format("To READ THE MANUAL   : <{0}>.", s_KeyBindings.Get(PlayerCommand.HELP_MODE).ToString())
-                    });
-                return;
-            }
-
-            /////////////////////////////////
-            // Show the first appliable hint.
-            /////////////////////////////////
-            for (int i = (int)AdvisorHint._FIRST; i < (int)AdvisorHint._COUNT; i++)
-            {
-                if (s_Hints.IsAdvisorHintGiven((AdvisorHint)i))
-                    continue;
-                if (IsAdvisorHintAppliable((AdvisorHint)i))
-                {
-                    AdvisorGiveHint((AdvisorHint)i);
-                    return;
-                }
-            }
-
-            // no hint.
-            ShowAdvisorMessage("No hint available.",
-                new string[] {
-                    "The Advisor has now new hint for you in this situation.", 
-                    "You will see a popup when he has something to say.",
-                    String.Format("To REDEFINE THE KEYS : <{0}>.", s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE).ToString()),
-                    String.Format("To CHANGE OPTIONS    : <{0}>.", s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE).ToString()),
-                    String.Format("To READ THE MANUAL   : <{0}>.", s_KeyBindings.Get(PlayerCommand.HELP_MODE).ToString())
-                });
-        }
-
-        bool HasAdvisorAnyHintToGive()
-        {
-            for (int i = (int)AdvisorHint._FIRST; i < (int)AdvisorHint._COUNT; i++)
-            {
-                if (s_Hints.IsAdvisorHintGiven((AdvisorHint)i))
-                    continue;
-                if (IsAdvisorHintAppliable((AdvisorHint)i))
-                    return true;
-            }
-
-            return false;
-        }
-
-        void AdvisorGiveHint(AdvisorHint hint)
-        {
-            /////////////////
-            // Mark as given
-            /////////////////
-            s_Hints.SetAdvisorHintAsGiven(hint);
-
-            ////////////////
-            // Save status.
-            ////////////////
-            SaveHints();
-
-            /////////
-            // Show
-            /////////
-            ShowAdvisorHint(hint);
-        }
-
-
-        bool IsAdvisorHintAppliable(AdvisorHint hint)
-        {
-            Map map = m_Player.Location.Map;
-            Point pos = m_Player.Location.Position;
-
-            switch (hint)
-            {
-                case AdvisorHint.ACTOR_MELEE:   // adjacent to an enemy.
-                    return IsAdjacentToEnemy(map, pos, m_Player);
-
-                case AdvisorHint.BARRICADE:  // barricading.
-                    return map.HasAnyAdjacentInMap(pos, (pt) =>
-                        {
-                            DoorWindow door = map.GetMapObjectAt(pt) as DoorWindow;
-                            if (door == null)
-                                return false;
-                            return m_Rules.CanActorBarricadeDoor(m_Player, door);
-                        });
-
-                case AdvisorHint.BUILD_FORTIFICATION: // building fortifications.
-                    return map.HasAnyAdjacentInMap(pos, (pt) =>
-                    {
-                        return m_Rules.CanActorBuildFortification(m_Player, pt, false);
-                    });                    
-
-                case AdvisorHint.CELLPHONES:
-                    return m_Player.Inventory.GetFirstByModel(GameItems.CELL_PHONE) != null;
-
-                case AdvisorHint.CITY_INFORMATION:  // city information, wait a bit...
-                    return map.LocalTime.Hour >= 12;
-
-                case AdvisorHint.CORPSE_BUTCHER:
-                    return !m_Player.Model.Abilities.IsUndead && map.GetCorpsesAt(pos) != null;
-
-                case AdvisorHint.CORPSE_EAT:
-                    return m_Player.Model.Abilities.IsUndead && map.GetCorpsesAt(pos) != null;
-
-                case AdvisorHint.CORPSE_DRAG_START:
-                    return m_Player.DraggedCorpse == null && map.GetCorpsesAt(pos) != null;
-
-                case AdvisorHint.CORPSE_DRAG_MOVE:
-                    return m_Player.DraggedCorpse != null;
-
-                case AdvisorHint.DOORWINDOW_OPEN:   // can open an adj door/window.
-                    return map.HasAnyAdjacentInMap(pos, (pt) =>
-                        {
-                            DoorWindow door = map.GetMapObjectAt(pt) as DoorWindow;
-                            if (door == null)
-                                return false;
-                            return m_Rules.IsOpenableFor(m_Player, door);
-                        });
-
-                case AdvisorHint.DOORWINDOW_CLOSE:   // can close an open door/window.
-                    return map.HasAnyAdjacentInMap(pos, (pt) =>
-                    {
-                        DoorWindow door = map.GetMapObjectAt(pt) as DoorWindow;
-                        if (door == null)
-                            return false;
-                        return m_Rules.IsClosableFor(m_Player, door);
-                    });
-
-                case AdvisorHint.EXIT_STAIRS_LADDERS:  // using stairs, laders.
-                    return map.GetExitAt(pos) != null;
-
-                case AdvisorHint.EXIT_LEAVING_DISTRICT: // leaving the district.
-                    {
-                        foreach (Direction d in Direction.COMPASS)
-                        {
-                            Point pt = pos + d;
-                            if (map.IsInBounds(pt))
-                                continue;
-                            if (map.GetExitAt(pt) != null)
-                                return true;
-                        }
-                        return false;
-                    }
-
-                case AdvisorHint.FLASHLIGHT:
-                    return m_Player.Inventory.HasItemOfType(typeof(ItemLight));
-
-                case AdvisorHint.GAME_SAVE_LOAD:    // saving/loading. wait a bit...
-                    return map.LocalTime.Hour >= 7;
-
-                case AdvisorHint.GRENADE:
-                    {
-                        Inventory inv = m_Player.Inventory;
-                        if (inv == null || inv.IsEmpty)
-                            return false;
-                        return inv.HasItemOfType(typeof(ItemGrenade));
-                    }
-                    
-                case AdvisorHint.ITEM_GRAB_CONTAINER: // can take an item from an adjacent container.
-                    return map.HasAnyAdjacentInMap(pos, (pt) => m_Rules.CanActorGetItemFromContainer(m_Player, pt));
-
-                case AdvisorHint.ITEM_GRAB_FLOOR:   // can take an item from the flor.
-                    {
-                        Inventory invThere = map.GetItemsAt(pos);
-                        if (invThere == null)
-                            return false;
-                        foreach (Item it in invThere.Items)
-                            if (m_Rules.CanActorGetItem(m_Player, it))
-                                return true;
-                        return false;
-                    }
-
-                case AdvisorHint.ITEM_EQUIP:  // equip an item.
-                    {
-                        Inventory inv = m_Player.Inventory;
-                        if (inv == null || inv.IsEmpty)
-                            return false;
-                        foreach (Item it in inv.Items)
-                            if (!it.IsEquipped && m_Rules.CanActorEquipItem(m_Player, it))
-                                return true;
-                        return false;
-                    }
-
-                case AdvisorHint.ITEM_UNEQUIP:  // unequip an item.
-                    {
-                        Inventory inv = m_Player.Inventory;
-                        if (inv == null || inv.IsEmpty)
-                            return false;
-                        foreach (Item it in inv.Items)
-                            if (m_Rules.CanActorUnequipItem(m_Player, it))
-                                return true;
-                        return false;
-                    }
-
-                case AdvisorHint.ITEM_DROP: // dropping an item.
-                    {
-                        Inventory inv = m_Player.Inventory;
-                        if (inv == null || inv.IsEmpty)
-                            return false;
-                        foreach (Item it in inv.Items)
-                            if (m_Rules.CanActorDropItem(m_Player, it))
-                                return true;
-                        return false;
-                    }
-
-                case AdvisorHint.ITEM_TYPE_BARRICADING: // barricading material.
-                    {
-                        Inventory inv = m_Player.Inventory;
-                        if (inv == null || inv.IsEmpty)
-                            return false;
-                        return inv.HasItemOfType(typeof(ItemBarricadeMaterial));
-                    }
-
-                case AdvisorHint.ITEM_USE: // using an item.
-                    {
-                        Inventory inv = m_Player.Inventory;
-                        if (inv == null || inv.IsEmpty)
-                            return false;
-                        foreach (Item it in inv.Items)
-                            if (m_Rules.CanActorUseItem(m_Player, it))
-                                return true;
-                        return false;
-                    }
-
-                case AdvisorHint.KEYS_OPTIONS:  // redefining keys & options.
-                    return true;
-
-                case AdvisorHint.LEADING_CAN_RECRUIT:   // can recruit follower.
-                    return map.HasAnyAdjacentInMap(pos, (pt) =>
-                        {
-                            Actor other = map.GetActorAt(pt);
-                            if (other == null)
-                                return false;
-                            return m_Rules.CanActorTakeLead(m_Player, other);
-                        });
-
-                case AdvisorHint.LEADING_GIVE_ORDERS:   // give orders to followers.
-                    return m_Player.CountFollowers > 0;
-
-                case AdvisorHint.LEADING_NEED_SKILL:    // could recruit...
-                    return map.HasAnyAdjacentInMap(pos, (pt) =>
-                        {
-                            Actor other = map.GetActorAt(pt);
-                            if (other == null)
-                                return false;
-                            return !m_Rules.IsEnemyOf(m_Player, other);
-                        });
-
-                case AdvisorHint.LEADING_SWITCH_PLACE:  // switch place.
-                    return map.HasAnyAdjacentInMap(pos, (pt) =>
-                    {
-                        Actor other = map.GetActorAt(pt);
-                        if (other == null)
-                            return false;
-                        return m_Rules.CanActorSwitchPlaceWith(m_Player, other);
-                    });
-
-                case AdvisorHint.MOUSE_LOOK:    // always!
-                    return map.LocalTime.TurnCounter >= 2;  // don't spam at turn 0.
-
-                case AdvisorHint.MOVE_BASIC:    // always!
-                    return true;
-
-                case AdvisorHint.MOVE_JUMP:  // can jump.
-                    return !m_Rules.IsActorTired(m_Player) &&
-                        map.HasAnyAdjacentInMap(pos, (pt) =>
-                        {
-                            MapObject obj = map.GetMapObjectAt(pt);
-                            if (obj == null)
-                                return false;
-                            return obj.IsJumpable;
-                        });
-
-                case AdvisorHint.MOVE_RUN:   // running.
-                    return map.LocalTime.TurnCounter >= 5 && m_Rules.CanActorRun(m_Player);  // don't spam at turn 0.                 
-
-                case AdvisorHint.MOVE_RESTING: // resting.
-                    return m_Rules.IsActorTired(m_Player);
-
-                case AdvisorHint.NIGHT: // night effects, wait a bit.
-                    return map.LocalTime.TurnCounter >= 1 * WorldTime.TURNS_PER_HOUR;
-
-                case AdvisorHint.NPC_TRADE: // trading.
-                    return map.HasAnyAdjacentInMap(pos, (pt) =>
-                        {
-                            Actor other = map.GetActorAt(pt);
-                            if (other == null)
-                                return false;
-                            return m_Rules.CanActorInitiateTradeWith(m_Player, other);
-                        });
-
-                case AdvisorHint.NPC_GIVING_ITEM: // giving items.
-                    {
-                        Inventory inv = m_Player.Inventory;
-                        if (inv == null || inv.IsEmpty)
-                            return false;
-                        return map.HasAnyAdjacentInMap(pos, (pt) =>
-                            {
-                                Actor other = map.GetActorAt(pt);
-                                if (other == null)
-                                    return false;
-                                return !m_Rules.IsEnemyOf(m_Player, other);
-                            });
-                    }
-
-                case AdvisorHint.NPC_SHOUTING:  // shouting.
-                    return map.HasAnyAdjacentInMap(pos, (pt) =>
-                        {
-                            Actor other = map.GetActorAt(pt);
-                            if (other == null)
-                                return false;
-                            return other.IsSleeping && !m_Rules.IsEnemyOf(m_Player, other);
-                        });
-
-                case AdvisorHint.OBJECT_BREAK: // breaking around.
-                    return map.HasAnyAdjacentInMap(pos, (pt) =>
-                        {
-                            MapObject obj = map.GetMapObjectAt(pt);
-                            if (obj == null)
-                                return false;
-                            return m_Rules.IsBreakableFor(m_Player, obj);
-                        });
-
-                case AdvisorHint.OBJECT_PUSH:   // pushable around.
-                    return map.HasAnyAdjacentInMap(pos, (pt) =>
-                    {
-                        MapObject obj = map.GetMapObjectAt(pt);
-                        if (obj == null)
-                            return false;
-                        return m_Rules.CanActorPush(m_Player, obj);
-                    });
-
-                case AdvisorHint.RAIN:  // rainy weather, wait a bit.
-                    return m_Rules.IsWeatherRain(m_Session.World.Weather) && map.LocalTime.TurnCounter >= 2 * WorldTime.TURNS_PER_HOUR;
-                    
-                case AdvisorHint.SPRAYS_PAINT:    // using spraypaint.
-                    return m_Player.Inventory.HasItemOfType(typeof(ItemSprayPaint));
-
-                case AdvisorHint.SPRAYS_SCENT:    // using scent sprays.
-                    return m_Player.Inventory.HasItemOfType(typeof(ItemSprayScent));
-
-                case AdvisorHint.STATE_HUNGRY:
-                    return m_Rules.IsActorHungry(m_Player);
-
-                case AdvisorHint.STATE_SLEEPY:
-                    return m_Rules.IsActorSleepy(m_Player);
-
-                case AdvisorHint.WEAPON_FIRE: // can fire a weapon.
-                    {
-                        ItemRangedWeapon rw = m_Player.GetEquippedWeapon() as ItemRangedWeapon;
-                        if (rw == null)
-                            return false;
-                        return rw.Ammo >= 0;
-                    }
-
-                case AdvisorHint.WEAPON_RELOAD: // reloading a weapon.
-                    {
-                        ItemRangedWeapon rw = m_Player.GetEquippedWeapon() as ItemRangedWeapon;
-                        if (rw == null)
-                            return false;
-                        Inventory inv = m_Player.Inventory;
-                        if (inv == null || inv.IsEmpty)
-                            return false;
-                        foreach (Item it in inv.Items)
-                            if (it is ItemAmmo && m_Rules.CanActorUseItem(m_Player, it))
-                                return true;
-                        return false;                        
-                    }
-
-                default:
-                    throw new ArgumentOutOfRangeException("unhandled hint");
-            }
-        }
-
-        void GetAdvisorHintText(AdvisorHint hint, out string title, out string[] body)
-        {
-            switch (hint)
-            {
-                case AdvisorHint.ACTOR_MELEE:
-                    title = "ATTACK AN ENEMY IN MELEE";
-                    body = new string[] {                        
-                            "You are next to an enemy.",
-                            "To ATTACK him, try to MOVE on him."};
-                    break;
-
-                case AdvisorHint.BARRICADE:
-                    title = "BARRICADING A DOOR/WINDOW";
-                    body = new string[] {
-                            "You can barricade an adjacent door or window.",
-                            "Barricading uses material such as planks.",
-                            String.Format("To BARRICADE : <{0}>.", s_KeyBindings.Get(PlayerCommand.BARRICADE_MODE).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.BUILD_FORTIFICATION:
-                    title = "BUILDING FORTIFICATIONS";
-                    body = new string[] {
-                            "You can now build fortifications thanks to the carpentry skill.",
-                            "You need enough barricading materials.",
-                            String.Format("To BUILD SMALL FORTIFICATIONS : <{0}>.", s_KeyBindings.Get(PlayerCommand.BUILD_SMALL_FORTIFICATION).ToString()),
-                            String.Format("To BUILD LARGE FORTIFICATIONS : <{0}>.", s_KeyBindings.Get(PlayerCommand.BUILD_LARGE_FORTIFICATION).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.CELLPHONES:
-                    title = "CELLPHONES";
-                    body = new string[] {
-                            "You have found a cellphone.",
-                            "Cellphones are used to keep contact with your follower(s).",
-                            "You and your follower(s) must have a cellphone equipped."
-                        };
-                    break;
-
-                case AdvisorHint.CITY_INFORMATION:
-                    title = "CITY INFORMATION";
-                    body = new string[] {
-                            "You know the layout of your town.",
-                            "You aso know the most notable locations.",
-                            String.Format("To VIEW THE CITY INFORMATION : <{0}>.", s_KeyBindings.Get(PlayerCommand.CITY_INFO).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.CORPSE_BUTCHER:
-                    title = "BUTCHERING CORPSES";
-                    body = new string[] {
-                            "You can butcher a corpse.",
-                            String.Format("TO BUTCHER A CORPSE : RIGHT CLICK on it in the corpse list.")
-                    };
-                    break;
-
-                case AdvisorHint.CORPSE_EAT:
-                    title = "EATING CORPSES";
-                    body = new string[] {
-                            "You can eat a corpse to regain health.",
-                            String.Format("TO EAT A CORPSE : RIGHT CLICK on it in the corpse list.")
-                    };
-                    break;
-
-                case AdvisorHint.CORPSE_DRAG_START:
-                    title = "DRAGGING CORPSES";
-                    body = new string[] {
-                            "You can drag corpses.",
-                            String.Format("TO DRAG A CORPSE : LEFT CLICK on it in the corpse list.")
-                    };
-                    break;
-
-                case AdvisorHint.CORPSE_DRAG_MOVE:
-                    title = "DRAGGING CORPSES";
-                    body = new string[] {
-                            "You can move the dragged corpse with you.",
-                            String.Format("TO STOP DRAGGING THE CORPSE : LEFT CLICK on it in the corpse list.")
-                    };
-                    break;
-
-                case AdvisorHint.DOORWINDOW_OPEN:
-                    title = "OPENING A DOOR/WINDOW";
-                    body = new string[] {
-                            "You are next to a closed door or window.",
-                            "To OPEN it, try to MOVE on it."
-                        };
-                    break;
-
-                case AdvisorHint.DOORWINDOW_CLOSE:
-                    title = "CLOSING A DOOR/WINDOW";
-                    body = new string[] {
-                            "You are next to an open door or window.",
-                            String.Format("To CLOSE : <{0}>.", s_KeyBindings.Get(PlayerCommand.CLOSE_DOOR).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.EXIT_STAIRS_LADDERS:
-                    title = "USING STAIRS & LADDERS";
-                    body = new string[] {
-                            "You are standing on stairs or a ladder.",
-                            "You can use this exit to go on another map.",
-                            String.Format("To USE THE EXIT : <{0}>.", s_KeyBindings.Get(PlayerCommand.USE_EXIT).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.FLASHLIGHT:
-                    title = "LIGHTING";
-                    body = new string[] {
-                            "You have found a lighting item, such as a flashlight.",
-                            "Equip the item to increase your view distance (FoV).",
-                            "Standing next to someone with a light on has the same effect."
-                        };
-                    break;
-
-                case AdvisorHint.GAME_SAVE_LOAD:
-                    title = "SAVING AND LOADING GAME";
-                    body = new string[] {
-                            "Now could be a good time to save your game.",
-                            "You can have only one save game active.",
-                            String.Format("To SAVE THE GAME : <{0}>.", s_KeyBindings.Get(PlayerCommand.SAVE_GAME).ToString()),
-                            String.Format("To LOAD THE GAME : <{0}>.", s_KeyBindings.Get(PlayerCommand.LOAD_GAME).ToString()),
-                            "You can also load the game from the main menu.",
-                            "Saving or loading can take a bit of time, please be patient.",
-                            "Or consider turning some game options to lower settings."
-                        };
-                    break;
-
-                case AdvisorHint.EXIT_LEAVING_DISTRICT:
-                    title = "LEAVING THE DISTRICT";
-                    body = new string[] {
-                            "You are next to a district EXIT.",
-                            "You can leave this district by MOVING into the exit."
-                        };
-                    break;
-
-                case AdvisorHint.GRENADE:
-                    title = "GRENADES";
-                    body = new string[] {
-                            "You have found a grenade.",
-                            "To THROW a GRENADE, EQUIP it and FIRE it.",
-                            String.Format("To FIRE : <{0}>.", s_KeyBindings.Get(PlayerCommand.FIRE_MODE).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.ITEM_GRAB_CONTAINER:
-                    title = "TAKING AN ITEM FROM A CONTAINER";
-                    body = new string[] {
-                            "You are next to a container, such as a warbrobe or a shelf.",
-                            "You can TAKE the item there by MOVING into the object."
-                        };
-                    break;
-
-                case AdvisorHint.ITEM_GRAB_FLOOR:
-                    title = "TAKING AN ITEM FROM THE FLOOR";
-                    body = new string[] {
-                            "You are standing on a stack of items.",
-                            "The items are listed on the right panel in the ground inventory.",
-                            "To TAKE an item, move your mouse on the item on the ground inventory and LEFT CLICK."                            
-                        };
-                    break;
-
-                case AdvisorHint.ITEM_DROP:
-                    title = "DROPPING AN ITEM";
-                    body = new string[] {
-                            "You can drop items from your inventory.",
-                            "To DROP an item, RIGHT CLICK on it.",
-                            "The item must be unequiped first."
-                        };
-                    break;
-
-                case AdvisorHint.ITEM_EQUIP:
-                    title = "EQUIPING AN ITEM";
-                    body = new string[] {
-                            "You have an equipable item in your inventory.",
-                            "Typical equipable items are weapons, lights and phones.",
-                            "To EQUIP the item, LEFT CLICK on it in your inventory."
-                        };
-                    break;
-
-                case AdvisorHint.ITEM_TYPE_BARRICADING:
-                    title = "ITEM - BARRICADING MATERIAL";
-                    body = new string[] {
-                            "You have some barricading materials, such as planks.",
-                            "Barricading material is used when you barricade doors/windows or build fortifications.",
-                            "To build fortifications you need the CARPENTRY skill."
-                        };
-                    break;
-
-                case AdvisorHint.ITEM_UNEQUIP:
-                    title = "UNEQUIPING AN ITEM";
-                    body = new string[] {
-                            "You have equiped an item.",
-                            "The item is displayed with a green background.",
-                            "To UNEQUIP the item, LEFT CLICK on it in your inventory."
-                        };
-                    break;
-
-                case AdvisorHint.ITEM_USE:
-                    title = "USING AN ITEM";
-                    body = new string[] {
-                            "You can use one of your item.",
-                            "Typical usable items are food, medecine and ammunition.",
-                            "To USE the item, LEFT CLICK on it in your inventory."
-                        };
-                    break;
-
-                case AdvisorHint.KEYS_OPTIONS:
-                    title = "KEYS & OPTIONS";
-                    body = new string[] {
-                            String.Format("You can view and redefine the KEYS by pressing <{0}>.", s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE).ToString()),
-                            String.Format("You can change OPTIONS by pressing <{0}>.", s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE).ToString()),
-                            "Some option changes will only take effect when starting a new game.",
-                            "Keys and Options are saved."
-                        };
-                    break;
-
-                case AdvisorHint.LEADING_CAN_RECRUIT:
-                    title = "LEADING - RECRUITING";
-                    body = new string[] {
-                            "You can recruit a follower next to you!",
-                            String.Format("To RECRUIT : <{0}>.", s_KeyBindings.Get(PlayerCommand.LEAD_MODE).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.LEADING_GIVE_ORDERS:
-                    title = "LEADING - GIVING ORDERS";
-                    body = new string[] {
-                            "You can give orders and directives to your follower.",
-                            "You can also fire your followers.",
-                            String.Format("To GIVE ORDERS : <{0}>.", s_KeyBindings.Get(PlayerCommand.ORDER_MODE).ToString()),
-                            String.Format("To FIRE YOUR FOLLOWER : <{0}>.", s_KeyBindings.Get(PlayerCommand.LEAD_MODE).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.LEADING_NEED_SKILL:
-                    title = "LEADING - LEADERSHIP SKILL";
-                    body = new string[] {
-                            "You can try to recruit a follower if you have the LEADERSHIP skill.",
-                            "The higher the skill, the more followers you can recruit."
-                        };
-                    break;
-
-                case AdvisorHint.LEADING_SWITCH_PLACE:
-                    title = "LEADING - SWITCHING PLACE";
-                    body = new string[] {
-                            "You can switch place with followers next to you.",
-                            String.Format("To SWITCH PLACE : <{0}>.", s_KeyBindings.Get(PlayerCommand.SWITCH_PLACE).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.MOUSE_LOOK:
-                    title = "LOOKING WITH THE MOUSE";
-                    body = new string[] {
-                            "You can LOOK at actors and objects on the map.",
-                            "Move the MOUSE over something interesting.",
-                            "You will get a detailed description of the actor or object.",
-                            "This is useful to learn the game or assessing the tactical situation."
-                        };
-                    break;
-
-                case AdvisorHint.MOVE_BASIC:
-                    title = "MOVEMENT - DIRECTIONS";
-                    body = new string[] {
-                            "MOVE your character around with the movements keys.",
-                            "The default keys are your NUMPAD numbers.",
-                            "",
-                            "7 8 9",
-                            "4 - 6",
-                            "1 2 3",
-                            "",
-                            "5 makes you WAIT one turn.",
-                            "The move keys are the most important ones.",
-                            "When asked for a DIRECTION, press a MOVE key.",
-                            "Be sure to remember that!",
-                            "...and remember to keep NumLock on!"
-                        };
-                    break;
-
-                case AdvisorHint.MOVE_JUMP:
-                    title = "MOVEMENT - JUMPING";
-                    body = new string[] {
-                            "You can JUMP on or over an obstacle next to you.",
-                            "Typical jumpable objects are cars, fences and furnitures.",
-                            "The object is described with 'Can be jumped on'.",
-                            "Some enemies can't jump and won't be able to follow you.",
-                            "Jumping is tiring and spend stamina.",
-                            "To jump, just MOVE on the obstacle."
-                        };
-                    break;
-
-                case AdvisorHint.MOVE_RUN:
-                    title = "MOVEMENT - RUNNING";
-                    body = new string[] {
-                            "You can RUN to move faster.",
-                            "Running is tiring and spend stamina.",
-                            String.Format("To TOGGLE RUNNING : <{0}>.", s_KeyBindings.Get(PlayerCommand.RUN_TOGGLE).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.MOVE_RESTING:
-                    title = "MOVEMENT - RESTING";
-                    body = new string[] {
-                            "You are TIRED because you lost too much STAMINA.",
-                            "Being tired is bad for you!",
-                            "You move slowly.",
-                            "You can't do tiring activities such as running, fighting and jumping.",
-                            "You always recover a bit of stamina each turn.",
-                            "But you can REST to recover stamina faster.",
-                            String.Format("To REST/WAIT : <{0}>.", s_KeyBindings.Get(PlayerCommand.WAIT_OR_SELF).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.NIGHT:
-                    title = "NIGHT TIME";
-                    body = new string[] {
-                            "It is night. Night time is penalizing for livings.",
-                            "They tire faster (stamina and sleep) and don't see very far.",
-                            "Undeads are not penalized by night at all."
-                        };
-                    break;
-
-                case AdvisorHint.NPC_GIVING_ITEM:
-                    title = "GIVING ITEMS";
-                    body = new string[] {
-                            "You can GIVE ITEMS to other actors.",                            
-                            String.Format("To GIVE AN ITEM : move the mouse over your item and press <{0}>.", s_KeyBindings.Get(PlayerCommand.GIVE_ITEM).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.NPC_SHOUTING:
-                    title = "SHOUTING";
-                    body = new string[] {
-                            "Someone is sleeping near you.",                            
-                            "You can SHOUT to try to wake him or her up.",
-                            "Other actors can also shout to wake their friends up when they see danger.",
-                            String.Format("To SHOUT : <{0}>.", s_KeyBindings.Get(PlayerCommand.SHOUT).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.NPC_TRADE:
-                    title = "TRADING";
-                    body = new string[] {
-                            "You can TRADE with an actor next to you.",
-                            "Actor that can trade with you have a $ icon on the map.",
-                            "Trading means exhanging items.",
-                            "To ask for a TRADE offer, just try to MOVE into the actor.",
-                            "You can also initiate the trade by offering an item you possess.",
-                            String.Format("To INITIATE THE TRADE : move the mouse over your item and press <{0}>.", s_KeyBindings.Get(PlayerCommand.INITIATE_TRADE).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.OBJECT_BREAK:
-                    title = "BREAKING OBJECTS";
-                    body = new string[] {
-                            "You can try to BREAK an object around you.",
-                            "Typical breakable objects are furnitures, doors and windows.",
-                            String.Format("To BREAK : <{0}>.", s_KeyBindings.Get(PlayerCommand.BREAK_MODE).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.OBJECT_PUSH:
-                    title = "PUSHING OBJECTS";
-                    body = new string[] {
-                            "You can PUSH an object around you.",
-                            "Only MOVABLE objects can be pushed.",
-                            "Movable objects will be described as 'Can be moved'",
-                            String.Format("To PUSH : <{0}>.", s_KeyBindings.Get(PlayerCommand.PUSH_MODE).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.RAIN:
-                    title = "RAIN";
-                    body = new string[] {
-                            "It is raining. Rain has various effects.",
-                            "Livings vision is reduced.",
-                            "Firearms have more chance to jam.",
-                            "Scents evaporate faster."
-                        };
-                    break;
-
-                case AdvisorHint.SPRAYS_PAINT:
-                    title = "SPRAYS - SPRAYPAINT";
-                    body = new string[] {
-                            "You have found a can of spraypaint.",
-                            "You can tag a symbol on walls and floors.",
-                            "This is useful to mark some places and locations.",
-                            String.Format("To USE THE SPRAY : move the mouse over the item and press <{0}>.", s_KeyBindings.Get(PlayerCommand.USE_SPRAY).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.SPRAYS_SCENT:
-                    title = "SPRAYS - SCENT SPRAY";
-                    body = new string[] {
-                            "You have found a scent spray.",
-                            "You can spray some perfume on the tile you are standing.",
-                            "This is useful to confuse the undeads that chase using their smell.",
-                            String.Format("To USE THE SPRAY : move the mouse over the item and press <{0}>.", s_KeyBindings.Get(PlayerCommand.USE_SPRAY).ToString())
-                        };
-                    break;
-
-                case AdvisorHint.STATE_HUNGRY:
-                    title = "STATE - HUNGRY";
-                    body = new string[] {
-                            "You are HUNGRY.",
-                            "If you become starved you can die!",
-                            "You should EAT soon.",
-                            "To eat, just USE a food item, such as groceries.",
-                            "Read the manual for more explanations on hunger."
-                        };
-                    break;
-
-                case AdvisorHint.STATE_SLEEPY:
-                    title = "STATE - SLEEPY";
-                    body = new string[] {
-                            "You are SLEEPY.",
-                            "This is bad for you!",
-                            "You have a number of penalties.",
-                            "You should find a place to SLEEP.",
-                            "Couches are good places to sleep.",
-                            String.Format("To SLEEP : <{0}>.", s_KeyBindings.Get(PlayerCommand.SLEEP).ToString()),
-                            "Read the manual for more explanations on sleep."
-                        };
-                    break;
-
-                case AdvisorHint.WEAPON_FIRE:
-                    title = "FIRING A WEAPON";
-                    body = new string[] {
-                            "You can fire your equiped ranged weapon.",
-                            "You need to have valid targets.",
-                            "To fire on a target you need ammunitions and a clear line of fine.",
-                            "The target must be within the weapon range.",
-                            "The closer the target is, the easier it is to hit and it does slightly more damage.",
-                            String.Format("To FIRE : <{0}>.", s_KeyBindings.Get(PlayerCommand.FIRE_MODE).ToString()),
-                            "Remember you need to have visible enemies to fire at.",
-                            "Read the manual for more explanation about firing and ranged weapons."
-                        };
-                    break;
-
-                case AdvisorHint.WEAPON_RELOAD:
-                    title = "RELOADING A WEAPON";
-                    body = new string[] {
-                            "You can reload your equiped ranged weapon.",
-                            "To RELOAD, just USE a compatible ammo item.",
-                        };
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException("unhandled hint");
-            }
-        }
-
-        void ShowAdvisorHint(AdvisorHint hint)
-        {
-            string title;
-            string[] body;
-
-            GetAdvisorHintText(hint, out title, out body);
-            ShowAdvisorMessage(title, body);
-        }
-
-        void ShowAdvisorMessage(string title, string[] lines)
-        {
-            // clear.
-            ClearMessages();
-            ClearOverlays();
-
-            // tell.
-            string[] text = new string[lines.Length + 2];
-            text[0] = "HINT : " + title;
-            Array.Copy(lines, 0, text, 1, lines.Length);
-            text[lines.Length + 1] = String.Format("(hint {0}/{1})", s_Hints.CountAdvisorHintsGiven(), (int)AdvisorHint._COUNT);
-            AddOverlay(new OverlayPopup(text, Color.White, Color.White, Color.Black, new Point(0, 0)));
-
-            // wait.
-            ClearMessages();
-            AddMessage(new Message("You can disable the advisor in the options screen.", m_Session.WorldTime.TurnCounter, Color.White));
-            AddMessage(new Message(String.Format("To show the options screen : <{0}>.", s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE).ToString()), m_Session.WorldTime.TurnCounter, Color.White));
-            AddMessagePressEnter();
-            
-            // clear.
-            ClearMessages();
-            ClearOverlays();
-            RedrawPlayScreen();
         }
 #endregion
 
@@ -11467,7 +7789,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // Spend AP & STA, check for running, jumping and dragging corpse.
-#region
+            #region
             int moveCost = Rules.BASE_ACTION_COST;
 
             // running?
@@ -11515,7 +7837,7 @@ namespace djack.RogueSurvivor.Engine
 
             // spend move AP.
             SpendActorActionPoints(actor, moveCost);
-#endregion
+            #endregion
 
             // If actor can move again, make sure he drops his scent here.
             // If we don't do this, since scents are dropped only in new turns,
@@ -11525,7 +7847,7 @@ namespace djack.RogueSurvivor.Engine
                 DropActorScent(actor);
 
             // Screams of terror?
-#region
+            #region
             if (!actor.IsPlayer &&
                 (actor.Activity == Activity.FLEEING || actor.Activity == Activity.FLEEING_FROM_EXPLOSIVE) &&
                 !actor.Model.Abilities.IsUndead &&
@@ -11540,7 +7862,7 @@ namespace djack.RogueSurvivor.Engine
                     AddMessageIfAudibleForPlayer(actor.Location, MakePlayerCentricMessage("You hear screams of terror", actor.Location.Position));
                 }
             }
-#endregion
+            #endregion
 
             // Trigger stuff.
             OnActorEnterTile(actor);
@@ -12217,7 +8539,7 @@ namespace djack.RogueSurvivor.Engine
             // make enemy of all faction actors on maps:
             // 1. Making an enemy of cops.
             // 2. Making an enemy of soldiers.
-#region
+            #region
             if (!target.IsSleeping)
             {
                 Faction tFaction = target.Faction;
@@ -12234,7 +8556,7 @@ namespace djack.RogueSurvivor.Engine
                     OnMakeEnemyOfSoldier(aggressor, target, alreadyEnemies);
                 }
             }
-#endregion
+            #endregion
         }
 
         // FIXME factorize common code with OnMakeEnemyOfSoldier
@@ -12313,35 +8635,6 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
         }
-
-    #if false
-        obsolete Actor.HasActorAsPersonalEnemy checks for leaders & followers.
-        void MakeEnemyOfGroup(Actor a, IEnumerable<Actor> group)
-        {
-            if (group == null || a == null)
-                return;
-
-            foreach (Actor member in group)
-            {
-                a.MarkAsPersonalEnemy(member);
-                member.MarkAsPersonalEnemy(a);
-            }
-        }
-
-        void MakeEnemiesGroupsSub(IEnumerable<Actor> groupA, IEnumerable<Actor> groupB)
-        {
-            if (groupA == null || groupB == null)
-                return;
-
-            // O(n^2) beauty
-            foreach (Actor a in groupA)
-                foreach (Actor b in groupB)
-                {
-                    a.MarkAsPersonalEnemy(b);
-                    b.MarkAsPersonalEnemy(a);
-                }
-        }
-    #endif
 
         public void DoMeleeAttack(Actor attacker, Actor defender)
         {
@@ -12658,7 +8951,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // Hit vs Missed
-#region
+            #region
             if (hitRoll > defRoll)
             {
                 // roll damage - double potential if def is sleeping.
@@ -12719,7 +9012,7 @@ namespace djack.RogueSurvivor.Engine
                     AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT);
                 }
             }
-#endregion
+            #endregion
 
             // make sure added overlays are cleared.
             ClearOverlays();
@@ -12970,18 +9263,18 @@ namespace djack.RogueSurvivor.Engine
                 return 0;
 
             // damage actor / carried explosives chain reaction.
-#region
+            #region
             Actor victim = map.GetActorAt(location.Position);
             if (victim != null)
             {
                 // carried explosives chain reaction.
-#region
+            #region
                 Inventory carriedItems = victim.Inventory;
                 ExplosionChainReaction(carriedItems, location);
-#endregion
+                #endregion
 
                 // damage.
-#region
+            #region
                 int dmgToVictim = modifiedDamage - (victim.CurrentDefence.Protection_Hit + victim.CurrentDefence.Protection_Shot) / 2;
                 if (dmgToVictim > 0)
                 {
@@ -13009,22 +9302,22 @@ namespace djack.RogueSurvivor.Engine
                 }
                 else
                     AddMessage(new Message(String.Format("{0} is hit for no damage.", victim.Name), map.LocalTime.TurnCounter, Color.White));
-#endregion
+            #endregion
             }
-#endregion
+            #endregion
 
             // destroy items / ground explosives chain reaction.
-#region
+            #region
             Inventory groundInv = map.GetItemsAt(location.Position);
             if (groundInv != null)
             {
                 // ground explosives chain reaction.
-#region
+            #region
                 ExplosionChainReaction(groundInv, location);
-#endregion
+            #endregion
 
                 // pick items to destroy - don't destroy explosives ready to go, we need them for the chain reaction.
-#region
+                #region
                 // the more damage, the more chance.
                 // never destroy uniques or unbreakables.
                 int destroyChance = modifiedDamage;
@@ -13047,12 +9340,12 @@ namespace djack.RogueSurvivor.Engine
                 foreach (Item it in destroyItems)
                     map.RemoveItemAt(it, location.Position);
                 destroyItems = null;
-#endregion
+                #endregion
             }
-#endregion
+            #endregion
 
             // damage objects?
-#region
+            #region
             if (blast.CanDamageObjects)
             {
                 MapObject obj = map.GetMapObjectAt(location.Position);
@@ -13082,17 +9375,17 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             // damage corpses?
-#region
+            #region
             List<Corpse> corpses = map.GetCorpsesAt(location.Position);
             if (corpses != null)
             {
                 foreach (Corpse c in corpses)
                     InflictDamageToCorpse(c, modifiedDamage);
             }
-#endregion
+            #endregion
 
             // destroy walls?
             if (blast.CanDestroyWalls)
@@ -13227,7 +9520,7 @@ namespace djack.RogueSurvivor.Engine
             // never refuse a silly deal with leader.
             // 1. same item model.
             // 2. weapon for same weapon ammo.
-#region
+            #region
             if (target.Leader != speaker)
             {
                 // 1. same item model.
@@ -13264,7 +9557,7 @@ namespace djack.RogueSurvivor.Engine
                     return;
                 }
             }
-#endregion
+            #endregion
 
 
             // propose exhange.
@@ -13307,11 +9600,11 @@ namespace djack.RogueSurvivor.Engine
                     // emote.
                     if (isTargetReallyInterested)
                         DoSay(target, speaker, "Thank you for this good deal.", Sayflags.IS_FREE_ACTION);
-    #if false
+                #if false
                     disabled, can be abused by the player by trading back and forth.
                     // modify trust.
                     ModifyActorTrustInLeader(target, isTargetInterested ? Rules.TRUST_GOOD_TRADE_INCREASE : Rules.TRUST_MISC_TRADE_INCREASE, true);
-    #endif
+                #endif
                 }
 
                 // do it - unequip then swap items.
@@ -13598,7 +9891,7 @@ namespace djack.RogueSurvivor.Engine
 
         void OnEquipItem(Actor actor, Item it)
         {
-#region Weapons
+            #region Weapons
             if (it.Model is ItemWeaponModel)
             {
                 if (it.Model is ItemMeleeWeaponModel)
@@ -13617,15 +9910,15 @@ namespace djack.RogueSurvivor.Engine
                         rangedModel.Attack.StaminaPenalty, rangedModel.Attack.Range);
                 }
             }
-#endregion
-#region Armors
+            #endregion
+            #region Armors
             else if (it.Model is ItemBodyArmorModel)
             {
                 ItemBodyArmorModel armorModel = it.Model as ItemBodyArmorModel;
                 actor.CurrentDefence += armorModel.ToDefence();
             }
-#endregion
-#region Batteries
+            #endregion
+            #region Batteries
             else if (it.Model is ItemTrackerModel)
             {
                 ItemTracker trIt = it as ItemTracker;
@@ -13636,7 +9929,7 @@ namespace djack.RogueSurvivor.Engine
                 ItemLight ltIt = it as ItemLight;
                 --ltIt.Batteries;
             }
-#endregion
+            #endregion
         }
 
         void OnUnequipItem(Actor actor, Item it)
@@ -14236,7 +10529,7 @@ namespace djack.RogueSurvivor.Engine
         {
             Attack bashAttack = m_Rules.ActorMeleeAttack(actor, actor.CurrentMeleeAttack, null);
 
-#region Attacking a barricaded door.
+            #region Attacking a barricaded door.
             DoorWindow door = mapObj as DoorWindow;
             if (door != null && door.IsBarricaded)
             {
@@ -14266,9 +10559,9 @@ namespace djack.RogueSurvivor.Engine
                 // done.
                 return;
             }
-#endregion
+            #endregion
 
-#region Attacking a un-barricaded door or a normal object
+            #region Attacking a un-barricaded door or a normal object
             else
             {
                 // Always hit.
@@ -14341,7 +10634,7 @@ namespace djack.RogueSurvivor.Engine
                 // make sure added overlays are cleared.
                 ClearOverlays();
             }
-#endregion
+            #endregion
         }
 #endregion
 
@@ -14677,12 +10970,12 @@ namespace djack.RogueSurvivor.Engine
         public void KillActor(Actor killer, Actor deadGuy, string reason)
         {
             // Sanity check.
-    #if false
+            #if false
             for some reason, this can happen with starved actors. no fucking idea why since this is the only place where we set the dead flag.
             if (deadGuy.IsDead)
                 throw new InvalidOperationException(String.Format("killing deadGuy that is already dead : killer={0} deadGuy={1} reason={2}", (
                     killer == null ? "N/A" : killer.TheName), deadGuy.TheName, reason));
-    #endif
+            #endif
 
             // Set dead flag.
             deadGuy.IsDead = true;
@@ -14750,7 +11043,7 @@ namespace djack.RogueSurvivor.Engine
             deadGuy.RemoveAllFollowers();
 
             // Remove from leader.
-#region
+            #region
             if (deadGuy.Leader != null)
             {
                 // player's follower killed : scoring and message.
@@ -14766,7 +11059,7 @@ namespace djack.RogueSurvivor.Engine
 
                 deadGuy.Leader.RemoveFollower(deadGuy);
             }
-#endregion
+            #endregion
 
             // Remove aggressor & self defence relations.
             bool wasMurder = (killer != null && m_Rules.IsMurder(killer, deadGuy));
@@ -14776,7 +11069,7 @@ namespace djack.RogueSurvivor.Engine
             deadGuy.Location.Map.RemoveActor(deadGuy);
 
             // Drop some inventory items.
-#region
+            #region
             if (deadGuy.Inventory != null && !deadGuy.Inventory.IsEmpty)
             {
                 int deadItemsCount = deadGuy.Inventory.CountItems;
@@ -14791,18 +11084,18 @@ namespace djack.RogueSurvivor.Engine
                         DropItem(deadGuy, it);
                 }
             }
-#endregion
+            #endregion
 
             // Blood splat/Remains
             if (!deadGuy.Model.Abilities.IsUndead)
                 SplatterBlood(deadGuy.Location.Map, deadGuy.Location.Position);
-    #if false
+            #if false
             disabled: avoid unecessary large savedd games
             if (deadGuy.Model.Abilities.IsUndead)
                 UndeadRemains(deadGuy.Location.Map, deadGuy.Location.Position);
             else
                 SplatterBlood(deadGuy.Location.Map, deadGuy.Location.Position);
-    #endif
+            #endif
 
             // Corpse?
             if (Rules.HasCorpses(m_Session.GameMode))
@@ -14822,12 +11115,12 @@ namespace djack.RogueSurvivor.Engine
                 PlayerKill(deadGuy);
 
             // Undead level up?
-#region
+            #region
             if (killer != null && Rules.HasEvolution(m_Session.GameMode))
             {
                 if (killer.Model.Abilities.IsUndead)
                 {
-#region
+            #region
                     // check for evolution.
                     ActorModel levelUpModel = CheckUndeadEvolution(killer);
                     if (levelUpModel != null)
@@ -14866,10 +11159,10 @@ namespace djack.RogueSurvivor.Engine
                             ClearOverlays();
                         }
                     }
-#endregion
+            #endregion
                 }
             }
-#endregion
+            #endregion
 
             // Trust : leader killing a follower target or adjacent enemy.
             if (killer != null && killer.CountFollowers > 0)
@@ -14889,7 +11182,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // Murder?
-#region
+                    #region
             if (wasMurder)
             {
                 // one more murder.
@@ -14928,10 +11221,10 @@ namespace djack.RogueSurvivor.Engine
                     DoMakeAggression(a, killer);
                 }
             }
-#endregion
+            #endregion
 
             // Emote: a law enforcer killing a murderer feels warm and fuzzy inside.
-#region
+            #region
             if (killer != null && deadGuy.MurdersCounter > 0 && killer.Model.Abilities.IsLawEnforcer && !killer.Faction.IsEnemyOf(deadGuy.Faction))
             {
                 if (killer.IsPlayer)
@@ -14939,12 +11232,12 @@ namespace djack.RogueSurvivor.Engine
                 else
                     DoSay(killer, deadGuy, "Good riddance, murderer!", Sayflags.IS_FREE_ACTION);
             }
-#endregion
+            #endregion
 
             //////////////////////////////////////////////
             // Player or Player Followers Killing Uniques
             //////////////////////////////////////////////
-#region
+            #region
             // The Sewers Thing
             if (deadGuy == m_Session.UniqueActors.TheSewersThing.TheActor)
             {
@@ -14957,7 +11250,7 @@ namespace djack.RogueSurvivor.Engine
                     ShowNewAchievement(Achievement.IDs.KILLED_THE_SEWERS_THING);
                 }
             }
-#endregion
+            #endregion
         }
 #endregion
 
@@ -15151,7 +11444,7 @@ namespace djack.RogueSurvivor.Engine
             ///////////
             // Scoring
             ///////////
-#region
+            #region
             m_Session.Scoring.TurnsSurvived = m_Session.WorldTime.TurnCounter;
             m_Session.Scoring.SetKiller(killer);
             if (m_Player.CountFollowers > 0)
@@ -15176,12 +11469,12 @@ namespace djack.RogueSurvivor.Engine
             else
                 m_Session.Scoring.DeathReason = String.Format("Death by {0}", reason);
             m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Died.");
-#endregion
+            #endregion
 
             /////////////////////////////////////////
             // Tip, Message, screenshot & permadeath.
             /////////////////////////////////////////
-#region
+            #region
             int iTip = m_Rules.Roll(0, GameTips.TIPS.Length);
             AddOverlay(new OverlayPopup(new string[] { "TIP OF THE DEAD","Did you know that...", GameTips.TIPS[iTip] }, Color.White, Color.White, POPUP_FILLCOLOR, new Point(0, 0)));
 
@@ -15211,7 +11504,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             AddMessagePressEnter();
-#endregion
+            #endregion
 
             // post mortem.
             HandlePostMortem();
@@ -15254,27 +11547,27 @@ namespace djack.RogueSurvivor.Engine
             graveyard.Append(String.Format("ROGUE SURVIVOR {0}", SetupConfig.GAME_VERSION));
             graveyard.Append("POST MORTEM");
 
-#region Summary
+            #region Summary
             graveyard.Append(String.Format("{0} was {1} and {2}.", name, AorAn(m_Player.Model.Name), AorAn(m_Player.Faction.MemberName)));
             graveyard.Append(String.Format("{0} survived to see {1}.", heOrShe, deathTime.ToString()));
             graveyard.Append(String.Format("{0}'s spirit guided {1} for {2}.", name, himOrHer, realTimeString));
             if (m_Session.Scoring.ReincarnationNumber > 0)
                 graveyard.Append(String.Format("{0} was reincarnation {1}.", heOrShe, m_Session.Scoring.ReincarnationNumber));
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> SCORING");
-#region
+            #region
             graveyard.Append(String.Format("{0} scored a total of {1} points.", heOrShe, m_Session.Scoring.TotalPoints));
             graveyard.Append(String.Format("- difficulty rating of {0}%.", (int)(100 * m_Session.Scoring.DifficultyRating)));
             graveyard.Append(String.Format("- {0} base points for survival.", m_Session.Scoring.SurvivalPoints));
             graveyard.Append(String.Format("- {0} base points for kills.", m_Session.Scoring.KillPoints));
             graveyard.Append(String.Format("- {0} base points for achievements.", m_Session.Scoring.AchievementPoints));
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> ACHIEVEMENTS");
-#region
+            #region
             foreach (Achievement ach in m_Session.Scoring.Achievements)
             {
                 if (ach.IsDone)
@@ -15299,16 +11592,16 @@ namespace djack.RogueSurvivor.Engine
                 graveyard.Append("(later versions of the game will feature real winning conditions and multiple endings...)");
             }
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> DEATH");
-#region
+            #region
             graveyard.Append(String.Format("{0} in {1}.", m_Session.Scoring.DeathReason, m_Session.Scoring.DeathPlace));
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> KILLS");
-#region
+            #region
             if (m_Session.Scoring.HasNoKills)
             {
                 graveyard.Append(String.Format("{0} was a pacifist. Or too scared to fight.", heOrShe));
@@ -15332,19 +11625,19 @@ namespace djack.RogueSurvivor.Engine
             }
 
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> FUN FACTS!");
-#region
+            #region
             graveyard.Append(String.Format("While {0} has died, others are still having fun!", name));
             string[] funFacts = CompileDistrictFunFacts(m_Player.Location.Map.District);
             for (int i = 0; i < funFacts.Length; i++)
                 graveyard.Append(funFacts[i]);
             graveyard.Append("");
-#endregion
+            #endregion
 
             graveyard.Append("> SKILLS");
-#region
+            #region
             if (m_Player.Sheet.SkillTable.Skills == null)
             {
                 graveyard.Append(String.Format("{0} was a jack of all trades. Or an incompetent.", heOrShe));
@@ -15357,10 +11650,10 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> INVENTORY");
-#region
+            #region
             if (m_Player.Inventory.IsEmpty)
             {
                 graveyard.Append(String.Format("{0} was humble. Or dirt poor.", heOrShe));
@@ -15377,10 +11670,10 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> FOLLOWERS");
-#region
+            #region
             if (m_Session.Scoring.FollowersWhendDied == null || m_Session.Scoring.FollowersWhendDied.Count == 0)
             {
                 graveyard.Append(String.Format("{0} was doing fine alone. Or everyone else was dead.", heOrShe));
@@ -15426,10 +11719,10 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> EVENTS");
-#region
+            #region
             if (m_Session.Scoring.HasNoEvents)
             {
                 graveyard.Append(String.Format("{0} had a quiet life. Or dull and boring.", heOrShe));
@@ -15444,10 +11737,10 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> CUSTOM OPTIONS");
-#region
+            #region
             graveyard.Append(String.Format("- difficulty rating of {0}%.", (int)(100 * m_Session.Scoring.DifficultyRating)));
             if (s_Options.IsPermadeathOn)
                 graveyard.Append(String.Format("- {0} : yes.", GameOptions.Name(GameOptions.IDs.GAME_PERMADEATH)));
@@ -15480,14 +11773,14 @@ namespace djack.RogueSurvivor.Engine
             if (s_Options.MaxReincarnations != GameOptions.DEFAULT_MAX_REINCARNATIONS)
                 graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_MAX_REINCARNATIONS), s_Options.MaxReincarnations));
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> R.I.P");
-#region
+            #region
             graveyard.Append(String.Format("May {0} soul rest in peace.", HisOrHer(m_Player)));
             graveyard.Append(String.Format("For {0} body is now a meal for evil.", HisOrHer(m_Player)));
             graveyard.Append("The End.");
-#endregion
+            #endregion
 
             /////////////////////
             // Save to graveyard
@@ -16509,9 +12802,9 @@ namespace djack.RogueSurvivor.Engine
                         if(map.GetExitAt(position) != null)
                             DrawExit(toScreen);
                     }
-    #if DEBUG
+                    #if DEBUG
                     DrawTileDev(map, tile, x, y, toScreen);
-    #endif
+                    #endif
 
                     // 2. Corpses
                     if (isVisible)
@@ -16535,7 +12828,7 @@ namespace djack.RogueSurvivor.Engine
                     }
 
                     // 4. Scents
-#region
+                    #region
                     if (!m_Player.IsSleeping && map.IsInBounds(x, y) && m_Rules.GridDistance(m_Player.Location.Position, position) <= 1)
                     {
                         // scents alpha is low to be able to see objects behind them (eg: scent on a door)
@@ -16578,7 +12871,7 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
 
                     // 5. Items, Actors (if visible)
                     if (isVisible)
@@ -16614,9 +12907,9 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // DEV: scents
-    #if false
-            for (int x = left; x < right; x++)
-                for (int y = top; y < bottom; y++)
+                #if false
+                for (int x = left; x < right; x++)
+                    for (int y = top; y < bottom; y++)
                 {
                     if (map.IsInBounds(x, y))
                     {
@@ -16627,7 +12920,7 @@ namespace djack.RogueSurvivor.Engine
                         }
                     }
                 }
-    #endif
+                #endif
         }
 
         string MovingWaterImage(TileModel model, int turnCount)
@@ -16799,7 +13092,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // activity
-#region
+            #region
             switch (actor.Activity)
             {
                 case Activity.IDLE:
@@ -16862,7 +13155,7 @@ namespace djack.RogueSurvivor.Engine
                 default:
                     throw new InvalidOperationException("unhandled activity " + actor.Activity);
             }
-#endregion
+            #endregion
 
             // health bar.
             int maxHP = m_Rules.ActorMaxHPs(actor);
@@ -16872,15 +13165,15 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // run/tired icon.
-#region
+            #region
             if (actor.IsRunning)
                 m_UI.UI_DrawImage(GameImages.ICON_RUNNING, gx, gy, tint);
             else if (actor.Model.Abilities.CanRun && !m_Rules.CanActorRun(actor))
                 m_UI.UI_DrawImage(GameImages.ICON_CANT_RUN, gx, gy, tint);
-#endregion
+            #endregion
 
             // sleepy, hungry & insane icons.
-#region
+            #region
             if (actor.Model.Abilities.HasToSleep)
             {
                 if (m_Rules.IsActorExhausted(actor))
@@ -16917,7 +13210,7 @@ namespace djack.RogueSurvivor.Engine
                 else if (m_Rules.IsActorDisturbed(actor))
                     m_UI.UI_DrawImage(GameImages.ICON_SANITY_DISTURBED, gx, gy, tint);
             }
-#endregion
+            #endregion
 
             // can trade with player icon.
             if (m_Player != null && m_Rules.CanActorInitiateTradeWith(m_Player, actor))
@@ -17188,7 +13481,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // set visited tiles color.
-#region
+            #region
             if (s_Options.IsMinimapOn)
             {
                 Point pt = new Point();
@@ -17210,7 +13503,7 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             // show minimap.
             if (s_Options.IsMinimapOn)
@@ -17222,7 +13515,7 @@ namespace djack.RogueSurvivor.Engine
             m_UI.UI_DrawRect(Color.White, new Rectangle(MINIMAP_X + m_MapViewRect.Left * MINITILE_SIZE, MINIMAP_Y + m_MapViewRect.Top * MINITILE_SIZE, m_MapViewRect.Width * MINITILE_SIZE, m_MapViewRect.Height * MINITILE_SIZE));
 
             // show player tags.
-#region
+            #region
             if (s_Options.ShowPlayerTagsOnMinimap)
             {
                 for (int x = 0; x < map.Width; x++)
@@ -17248,11 +13541,11 @@ namespace djack.RogueSurvivor.Engine
                         }
                     }
             }
-#endregion
+            #endregion
 
             // show player & tracked actors.
             // add tracked targets images out of player fov on the map.
-#region
+            #region
             if (m_Player != null)
             {
                 // tracker items.
@@ -17264,7 +13557,7 @@ namespace djack.RogueSurvivor.Engine
                     if (tracker != null && tracker.Batteries > 0)
                     {
                         // ...followers?
-#region
+                        #region
                         if (m_Player.CountFollowers > 0 && tracker.CanTrackFollowersOrLeader)
                         {
                             foreach (Actor fo in m_Player.Followers)
@@ -17289,10 +13582,10 @@ namespace djack.RogueSurvivor.Engine
                                 }
                             }
                         }
-#endregion
+                        #endregion
 
                         // ...undeads?
-#region
+                        #region
                         if (tracker.CanTrackUndeads)
                         {
                             foreach (Actor other in map.Actors)
@@ -17319,10 +13612,10 @@ namespace djack.RogueSurvivor.Engine
                                 }
                             }
                         }
-#endregion
+                        #endregion
 
                         // ...BlackOps?
-#region
+                        #region
                         if (tracker.CanTrackBlackOps)
                         {
                             foreach (Actor other in map.Actors)
@@ -17347,7 +13640,7 @@ namespace djack.RogueSurvivor.Engine
                                 }
                             }
                         }
-#endregion
+                        #endregion
 
                         // ...Police?
                         if (tracker.CanTrackPolice)
@@ -17381,7 +13674,7 @@ namespace djack.RogueSurvivor.Engine
                 Point pos = new Point(MINIMAP_X + m_Player.Location.Position.X * MINITILE_SIZE, MINIMAP_Y + m_Player.Location.Position.Y * MINITILE_SIZE);
                 m_UI.UI_DrawImage(GameImages.MINI_PLAYER_POSITION, pos.X - MINI_TRACKER_OFFSET, pos.Y - MINI_TRACKER_OFFSET);
             }
-#endregion
+            #endregion
         }
 
         public void DrawActorStatus(Actor actor, int gx, int gy)
@@ -18054,11 +14347,11 @@ namespace djack.RogueSurvivor.Engine
 #region Game user data paths
         public static string GetUserBasePath()
         {
-    #if LINUX
+            #if LINUX
             return SetupConfig.DirPath.Replace("\\", "/");
-    #else
+            #else
             return SetupConfig.DirPath;
-    #endif
+            #endif
             /*
             string myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             return myDocs + @"\Rogue Survivor\" + SetupConfig.GAME_VERSION + @"\";
@@ -18067,11 +14360,11 @@ namespace djack.RogueSurvivor.Engine
 
         public static string GetUserSavesPath()
         {
-    #if LINUX
+            #if LINUX
             return (GetUserBasePath() + @"Saves\").Replace("\\", "/");
-    #else
+            #else
             return GetUserBasePath() + @"Saves\";
-    #endif
+            #endif
         }
 
         public static string GetUserSave()
@@ -18081,20 +14374,20 @@ namespace djack.RogueSurvivor.Engine
 
         public static string GetUserDocsPath()
         {
-    #if LINUX
+            #if LINUX
             return (GetUserBasePath() + @"Docs\").Replace("\\", "/");
-    #else
+            #else
             return GetUserBasePath() + @"Docs\";
-    #endif
+            #endif
         }
 
         public static string GetUserGraveyardPath()
         {
-    #if LINUX
+            #if LINUX
             return (GetUserBasePath() + @"Graveyard\").Replace("\\", "/");
-    #else
+            #else
             return GetUserBasePath() + @"Graveyard\";
-    #endif
+            #endif
         }
 
         /// <summary>
@@ -18160,20 +14453,20 @@ namespace djack.RogueSurvivor.Engine
         public string ScreenshotFilePath(string shotname)
         {
             string path = GetUserScreenshotsPath() + shotname + "." + m_UI.UI_ScreenshotExtension();
-    #if LINUX
+            #if LINUX
             return path.Replace("\\", "/");
-    #else
+            #else
             return path;
-    #endif
+            #endif
         }
 
         bool CreateDirectory(string _path)
         {
-    #if LINUX
+            #if LINUX
             string path = _path.Replace("\\", "/");
-    #else
+            #else
             string path = _path;
-    #endif
+            #endif
 
             if (!Directory.Exists(path))
             {
@@ -18186,9 +14479,9 @@ namespace djack.RogueSurvivor.Engine
 
         bool CheckDirectory(string path, string description, ref int gy)
         {
-    #if LINUX
+            #if LINUX
             path = path.Replace("\\", "/");
-    #endif
+            #endif
             m_UI.UI_DrawString(Color.White, String.Format("{0} : {1}...", description, path), 0, gy);
             gy += BOLD_LINE_SPACING;
             m_UI.UI_Repaint();
@@ -18203,17 +14496,17 @@ namespace djack.RogueSurvivor.Engine
         bool CheckCopyOfManual()
         {
             string src_path = @"Resources\Manual\";
-    #if LINUX
+            #if LINUX
             src_path = src_path.Replace("\\", "/");
-    #endif
+            #endif
             string dst_dir = GetUserDocsPath();
             string filename = "RS Manual.txt";
 
-    #if LINUX
+            #if LINUX
             string dst_path = (dst_dir + filename).Replace("\\", "/");
-    #else
+            #else
             string dst_path = dst_dir + filename;
-    #endif
+            #endif
 
             // copy file.
             bool copied = false;
@@ -18232,38 +14525,38 @@ namespace djack.RogueSurvivor.Engine
 
         string GetUserManualFilePath()
         {
-    #if LINUX
+            #if LINUX
             return (GetUserDocsPath() + "RS Manual.txt").Replace("\\", "/");
-    #else
+            #else
             return GetUserDocsPath() + "RS Manual.txt";
-    #endif
+            #endif
         }
 
         string GetUserHiScorePath()
         {
-    #if LINUX
+            #if LINUX
             return GetUserSavesPath().Replace("\\", "/");
-    #else
+            #else
             return GetUserSavesPath();
-    #endif
+            #endif
         }
 
         string GetUserHiScoreFilePath()
         {
-    #if LINUX
+            #if LINUX
             return (GetUserHiScorePath() + "hiscores.dat").Replace("\\", "/");
-    #else
+            #else
             return GetUserHiScorePath() + "hiscores.dat";
-    #endif
+            #endif
         }
 
         string GetUserHiScoreTextFilePath()
         {
-    #if LINUX
+            #if LINUX
             return (GetUserHiScorePath() + "hiscores.txt").Replace("\\", "/");
-    #else
+            #else
             return GetUserHiScorePath() + "hiscores.txt";
-    #endif
+            #endif
         }
 #endregion
 
@@ -18314,7 +14607,7 @@ namespace djack.RogueSurvivor.Engine
             // Create districts maps
             /////////////////////////
             // Surface, Sewers and Subways.
-#region
+            #region
             for (int x = 0; x < world.Size; x++)
             {
                 for (int y = 0; y < world.Size; y++)
@@ -18346,7 +14639,7 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             ///////////////
             // Unique Maps
@@ -18387,7 +14680,7 @@ namespace djack.RogueSurvivor.Engine
             //////////////////
             // Link districts
             //////////////////
-#region
+            #region
             for (int x = 0; x < world.Size; x++)
             {
                 for (int y = 0; y < world.Size; y++)
@@ -18399,7 +14692,7 @@ namespace djack.RogueSurvivor.Engine
                         m_UI.UI_Repaint();
                     }
 
-#region Entry maps (surface)
+                    #region Entry maps (surface)
                     // add exits (from and to).
                     Map map = world[x, y].EntryMap;
 
@@ -18453,9 +14746,9 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
 
-#region Sewers
+                    #region Sewers
                     map = world[x, y].SewersMap;
                     if (y > 0)
                     {
@@ -18494,9 +14787,9 @@ namespace djack.RogueSurvivor.Engine
 
                         }
                     }
-#endregion
+                    #endregion
 
-#region Subways
+                    #region Subways
                     map = world[x, y].SubwayMap;
                     if (map != null)
                     {
@@ -18526,20 +14819,20 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
                 }
             }
-#endregion
+            #endregion
 
             //////////////////////////////////////////
             // Easter egg: "roguedjack was here" tag.
             //////////////////////////////////////////
-#region
+            #region
             Map easterEggTagMap = world[0, 0].SewersMap;
             easterEggTagMap.RemoveMapObjectAt(1, 1);
             easterEggTagMap.GetTileAt(1, 1).RemoveAllDecorations();
             easterEggTagMap.GetTileAt(1, 1).AddDecoration(GameImages.DECO_ROGUEDJACK_TAG);
-#endregion
+            #endregion
 
             //////////////////////////////
             // Spawn player on center map
@@ -18557,16 +14850,16 @@ namespace djack.RogueSurvivor.Engine
             SetCurrentMap(startMap);
             RefreshPlayer();
             UpdatePlayerFOV(m_Player);  // to make sure we get notified of actors acting before us in turn 0.
-    #if DEBUG
+                #if DEBUG
             AddDevCheatItems();
             AddDevCheatSkills();
             AddDevMiscStuff();
-    #endif
+                #endif
 
             ////////////////////////
             // Reveal starting map?
             ////////////////////////
-#region
+            #region
             if (s_Options.RevealStartingDistrict)
             {
                 List<Zone> startZones = startMap.GetZonesAt(m_Player.Location.Position.X, m_Player.Location.Position.Y);
@@ -18595,7 +14888,7 @@ namespace djack.RogueSurvivor.Engine
                         }
                 }
             }
-#endregion
+            #endregion
 
             /////////
             // Done.
@@ -18672,7 +14965,7 @@ namespace djack.RogueSurvivor.Engine
 
         UniqueActor CreateUniqueBigBear(World world)
         {
-#region
+            #region
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Big Bear", false, 0);
             actor.IsUnique = true;
@@ -18706,7 +14999,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-#endregion
+            #endregion
 
             // done.
             return new UniqueActor()
@@ -18722,7 +15015,7 @@ namespace djack.RogueSurvivor.Engine
         UniqueActor CreateUniqueFamuFataru(World world)
         {
 
-#region
+            #region
             ActorModel model = GameActors.FemaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Famu Fataru", false, 0);
             actor.IsUnique = true;
@@ -18756,7 +15049,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-#endregion
+            #endregion
 
             // done.
             return new UniqueActor()
@@ -18771,7 +15064,7 @@ namespace djack.RogueSurvivor.Engine
 
         UniqueActor CreateUniqueSantaman(World world)
         {
-#region
+            #region
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Santaman", false, 0);
             actor.IsUnique = true;
@@ -18805,7 +15098,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.AddAll(m_TownGenerator.MakeItemShotgunAmmo());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-#endregion
+            #endregion
 
             // done.
             return new UniqueActor()
@@ -18820,7 +15113,7 @@ namespace djack.RogueSurvivor.Engine
 
         UniqueActor CreateUniqueRoguedjack(World world)
         {
-#region
+            #region
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Roguedjack", false, 0);
             actor.IsUnique = true;
@@ -18854,7 +15147,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-#endregion
+            #endregion
 
             // done.
             return new UniqueActor()
@@ -18869,7 +15162,7 @@ namespace djack.RogueSurvivor.Engine
 
         UniqueActor CreateUniqueDuckman(World world)
         {
-#region
+            #region
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Duckman", false, 0);
             actor.IsUnique = true;
@@ -18906,7 +15199,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-#endregion
+            #endregion
 
             return new UniqueActor()
             {
@@ -18920,7 +15213,7 @@ namespace djack.RogueSurvivor.Engine
 
         UniqueActor CreateUniqueHansVonHanz(World world)
         {
-#region
+            #region
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Hans von Hanz", false, 0);
             actor.IsUnique = true;
@@ -18954,7 +15247,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-#endregion
+            #endregion
 
             // done.
             return new UniqueActor()
@@ -19086,7 +15379,7 @@ namespace djack.RogueSurvivor.Engine
             int gridSeed = m_Session.Seed + gridY * world.Size + gridX;
 
             // 3. Set gen params.
-#region
+            #region
             BaseTownGenerator.Parameters genParams = BaseTownGenerator.DEFAULT_PARAMS;
             genParams.MapWidth = genParams.MapHeight = s_Options.DistrictSize;
             genParams.District = district;
@@ -19133,7 +15426,7 @@ namespace djack.RogueSurvivor.Engine
             // Special params.
             genParams.GeneratePoliceStation = (district.WorldPosition == policeStationDistrictPos);
             genParams.GenerateHospital = (district.WorldPosition == hospitalDistrictPos);
-#endregion
+            #endregion
 
             // 4. Generate map.
             BaseTownGenerator.Parameters prevParams = m_TownGenerator.Params;
@@ -19180,7 +15473,7 @@ namespace djack.RogueSurvivor.Engine
             /////////////////////////////////////////////////////
             // Create player actor : living/undead x male/female
             /////////////////////////////////////////////////////
-#region
+            #region
             ActorModel playerModel;
             Actor player;
             if (m_CharGen.IsUndead)
@@ -19247,12 +15540,12 @@ namespace djack.RogueSurvivor.Engine
             }
 
             player.Controller = new PlayerController();
-#endregion
+            #endregion
 
             /////////////
             // Spawn him.
             /////////////
-#region
+            #region
             // living: try to spawn inside on a couch, then if failed spawn anywhere inside.
             // undead: spawn outside.
             // NEVER spawn in CHAR Office!!
@@ -19286,7 +15579,7 @@ namespace djack.RogueSurvivor.Engine
                         ;
                 }
             }
-#endregion
+            #endregion
         }
 
         void RefreshPlayer()
@@ -19375,7 +15668,7 @@ namespace djack.RogueSurvivor.Engine
 
             // if option set, simulate to catch current turn.
             // otherwise just jump int time.
-#region
+            #region
             if (s_Options.IsSimON)
             {
                 // music.
@@ -19394,7 +15687,7 @@ namespace djack.RogueSurvivor.Engine
                 Monitor.Enter(m_SimMutex);
 
                 // simulate loop.
-#region
+                #region
                 double timerStart = DateTime.UtcNow.TimeOfDay.TotalMilliseconds;
                 double lastRedraw = 0;
                 bool aborted = false;
@@ -19408,7 +15701,7 @@ namespace djack.RogueSurvivor.Engine
                         timerNow >= lastRedraw + 1000;                                                          // show every seconds
 
                     // redraw?
-#region
+                    #region
                     if (doRedraw)
                     {
                         // remember we redrawed.
@@ -19443,14 +15736,14 @@ namespace djack.RogueSurvivor.Engine
                         if (!m_MusicManager.IsPlaying(GameMusics.INTERLUDE))
                             m_MusicManager.Play(GameMusics.INTERLUDE);
                     }
-#endregion
+                    #endregion
 
                     // aborted?
                     if (aborted)
                         break;
 
                     // check for abort.
-#region
+                #region
                     KeyEventArgs key = m_UI.UI_PeekKey();
                     if (key != null && key.KeyCode == Keys.Escape)
                     {
@@ -19460,7 +15753,7 @@ namespace djack.RogueSurvivor.Engine
                         // abort!
                         aborted = true;
                     }
-#endregion
+                #endregion
 
                     // if not aborted, simulate the district.
                     if (!aborted)
@@ -19469,14 +15762,14 @@ namespace djack.RogueSurvivor.Engine
                         SimulateDistrict(district);
                     }
                 }
-#endregion
+                #endregion
 
                 // release mutex and restart sim thread.
                 Monitor.Exit(m_SimMutex);
                 RestartSimThread();
 
                 // Sim ends - either aborted or normal end.
-#region
+                #region
                 // remove "ESC" message.
                 RemoveLastMessage();
 
@@ -19489,7 +15782,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // stop music.
                 m_MusicManager.StopAll();
-#endregion
+                #endregion
             }
             else
             {
@@ -19497,7 +15790,7 @@ namespace djack.RogueSurvivor.Engine
                 foreach (Map map in district.Maps)
                     map.LocalTime.TurnCounter = m_Session.WorldTime.TurnCounter;
             }
-#endregion
+                #endregion
         }
 
         void OnPlayerChangeMap()
@@ -19714,9 +16007,9 @@ namespace djack.RogueSurvivor.Engine
             //////////////////////////////////////////////////////////
 
 
-#region Special events
+            #region Special events
             // 1. Breaking into CHAR office for the 1st time: !undead !char
-#region
+            #region
             if (!player.Model.Abilities.IsUndead && player.Faction != GameFactions.TheCHARCorporation)
             {
                 if (!m_Session.Scoring.HasCompletedAchievement(Achievement.IDs.CHAR_BROKE_INTO_OFFICE))
@@ -19731,10 +16024,10 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             // 2. Visiting CHAR Underground facility for the 1st time.
-#region
+            #region
 
             if (!m_Session.Scoring.HasCompletedAchievement(Achievement.IDs.CHAR_FOUND_UNDERGROUND_FACILITY))
             {
@@ -19783,10 +16076,10 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             // 3. Viewing The Sewers Thing : !thesewersthing
-#region
+            #region
             if (player != m_Session.UniqueActors.TheSewersThing.TheActor)
             {
                 if (!m_Session.PlayerKnows_TheSewersThingLocation &&
@@ -19809,10 +16102,10 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             // 4. Police Station script.
-#region
+            #region
             if (player.Location.Map == m_Session.UniqueMaps.PoliceStation_JailsLevel.TheMap &&
                 !m_Session.UniqueActors.PoliceStationPrisonner.TheActor.IsDead)
             {
@@ -19918,10 +16211,10 @@ namespace djack.RogueSurvivor.Engine
                         throw new ArgumentOutOfRangeException("unhandled script stage " + m_Session.ScriptStage_PoliceStationPrisonner);
                 }
             }
-#endregion
+            #endregion
 
             // 5. Sighting Jason Myer : !jasonmyers
-#region
+            #region
             if (player != m_Session.UniqueActors.JasonMyers.TheActor)
             {
                 if (!m_Session.UniqueActors.JasonMyers.TheActor.IsDead)
@@ -19948,10 +16241,10 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             // 6. Sighting Duckman
-#region
+            #region
             if (player != m_Session.UniqueActors.Duckman.TheActor)
             {
                 if (!m_Session.UniqueActors.Duckman.TheActor.IsDead && IsVisibleToPlayer(m_Session.UniqueActors.Duckman.TheActor))
@@ -19967,11 +16260,11 @@ namespace djack.RogueSurvivor.Engine
                     m_MusicManager.Stop(GameMusics.DUCKMAN_THEME_SONG);
                 }
             }
-#endregion
+            #endregion
 
-#endregion
+            #endregion
 
-#region Item interactions
+            #region Item interactions
             // 1. Subway Worker Badge in Subway maps.
             //    conditions: In Subway, Must be Equipped, Next to closed gates.
             //    effects: Turn all generators on.
@@ -19996,9 +16289,9 @@ namespace djack.RogueSurvivor.Engine
                     AddMessage(new Message("The gate system scanned your badge and turned the power on!", m_Session.WorldTime.TurnCounter, Color.Green));
                 }
             }
-#endregion
+            #endregion
 
-#region Generic 1st time flags
+            #region Generic 1st time flags
             // 1. Visiting a new map.
             if (!m_Session.Scoring.HasVisited(player.Location.Map))
             {
@@ -20015,7 +16308,7 @@ namespace djack.RogueSurvivor.Engine
                     continue;
                 m_Session.Scoring.AddSighting(other.Model.ID, m_Session.WorldTime.TurnCounter);
             }
-#endregion
+            #endregion
         }
 #endregion
 
@@ -20159,7 +16452,7 @@ namespace djack.RogueSurvivor.Engine
             // Perform reincarnation.
             // 1. Make actor the player.
             // 2. Update all player-centric data.
-#region
+            #region
             // 1. Make actor the player.
             avatar.Controller = new PlayerController();
             if (avatar.Activity != Activity.SLEEPING)
@@ -20181,7 +16474,7 @@ namespace djack.RogueSurvivor.Engine
                     foreach (Map m in d.Maps)
                         m.SetAllAsUnvisited();
                 }
-#endregion
+            #endregion
 
             // Cleanup and refresh.
             m_MusicManager.StopAll();
@@ -20318,7 +16611,7 @@ namespace djack.RogueSurvivor.Engine
             switch (reincMode)
             {
                 case GameOptions.ReincMode.RANDOM_FOLLOWER:
-#region
+                    #region
                     {
                         if (m_Session.Scoring.FollowersWhendDied == null)
                         {
@@ -20340,10 +16633,10 @@ namespace djack.RogueSurvivor.Engine
                         // random one.
                         return suitableFollowers[m_Rules.Roll(0, suitableFollowers.Count)];
                     }
-#endregion
+                    #endregion
 
                 case GameOptions.ReincMode.KILLER:
-#region
+                    #region
                     {
                         Actor killer = m_Session.Scoring.Killer;
                         if (IsSuitableReincarnation(killer, true) || IsSuitableReincarnation(killer, false))
@@ -20357,12 +16650,12 @@ namespace djack.RogueSurvivor.Engine
                             return null;
                         }
                     }
-#endregion
+                    #endregion
 
                 case GameOptions.ReincMode.RANDOM_ACTOR:
                 case GameOptions.ReincMode.RANDOM_LIVING:
                 case GameOptions.ReincMode.RANDOM_UNDEAD:
-#region
+                    #region
                     {
                         // get a list of all suitable actors in the world.
                         bool asLiving = (reincMode == GameOptions.ReincMode.RANDOM_LIVING || (reincMode == GameOptions.ReincMode.RANDOM_ACTOR && m_Rules.RollChance(50)));
@@ -20384,10 +16677,10 @@ namespace djack.RogueSurvivor.Engine
                         else
                             return allSuitables[m_Rules.Roll(0, allSuitables.Count)];
                     }
-#endregion
+                    #endregion
 
                 case GameOptions.ReincMode.ZOMBIFIED:
-#region
+                    #region
                     {
                         Actor zombie = m_Session.Scoring.ZombifiedPlayer;
                         if (IsSuitableReincarnation(zombie, false))
@@ -20401,7 +16694,7 @@ namespace djack.RogueSurvivor.Engine
                             return null;
                         }
                     }
-#endregion
+                    #endregion
 
                 default:
                     throw new ArgumentOutOfRangeException("unhandled reincarnation mode " + reincMode.ToString());
@@ -20516,7 +16809,7 @@ namespace djack.RogueSurvivor.Engine
 
             // 1. CHAR Underground Facility
             // Darkness->Lit, TODO: Elevator off->on.
-#region
+            #region
             if (map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap)
             {
                 lock (m_Session) // thread safe
@@ -20567,11 +16860,11 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             // 2. Subway
             // Darkness->Lit, Gates->open.
-#region
+            #region
             if (map == map.District.SubwayMap)
             {
                 lock (m_Session) // thread safe
@@ -20623,10 +16916,10 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             // 3. Police Station Jails.
-#region
+            #region
             if (map == m_Session.UniqueMaps.PoliceStation_JailsLevel.TheMap)
             {
                 lock (m_Session) // thread safe
@@ -20663,10 +16956,10 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             // 4. Hospital Power.
-#region
+            #region
             if (map == m_Session.UniqueMaps.Hospital_Power.TheMap)
             {
                 lock (m_Session) // thread safe
@@ -20706,7 +16999,7 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
         }
 
         void DoOpenSubwayGates(Map map)
