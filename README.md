@@ -1,6 +1,6 @@
 Rogue Survivor Linux
 ====================
-djack's Rogue Survivor game original source code from 2012 adapted to run on
+rogued jack's Rogue Survivor game original source code from 2012 adapted to run on
 linux. It compiles and run on my machine (XUbuntu 14.04) but I have not tested
 it extensively yet. There is no sound because no DirectX or SFML. If you know
 how to compile with SFML.Net, please send me a mail or a message.
