@@ -55,7 +55,7 @@ namespace djack.RogueSurvivor.Data
             }
         }
 
-        public int  Quantity
+        public int Quantity
         {
             get { return m_Quantity; }
             set
