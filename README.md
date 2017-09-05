@@ -8,7 +8,7 @@ how to compile with SFML.Net, please send me a mail or a message.
 
 WHAT IS THIS
 ------------
-This is a fork of the game source source from 2012, the goal is to make this
+This is a fork of the game source from 2012, the goal is to make this
 compile and run on linux. There are no data files or resources, you have to
 download the game for that.
 
