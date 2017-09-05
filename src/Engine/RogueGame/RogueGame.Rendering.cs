@@ -56,8 +56,8 @@ namespace djack.RogueSurvivor.Engine
                 gameLayout.Draw(m_UI);
 
                 // character status.
-                if (m_Player != null)
-                    DrawActorStatus(m_Player, RIGHTPANEL_TEXT_X, RIGHTPANEL_TEXT_Y);
+                //if (m_Player != null)
+                //    DrawActorStatus(m_Player, RIGHTPANEL_TEXT_X, RIGHTPANEL_TEXT_Y);
 
                 // inventories.
                 if (m_Player != null)

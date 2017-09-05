@@ -69,5 +69,24 @@ namespace djack.RogueSurvivor.UI.Components
         {
             ui.UI_DrawString(color, message, x0 + x, y0 + y);
         }
+
+        public void DrawStringBold(IRogueUI ui, string message,
+                                   int x0, int y0)
+        {
+            DrawStringBold(ui, currentColor, message, x0, y0);
+        }
+
+        public void DrawStringBold(IRogueUI ui, Color color, string message,
+                                   int x0, int y0)
+        {
+            ui.UI_DrawStringBold(color, message, x0 + x, y0 + y);
+        }
+
+        public void FillRect(IRogueUI ui, Color color, Rectangle rect)
+        {
+            ui.UI_FillRect(color, new Rectangle(
+                rect.X + x, rect.Y + y, rect.Width, rect.Height
+            ));
+        }
     }
 }

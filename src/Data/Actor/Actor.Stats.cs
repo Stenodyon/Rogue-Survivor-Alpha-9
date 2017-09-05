@@ -7,6 +7,11 @@ namespace djack.RogueSurvivor.Data
     {
         ActorStats stats = new ActorStats();
 
+        public ActorStats Stats
+        {
+            get { return stats; }
+        }
+
         public int HitPoints
         {
             get { return stats.GetStat(Stat.HP); }

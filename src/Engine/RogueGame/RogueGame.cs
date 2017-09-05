@@ -7690,7 +7690,7 @@ namespace djack.RogueSurvivor.Engine
             return batteries / WorldTime.TURNS_PER_HOUR;
         }
 
-        int FoodToHoursUntilHungry(int food)
+        public static int FoodToHoursUntilHungry(int food)
         {
             int left = food - Rules.FOOD_HUNGRY_LEVEL;
             if (left <= 0)
@@ -7698,7 +7698,7 @@ namespace djack.RogueSurvivor.Engine
             return left / WorldTime.TURNS_PER_HOUR;
         }
 
-        int FoodToHoursUntilRotHungry(int food)
+        public static int FoodToHoursUntilRotHungry(int food)
         {
             int left = food - Rules.ROT_HUNGRY_LEVEL;
             if (left <= 0)
