@@ -7,7 +7,7 @@ using djack.RogueSurvivor.Data;
 namespace djack.RogueSurvivor.Gameplay.Generators
 {
     /* This part of BaseMapGenerator provides item makers */
-    abstract partial class BaseMapGenerator : MapGenerator
+    abstract partial class BaseMapGenerator
     {
         public Item MakeItemBandages()
         {
