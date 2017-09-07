@@ -55,10 +55,6 @@ namespace djack.RogueSurvivor.Engine
 
                 gameLayout.Draw(m_UI);
 
-                // character skills.
-                //if (m_Player != null && m_Player.Sheet.SkillTable != null && m_Player.Sheet.SkillTable.CountSkills > 0)
-                //    DrawActorSkillTable(m_Player, RIGHTPANEL_TEXT_X, SKILLTABLE_Y);
-
                 // overlays
                 Monitor.Enter(m_Overlays);
                 foreach (Overlay o in m_Overlays)
@@ -1003,37 +999,6 @@ namespace djack.RogueSurvivor.Engine
                     m_UI.UI_DrawImage(GameImages.ICON_TRAP_TRIGGERED, gx, gy);
                 else if (trap.IsActivated)
                     m_UI.UI_DrawImage(GameImages.ICON_TRAP_ACTIVATED, gx, gy);
-            }
-        }
-
-        public void DrawActorSkillTable(Actor actor, int gx, int gy)
-        {
-            gy -= BOLD_LINE_SPACING;
-            m_UI.UI_DrawStringBold(Color.White, "Skills", gx, gy);
-            gy += BOLD_LINE_SPACING;
-
-            IEnumerable<Skill> skills = actor.Sheet.SkillTable.Skills;
-            if (skills == null)
-                return;
-
-            int x, y;
-            int count = 0;
-            x = gx; y = gy;
-            foreach (Skill sk in skills)
-            {
-                m_UI.UI_DrawString(Color.White, String.Format("{0}-", sk.Level), x, y);
-                x += 16;
-                m_UI.UI_DrawString(Color.White, Skills.Name(sk.ID), x, y);
-                x -= 16;
-
-                if (++count >= SKILLTABLE_LINES)
-                {
-                    count = 0;
-                    y = gy;
-                    x += 120;
-                }
-                else
-                    y += LINE_SPACING;
             }
         }
 #endregion
