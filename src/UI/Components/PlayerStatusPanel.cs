@@ -347,26 +347,6 @@ namespace djack.RogueSurvivor.UI.Components
                      area.X + refLength, area.Y,
                      area.X + refLength, area.Y + area.Height);
         }
-
-        /* Draws a bar split into 3 segments */
-        void DrawSplitBar(IRogueUI ui, Rectangle area, int split1, int split2,
-                          Color color1, Color color2, Color? color3 = null)
-        {
-            if(color3 != null)
-                FillRect(ui, color3.Value, area);
-            if(split1 > split2)
-                Swap(ref split1, ref split2);
-            Clamp(ref split1, 0, area.Width);
-            Clamp(ref split2, 0, area.Width);
-            if(split2 > 0)
-                FillRect(ui, color2, new Rectangle(
-                    area.X, area.Y, split2, area.Height
-                ));
-            if(split1 > 0)
-                FillRect(ui, color1, new Rectangle(
-                    area.X, area.Y, split1, area.Height
-                ));
-        }
 #endregion
 
         void DrawAttackValues(IRogueUI ui, int col0, int y)
@@ -433,23 +413,6 @@ namespace djack.RogueSurvivor.UI.Components
                         game.Player.CountFollowers, game.Rules.ActorMaxFollowers(game.Player)),
                     col0, y);
             }
-        }
-
-        /// UTILITY FUNCTIONS
-
-        void Swap(ref int lhs, ref int rhs)
-        {
-            int temp = lhs;
-            lhs = rhs;
-            rhs = temp;
-        }
-
-        void Clamp(ref int value, int min, int max)
-        {
-            if(value < min)
-                value = min;
-            if(value > max)
-                value = max;
         }
     }
 }

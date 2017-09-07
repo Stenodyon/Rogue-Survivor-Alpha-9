@@ -41,6 +41,11 @@ namespace djack.RogueSurvivor.UI.Components
         const int MAX_MESSAGES = 7;
         const int MESSAGES_HISTORY = 59;
 
+        public const int MINITILE_SIZE = 2;
+        const int MINIMAP_X = RIGHTPANEL_X + (CANVAS_WIDTH - RIGHTPANEL_X - RogueGame.MAP_MAX_WIDTH * MINITILE_SIZE) / 2;
+        const int MINIMAP_Y = MESSAGES_Y - MINITILE_SIZE * RogueGame.MAP_MAX_HEIGHT - 1;
+        const int MINI_TRACKER_OFFSET = 1;
+
         List<UIComponent> children;
 
         public GameLayout(RogueGame game)
@@ -62,6 +67,11 @@ namespace djack.RogueSurvivor.UI.Components
                 Rectangle.FromLTRB(
                     MESSAGES_X, MESSAGES_Y, LOCATIONPANEL_X, CANVAS_WIDTH
                 ), game, MESSAGES_FADEOUT, MESSAGES_SPACING
+            ));
+            children.Add(new InventoryPanel(
+                Rectangle.FromLTRB(
+                    INVENTORYPANEL_X, INVENTORYPANEL_Y, CANVAS_WIDTH, MINIMAP_Y
+                ), game
             ));
         }
 

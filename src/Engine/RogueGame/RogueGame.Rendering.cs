@@ -58,10 +58,10 @@ namespace djack.RogueSurvivor.Engine
                 // inventories.
                 if (m_Player != null)
                 {
-                    if (m_Player.Inventory != null && m_Player.Model.Abilities.HasInventory)
-                        DrawInventory(m_Player.Inventory, "Inventory", true, INVENTORY_SLOTS_PER_LINE, m_Player.Inventory.MaxCapacity, INVENTORYPANEL_X, INVENTORYPANEL_Y);
-                    DrawInventory(m_Player.Location.Map.GetItemsAt(m_Player.Location.Position), "Items on ground", true, INVENTORY_SLOTS_PER_LINE, Map.GROUND_INVENTORY_SLOTS, INVENTORYPANEL_X, GROUNDINVENTORYPANEL_Y);
-                    DrawCorpsesList(m_Player.Location.Map.GetCorpsesAt(m_Player.Location.Position), "Corpses on ground", INVENTORY_SLOTS_PER_LINE, INVENTORYPANEL_X, CORPSESPANEL_Y);
+                    //if (m_Player.Inventory != null && m_Player.Model.Abilities.HasInventory)
+                    //    DrawInventory(m_Player.Inventory, "Inventory", true, INVENTORY_SLOTS_PER_LINE, m_Player.Inventory.MaxCapacity, INVENTORYPANEL_X, INVENTORYPANEL_Y);
+                    //DrawInventory(m_Player.Location.Map.GetItemsAt(m_Player.Location.Position), "Items on ground", true, INVENTORY_SLOTS_PER_LINE, Map.GROUND_INVENTORY_SLOTS, INVENTORYPANEL_X, GROUNDINVENTORYPANEL_Y);
+                    //DrawCorpsesList(m_Player.Location.Map.GetCorpsesAt(m_Player.Location.Position), "Corpses on ground", INVENTORY_SLOTS_PER_LINE, INVENTORYPANEL_X, CORPSESPANEL_Y);
                 }
 
                 // character skills.
@@ -1056,156 +1056,6 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_DrawImage(GameImages.MINI_PLAYER_POSITION, pos.X - MINI_TRACKER_OFFSET, pos.Y - MINI_TRACKER_OFFSET);
             }
             #endregion
-        }
-
-        public void DrawActorStatus(Actor actor, int gx, int gy)
-        {
-            // 1. Name & occupation
-            m_UI.UI_DrawStringBold(Color.White, String.Format("{0}, {1}", actor.Name, actor.Faction.MemberName), gx, gy);
-
-            // 2. Bars: Health, Stamina, Food, Sleep, Infection.
-            gy += BOLD_LINE_SPACING;
-            int maxHP = m_Rules.ActorMaxHPs(actor);
-            m_UI.UI_DrawStringBold(Color.White, String.Format("HP  {0}", actor.HitPoints), gx, gy);
-            DrawBar(actor.HitPoints, actor.PreviousHitPoints, maxHP, 0, 100, BOLD_LINE_SPACING, gx + BOLD_LINE_SPACING * 5, gy, Color.Red, Color.DarkRed, Color.OrangeRed, Color.Gray);
-            m_UI.UI_DrawStringBold(Color.White, String.Format("{0}", maxHP), gx + BOLD_LINE_SPACING * 6 + 100, gy);
-
-            gy += BOLD_LINE_SPACING;
-            if (actor.Model.Abilities.CanTire)
-            {
-                int maxSTA = m_Rules.ActorMaxSTA(actor);
-                m_UI.UI_DrawStringBold(Color.White, String.Format("STA {0}", actor.StaminaPoints), gx, gy);
-                DrawBar(actor.StaminaPoints, actor.PreviousStaminaPoints, maxSTA, Rules.STAMINA_MIN_FOR_ACTIVITY, 100, BOLD_LINE_SPACING, gx + BOLD_LINE_SPACING * 5, gy, Color.Green, Color.DarkGreen, Color.LightGreen, Color.Gray);
-                m_UI.UI_DrawStringBold(Color.White, String.Format("{0}", maxSTA), gx + BOLD_LINE_SPACING * 6 + 100, gy);
-                if (actor.IsRunning)
-                    m_UI.UI_DrawStringBold(Color.LightGreen, "RUNNING!", gx + BOLD_LINE_SPACING * 9 + 100, gy);
-                else if (m_Rules.CanActorRun(actor))
-                    m_UI.UI_DrawStringBold(Color.Green, "can run", gx + BOLD_LINE_SPACING * 9 + 100, gy);
-                else if (m_Rules.IsActorTired(actor))
-                    m_UI.UI_DrawStringBold(Color.Gray, "TIRED", gx + BOLD_LINE_SPACING * 9 + 100, gy);
-            }
-
-            gy += BOLD_LINE_SPACING;
-            if (actor.Model.Abilities.HasToEat)
-            {
-                int maxFood = m_Rules.ActorMaxFood(actor);
-                m_UI.UI_DrawStringBold(Color.White, String.Format("FOO {0}", actor.FoodPoints), gx, gy);
-                DrawBar(actor.FoodPoints, actor.PreviousFoodPoints, maxFood, Rules.FOOD_HUNGRY_LEVEL, 100, BOLD_LINE_SPACING, gx + BOLD_LINE_SPACING * 5, gy, Color.Chocolate, Color.Brown, Color.Beige, Color.Gray);
-                m_UI.UI_DrawStringBold(Color.White, String.Format("{0}", maxFood), gx + BOLD_LINE_SPACING * 6 + 100, gy);
-                if (m_Rules.IsActorHungry(actor))
-                {
-                    if (m_Rules.IsActorStarving(actor))
-                        m_UI.UI_DrawStringBold(Color.Red, "STARVING!", gx + BOLD_LINE_SPACING * 9 + 100, gy);
-                    else
-                        m_UI.UI_DrawStringBold(Color.Yellow, "Hungry", gx + BOLD_LINE_SPACING * 9 + 100, gy);
-                }
-                else
-                    m_UI.UI_DrawStringBold(Color.White, String.Format("{0}h", FoodToHoursUntilHungry(actor.FoodPoints)), gx + BOLD_LINE_SPACING * 9 + 100, gy);
-            }
-            else if (actor.Model.Abilities.IsRotting)
-            {
-                int maxFood = m_Rules.ActorMaxRot(actor);
-                m_UI.UI_DrawStringBold(Color.White, String.Format("ROT {0}", actor.FoodPoints), gx, gy);
-                DrawBar(actor.FoodPoints, actor.PreviousFoodPoints, maxFood, Rules.ROT_HUNGRY_LEVEL, 100, BOLD_LINE_SPACING, gx + BOLD_LINE_SPACING * 5, gy, Color.Chocolate, Color.Brown, Color.Beige, Color.Gray);
-                m_UI.UI_DrawStringBold(Color.White, String.Format("{0}", maxFood), gx + BOLD_LINE_SPACING * 6 + 100, gy);
-                if (m_Rules.IsRottingActorHungry(actor))
-                {
-                    if (m_Rules.IsRottingActorStarving(actor))
-                        m_UI.UI_DrawStringBold(Color.Red, "STARVING!", gx + BOLD_LINE_SPACING * 9 + 100, gy);
-                    else
-                        m_UI.UI_DrawStringBold(Color.Yellow, "Hungry", gx + BOLD_LINE_SPACING * 9 + 100, gy);
-                }
-                else
-                    m_UI.UI_DrawStringBold(Color.White, String.Format("{0}h", FoodToHoursUntilRotHungry(actor.FoodPoints)), gx + BOLD_LINE_SPACING * 9 + 100, gy);
-            }
-
-            gy += BOLD_LINE_SPACING;
-            if (actor.Model.Abilities.HasToSleep)
-            {
-                int maxSleep = m_Rules.ActorMaxSleep(actor);
-                m_UI.UI_DrawStringBold(Color.White, String.Format("SLP {0}", actor.SleepPoints), gx, gy);
-                DrawBar(actor.SleepPoints, actor.PreviousSleepPoints, maxSleep, Rules.SLEEP_SLEEPY_LEVEL, 100, BOLD_LINE_SPACING, gx + BOLD_LINE_SPACING * 5, gy, Color.Blue, Color.DarkBlue, Color.LightBlue, Color.Gray);
-                m_UI.UI_DrawStringBold(Color.White, String.Format("{0}", maxSleep), gx + BOLD_LINE_SPACING * 6 + 100, gy);
-                if (m_Rules.IsActorSleepy(actor))
-                {
-                    if (m_Rules.IsActorExhausted(actor))
-                        m_UI.UI_DrawStringBold(Color.Red, "EXHAUSTED!", gx + BOLD_LINE_SPACING * 9 + 100, gy);
-                    else
-                        m_UI.UI_DrawStringBold(Color.Yellow, "Sleepy", gx + BOLD_LINE_SPACING * 9 + 100, gy);
-                }
-                else
-                    m_UI.UI_DrawStringBold(Color.White, String.Format("{0}h", m_Rules.SleepToHoursUntilSleepy(actor.SleepPoints, m_Session.WorldTime.IsNight)), gx + BOLD_LINE_SPACING * 9 + 100, gy);
-            }
-
-            gy += BOLD_LINE_SPACING;
-            if (actor.Model.Abilities.HasSanity)
-            {
-                int maxSan = m_Rules.ActorMaxSanity(actor);
-                m_UI.UI_DrawStringBold(Color.White, String.Format("SAN {0}", actor.Sanity), gx, gy);
-                DrawBar(actor.Sanity, actor.PreviousSanity, maxSan, m_Rules.ActorDisturbedLevel(actor), 100, BOLD_LINE_SPACING, gx + BOLD_LINE_SPACING * 5, gy, Color.Orange, Color.DarkOrange, Color.OrangeRed, Color.Gray);
-                m_UI.UI_DrawStringBold(Color.White, String.Format("{0}", maxSan), gx + BOLD_LINE_SPACING * 6 + 100, gy);
-                if (m_Rules.IsActorDisturbed(actor))
-                {
-                    if (m_Rules.IsActorInsane(actor))
-                        m_UI.UI_DrawStringBold(Color.Red, "INSANE!", gx + BOLD_LINE_SPACING * 9 + 100, gy);
-                    else
-                        m_UI.UI_DrawStringBold(Color.Yellow, "Disturbed", gx + BOLD_LINE_SPACING * 9 + 100, gy);
-                }
-                else
-                    m_UI.UI_DrawStringBold(Color.White, String.Format("{0}h", m_Rules.SanityToHoursUntilUnstable(actor)), gx + BOLD_LINE_SPACING * 9 + 100, gy);
-            }
-
-            if (Rules.HasInfection(m_Session.GameMode) && !actor.Model.Abilities.IsUndead)
-            {
-                int maxInf = m_Rules.ActorInfectionHPs(actor);
-                int refInf = (Rules.INFECTION_LEVEL_1_WEAK * maxInf) / 100;
-                gy += BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(Color.White, String.Format("INF {0}", actor.Infection), gx, gy);
-                DrawBar(actor.Infection, actor.Infection, maxInf, refInf, 100, BOLD_LINE_SPACING, gx + BOLD_LINE_SPACING * 5, gy, Color.Purple, Color.Black, Color.Black, Color.Gray);
-                m_UI.UI_DrawStringBold(Color.White, String.Format("{0}%", m_Rules.ActorInfectionPercent(actor)), gx + BOLD_LINE_SPACING * 6 + 100, gy);
-            }
-
-            // 3. Melee & Ranged Attacks.
-            gy += BOLD_LINE_SPACING;
-            Attack melee = m_Rules.ActorMeleeAttack(actor, actor.CurrentMeleeAttack, null);
-            int dmgBonusVsUndead = m_Rules.ActorDamageBonusVsUndeads(actor);
-            m_UI.UI_DrawStringBold(Color.White, String.Format("Melee  Atk {0:D2}  Dmg {1:D2}/{2:D2}", melee.HitValue, melee.DamageValue, melee.DamageValue+dmgBonusVsUndead), gx, gy);
-
-            gy += BOLD_LINE_SPACING;
-            Attack ranged = m_Rules.ActorRangedAttack(actor, actor.CurrentRangedAttack, actor.CurrentRangedAttack.EfficientRange, null);
-            ItemRangedWeapon rangedWeapon = actor.GetEquippedWeapon() as ItemRangedWeapon;
-            int ammo, maxAmmo;
-            ammo = maxAmmo=0;
-            if (rangedWeapon != null)
-            {
-                ammo = rangedWeapon.Ammo;
-                maxAmmo = (rangedWeapon.Model as ItemRangedWeaponModel).MaxAmmo;
-                m_UI.UI_DrawStringBold(Color.White, String.Format("Ranged Atk {0:D2}  Dmg {1:D2}/{2:D2} Rng {3}-{4} Amo {5}/{6}", 
-                    ranged.HitValue, ranged.DamageValue, ranged.DamageValue+dmgBonusVsUndead, ranged.Range, ranged.EfficientRange, ammo, maxAmmo), gx, gy);
-            }
-            
-            // 4. (living)Def, Pro, Spd, FoV & Nb of followers / (undead)Def, Spd, Fov, Sml, Kills
-            gy += BOLD_LINE_SPACING;
-            Defence defence = m_Rules.ActorDefence(actor, actor.CurrentDefence);
-
-            if (actor.Model.Abilities.IsUndead)
-            {
-                m_UI.UI_DrawStringBold(Color.White, String.Format("Def {0:D2} Spd {1:F2} FoV {2} Sml {3:F2} Kills {4}",
-                    defence.Value,
-                    (float)m_Rules.ActorSpeed(actor) / (float)Rules.BASE_SPEED, 
-                    m_Rules.ActorFOV(actor, m_Session.WorldTime, m_Session.World.Weather),
-                    m_Rules.ActorSmell(actor),
-                    actor.KillsCount),
-                    gx, gy);
-            }
-            else
-            {
-                m_UI.UI_DrawStringBold(Color.White, String.Format("Def {0:D2} Arm {1:D1}/{2:D1} Spd {3:F2} FoV {4} Fol {5}/{6}",
-                    defence.Value, defence.Protection_Hit, defence.Protection_Shot, 
-                    (float)m_Rules.ActorSpeed(actor) / (float)Rules.BASE_SPEED, m_Rules.ActorFOV(actor, m_Session.WorldTime, m_Session.World.Weather),
-                    actor.CountFollowers, m_Rules.ActorMaxFollowers(actor)),
-                    gx, gy);
-            }
         }
 
         public void DrawInventory(Inventory inventory, string title, bool drawSlotsNumbers, int slotsPerLine, int maxSlots, int gx, int gy)
