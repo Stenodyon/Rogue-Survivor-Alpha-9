@@ -27,7 +27,6 @@ namespace djack.RogueSurvivor.UI.Components
         const int INVENTORY_SLOTS_PER_LINE = 10;
 
         const int SKILLTABLE_Y = CORPSESPANEL_Y + 64;
-        const int SKILLTABLE_LINES = 10;
 
         const int LOCATIONPANEL_X = RIGHTPANEL_X;
         const int LOCATIONPANEL_Y = MESSAGES_Y;
@@ -71,7 +70,12 @@ namespace djack.RogueSurvivor.UI.Components
             ));
             children.Add(new InventoryPanel(
                 Rectangle.FromLTRB(
-                    INVENTORYPANEL_X, INVENTORYPANEL_Y, CANVAS_WIDTH, MINIMAP_Y
+                    INVENTORYPANEL_X, INVENTORYPANEL_Y, CANVAS_WIDTH, SKILLTABLE_Y
+                ), game
+            ));
+            children.Add(new PlayerSkillsPanel(
+                Rectangle.FromLTRB(
+                    RIGHTPANEL_TEXT_X, SKILLTABLE_Y, CANVAS_WIDTH, MINIMAP_Y
                 ), game
             ));
         }

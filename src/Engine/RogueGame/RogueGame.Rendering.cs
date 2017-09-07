@@ -56,8 +56,8 @@ namespace djack.RogueSurvivor.Engine
                 gameLayout.Draw(m_UI);
 
                 // character skills.
-                if (m_Player != null && m_Player.Sheet.SkillTable != null && m_Player.Sheet.SkillTable.CountSkills > 0)
-                    DrawActorSkillTable(m_Player, RIGHTPANEL_TEXT_X, SKILLTABLE_Y);
+                //if (m_Player != null && m_Player.Sheet.SkillTable != null && m_Player.Sheet.SkillTable.CountSkills > 0)
+                //    DrawActorSkillTable(m_Player, RIGHTPANEL_TEXT_X, SKILLTABLE_Y);
 
                 // overlays
                 Monitor.Enter(m_Overlays);
