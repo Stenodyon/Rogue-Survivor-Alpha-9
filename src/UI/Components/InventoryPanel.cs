@@ -176,7 +176,6 @@ namespace djack.RogueSurvivor.UI.Components
                     ui,
                     sp.PaintQuantity, (sp.Model as ItemSprayPaintModel).MaxPaintQuantity,
                     Color.Gold, x0, y0);
-                //DrawBar(sp.PaintQuantity, sp.PaintQuantity, (sp.Model as ItemSprayPaintModel).MaxPaintQuantity, 0, 28, 3, x + 2, y + 27, Color.Gold, Color.Gold, Color.Gold, Color.DarkGray);
             }
             else if (item is ItemSprayScent)
             {
@@ -185,7 +184,6 @@ namespace djack.RogueSurvivor.UI.Components
                     ui,
                     sp.SprayQuantity, (sp.Model as ItemSprayScentModel).MaxSprayQuantity,
                     Color.Cyan, x0, y0);
-                //DrawBar(sp.SprayQuantity, sp.SprayQuantity, (sp.Model as ItemSprayScentModel).MaxSprayQuantity, 0, 28, 3, x + 2, y + 27, Color.Cyan, Color.Cyan, Color.Cyan, Color.DarkGray);
             }
             else if (item is ItemLight)
             {
@@ -196,7 +194,6 @@ namespace djack.RogueSurvivor.UI.Components
                     ui,
                     lt.Batteries, (lt.Model as ItemLightModel).MaxBatteries,
                     Color.Yellow, x0, y0);
-                //DrawBar(lt.Batteries, lt.Batteries, (lt.Model as ItemLightModel).MaxBatteries, 0, 28, 3, x + 2, y + 27, Color.Yellow, Color.Yellow, Color.Yellow, Color.DarkGray);
             }
             else if (item is ItemTracker)
             {
@@ -207,7 +204,6 @@ namespace djack.RogueSurvivor.UI.Components
                     ui,
                     tr.Batteries, (tr.Model as ItemTrackerModel).MaxBatteries,
                     Color.Pink, x0, y0);
-                //DrawBar(tr.Batteries, tr.Batteries, (tr.Model as ItemTrackerModel).MaxBatteries, 0, 28, 3, x + 2, y + 27, Color.Pink, Color.Pink, Color.Pink, Color.DarkGray);
             }
             else if (item is ItemFood)
             {

@@ -55,15 +55,6 @@ namespace djack.RogueSurvivor.Engine
 
                 gameLayout.Draw(m_UI);
 
-                // inventories.
-                if (m_Player != null)
-                {
-                    //if (m_Player.Inventory != null && m_Player.Model.Abilities.HasInventory)
-                    //    DrawInventory(m_Player.Inventory, "Inventory", true, INVENTORY_SLOTS_PER_LINE, m_Player.Inventory.MaxCapacity, INVENTORYPANEL_X, INVENTORYPANEL_Y);
-                    //DrawInventory(m_Player.Location.Map.GetItemsAt(m_Player.Location.Position), "Items on ground", true, INVENTORY_SLOTS_PER_LINE, Map.GROUND_INVENTORY_SLOTS, INVENTORYPANEL_X, GROUNDINVENTORYPANEL_Y);
-                    //DrawCorpsesList(m_Player.Location.Map.GetCorpsesAt(m_Player.Location.Position), "Corpses on ground", INVENTORY_SLOTS_PER_LINE, INVENTORYPANEL_X, CORPSESPANEL_Y);
-                }
-
                 // character skills.
                 if (m_Player != null && m_Player.Sheet.SkillTable != null && m_Player.Sheet.SkillTable.CountSkills > 0)
                     DrawActorSkillTable(m_Player, RIGHTPANEL_TEXT_X, SKILLTABLE_Y);
@@ -700,43 +691,6 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        public void DrawCorpsesList(List<Corpse> list, string title, int slots, int gx, int gy)
-        {
-            int x, y;
-            int slot = 0;
-
-            // Draw title.
-            int n = (list == null ? 0 : list.Count);
-            if (n > 0) title += " : " + n;
-            gy -= BOLD_LINE_SPACING;
-            m_UI.UI_DrawStringBold(Color.White, title, gx, gy);
-            gy += BOLD_LINE_SPACING;
-
-            // Draw slots.
-            x = gx; y = gy; slot = 0;
-            for (int i = 0; i < slots; i++)
-            {
-                m_UI.UI_DrawImage(GameImages.ITEM_SLOT, x, y);
-                x += TILE_SIZE;
-            }
-
-            // Draw corpses.
-            if (list == null)
-                return;
-
-            x = gx; y = gy; slot = 0;
-            foreach (Corpse c in list)
-            {
-                if (c.IsDragged)
-                    m_UI.UI_DrawImage(GameImages.CORPSE_DRAGGED, x, y);
-                DrawCorpse(c, x, y, Color.White);
-                if (++slot >= slots)
-                    break;
-                else
-                    x += TILE_SIZE;
-            }
-        }
-
         /// <summary>
         /// add overlays
         /// </summary>
@@ -815,42 +769,6 @@ namespace djack.RogueSurvivor.Engine
             if (barLength > 0)
                 m_UI.UI_FillRect(barColor, new Rectangle(hpX + 1, hpY + 1, barLength, 2));
 
-        }
-
-        public void DrawBar(int value, int previousValue, int maxValue, int refValue, int maxWidth, int height, int gx, int gy, 
-            Color fillColor, Color lossFillColor, Color gainFillColor, Color emptyColor)
-        {
-            m_UI.UI_FillRect(emptyColor, new Rectangle(gx, gy, maxWidth, height));
-
-            int prevBarLength = (int)(maxWidth * (float)previousValue / (float)maxValue);
-            int barLength = (int)(maxWidth * (float)value / (float)maxValue);
-
-            if (value > previousValue)
-            {
-                // gain
-                if (barLength > 0)
-                    m_UI.UI_FillRect(gainFillColor, new Rectangle(gx, gy, barLength, height));
-                if (prevBarLength > 0)
-                    m_UI.UI_FillRect(fillColor, new Rectangle(gx, gy, prevBarLength, height));
-            }
-            else if (value < previousValue)
-            {
-                // loss
-                if (prevBarLength > 0)
-                    m_UI.UI_FillRect(lossFillColor, new Rectangle(gx, gy, prevBarLength, height));
-                if (barLength > 0)
-                    m_UI.UI_FillRect(fillColor, new Rectangle(gx, gy, barLength, height));
-            }
-            else
-            {
-                // no change.
-                if (barLength > 0)
-                    m_UI.UI_FillRect(fillColor, new Rectangle(gx, gy, barLength, height));
-            }
-
-            // reference line.
-            int refLength = (int)(maxWidth * (float)refValue / (float)maxValue);
-            m_UI.UI_DrawLine(Color.White, gx + refLength, gy, gx + refLength, gy + height);
         }
 
         public void DrawMiniMap(Map map)
@@ -1056,117 +974,6 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_DrawImage(GameImages.MINI_PLAYER_POSITION, pos.X - MINI_TRACKER_OFFSET, pos.Y - MINI_TRACKER_OFFSET);
             }
             #endregion
-        }
-
-        public void DrawInventory(Inventory inventory, string title, bool drawSlotsNumbers, int slotsPerLine, int maxSlots, int gx, int gy)
-        {
-            int x, y;
-            int slot = 0;
-
-            // Draw title.
-            gy -= BOLD_LINE_SPACING;
-            m_UI.UI_DrawStringBold(Color.White, title, gx, gy);
-            gy += BOLD_LINE_SPACING;
-            
-            // Draw slots.
-            x = gx; y = gy; slot = 0;
-            for (int i = 0; i < maxSlots; i++)
-            {
-                m_UI.UI_DrawImage(GameImages.ITEM_SLOT, x, y);
-                if (++slot >= slotsPerLine)
-                {
-                    slot = 0;
-                    y += TILE_SIZE;
-                    x = gx;
-                }
-                else
-                    x += TILE_SIZE;
-            }
-
-            // Draw items.
-            if (inventory == null)
-                return;
-
-            x = gx; y = gy; slot = 0;
-            foreach (Item it in inventory.Items)
-            {
-                if (it.IsEquipped)
-                    m_UI.UI_DrawImage(GameImages.ITEM_EQUIPPED, x, y);
-                if (it is ItemRangedWeapon)
-                {
-                    ItemRangedWeapon w = it as ItemRangedWeapon;
-                    if (w.Ammo <= 0)
-                        m_UI.UI_DrawImage(GameImages.ICON_OUT_OF_AMMO, x, y);
-                    DrawBar(w.Ammo, w.Ammo, (w.Model as ItemRangedWeaponModel).MaxAmmo, 0, 28, 3, x + 2, y + 27, Color.Blue, Color.Blue, Color.Blue, Color.DarkGray);
-                }
-                else if (it is ItemSprayPaint)
-                {
-                    ItemSprayPaint sp = it as ItemSprayPaint;
-                    DrawBar(sp.PaintQuantity, sp.PaintQuantity, (sp.Model as ItemSprayPaintModel).MaxPaintQuantity, 0, 28, 3, x + 2, y + 27, Color.Gold, Color.Gold, Color.Gold, Color.DarkGray);
-                }
-                else if (it is ItemSprayScent)
-                {
-                    ItemSprayScent sp = it as ItemSprayScent;
-                    DrawBar(sp.SprayQuantity, sp.SprayQuantity, (sp.Model as ItemSprayScentModel).MaxSprayQuantity, 0, 28, 3, x + 2, y + 27, Color.Cyan, Color.Cyan, Color.Cyan, Color.DarkGray);
-                }
-                else if (it is ItemLight)
-                {
-                    ItemLight lt = it as ItemLight;
-                    if (lt.Batteries <= 0)
-                        m_UI.UI_DrawImage(GameImages.ICON_OUT_OF_BATTERIES, x, y);
-                    DrawBar(lt.Batteries, lt.Batteries, (lt.Model as ItemLightModel).MaxBatteries, 0, 28, 3, x + 2, y + 27, Color.Yellow, Color.Yellow, Color.Yellow, Color.DarkGray);
-                }
-                else if (it is ItemTracker)
-                {
-                    ItemTracker tr = it as ItemTracker;
-                    if (tr.Batteries <= 0)
-                        m_UI.UI_DrawImage(GameImages.ICON_OUT_OF_BATTERIES, x, y);
-                    DrawBar(tr.Batteries, tr.Batteries, (tr.Model as ItemTrackerModel).MaxBatteries, 0, 28, 3, x + 2, y + 27, Color.Pink, Color.Pink, Color.Pink, Color.DarkGray);
-                }
-                else if (it is ItemFood)
-                {
-                    ItemFood food = it as ItemFood;
-                    if (m_Rules.IsFoodExpired(food, m_Session.WorldTime.TurnCounter))
-                        m_UI.UI_DrawImage(GameImages.ICON_EXPIRED_FOOD, x, y);
-                    else if (m_Rules.IsFoodSpoiled(food, m_Session.WorldTime.TurnCounter))
-                        m_UI.UI_DrawImage(GameImages.ICON_SPOILED_FOOD, x, y);
-                }
-                else if (it is ItemTrap)
-                {
-                    ItemTrap trap = it as ItemTrap;
-                    if (trap.IsTriggered)
-                        m_UI.UI_DrawImage(GameImages.ICON_TRAP_TRIGGERED, x, y);
-                    else if (trap.IsActivated)
-                        m_UI.UI_DrawImage(GameImages.ICON_TRAP_ACTIVATED, x, y);
-                }
-                else if (it is ItemEntertainment)
-                {
-                    if (m_Player !=null && m_Player.IsBoredOf(it))
-                        m_UI.UI_DrawImage(GameImages.ICON_BORING_ITEM, x, y);
-                }
-                DrawItem(it, x, y);
-
-                if (++slot >= slotsPerLine)
-                {
-                    slot = 0;
-                    y += TILE_SIZE;
-                    x = gx;
-                }
-                else
-                    x += TILE_SIZE;
-            }
-
-            // Draw slots numbers.
-            if (drawSlotsNumbers)
-            {
-                x = gx + 4; y = gy + TILE_SIZE;
-                for (int i = 0; i < inventory.MaxCapacity; i++)
-                {
-                    m_UI.UI_DrawString(Color.White, (i + 1).ToString(), x, y);
-                    x += TILE_SIZE;
-                }
-
-            }
         }
 
         public void DrawItem(Item it, int gx, int gy)

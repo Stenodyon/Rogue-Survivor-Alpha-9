@@ -53,6 +53,7 @@ namespace djack.RogueSurvivor.UI.Components
         {
             children = new List<UIComponent>();
 
+            // Add all the UI panels
             children.Add(new LocationPanel(
                 Rectangle.FromLTRB(
                     LOCATIONPANEL_X, LOCATIONPANEL_Y, CANVAS_WIDTH, CANVAS_HEIGHT

@@ -186,7 +186,6 @@ namespace djack.RogueSurvivor.UI.Components
                 game.Player.FoodPoints, game.Player.PreviousFoodPoints,
                 refValue, maxFood,
                 ValueType.FOOD, box);
-            //DrawBar(ui, game.Player.FoodPoints, game.Player.PreviousFoodPoints, maxFood, Rules.FOOD_HUNGRY_LEVEL, 100, BOLD_LINE_SPACING, gx + BOLD_LINE_SPACING * 5, gy, Color.Chocolate, Color.Brown, Color.Beige, Color.Gray);
             DrawStringBold(
                 ui, Color.White,
                 String.Format("{0}", maxFood),
@@ -228,7 +227,6 @@ namespace djack.RogueSurvivor.UI.Components
                 game.Player.SleepPoints, game.Player.PreviousSleepPoints,
                 Rules.SLEEP_SLEEPY_LEVEL, maxSleep,
                 ValueType.SLEEP, box);
-            //DrawBar(ui, game.Player.SleepPoints, game.Player.PreviousSleepPoints, maxSleep, Rules.SLEEP_SLEEPY_LEVEL, 100, BOLD_LINE_SPACING, gx + BOLD_LINE_SPACING * 5, gy, Color.Blue, Color.DarkBlue, Color.LightBlue, Color.Gray);
             DrawStringBold(
                 ui, Color.White,
                 String.Format("{0}", maxSleep),
