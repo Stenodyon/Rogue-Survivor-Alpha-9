@@ -9,6 +9,11 @@ namespace djack.RogueSurvivor.Engine
     /* This part of RogueGame provides messaging helpers */
     partial class RogueGame
     {
+        public MessageManager MessageManager
+        {
+            get { return m_MessageManager; }
+        }
+
         public void AddMessage(Message msg)
         {
             // ignore empty messages

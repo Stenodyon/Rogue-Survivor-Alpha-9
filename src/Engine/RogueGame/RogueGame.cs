@@ -166,7 +166,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating MessageManager");
-            m_MessageManager = new MessageManager(MESSAGES_SPACING, MESSAGES_FADEOUT, MESSAGES_HISTORY);
+            m_MessageManager = new MessageManager(MESSAGES_HISTORY);
 
             m_Session = Session.Get;
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating Rules");

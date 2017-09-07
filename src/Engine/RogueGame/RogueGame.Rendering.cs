@@ -51,13 +51,9 @@ namespace djack.RogueSurvivor.Engine
 
                 // messages
                 m_UI.UI_DrawLine(Color.DarkGray, MESSAGES_X, MESSAGES_Y - 1, CANVAS_WIDTH, MESSAGES_Y - 1);
-                m_MessageManager.Draw(m_UI, m_Session.LastTurnPlayerActed, MESSAGES_X, MESSAGES_Y);
+                //m_MessageManager.Draw(m_UI, m_Session.LastTurnPlayerActed, MESSAGES_X, MESSAGES_Y);
 
                 gameLayout.Draw(m_UI);
-
-                // character status.
-                //if (m_Player != null)
-                //    DrawActorStatus(m_Player, RIGHTPANEL_TEXT_X, RIGHTPANEL_TEXT_Y);
 
                 // inventories.
                 if (m_Player != null)

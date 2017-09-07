@@ -12,8 +12,6 @@ namespace djack.RogueSurvivor.Engine
     {
         #region Fields
         readonly List<Message> m_Messages = new List<Message>();
-        int m_LinesSpacing;
-        int m_FadeoutFactor;
         readonly List<Message> m_History;
         int m_HistorySize;
         #endregion
@@ -24,6 +22,11 @@ namespace djack.RogueSurvivor.Engine
             get { return m_Messages.Count; }
         }
 
+        public IEnumerable<Message> Messages
+        {
+            get { return m_Messages; }
+        }
+
         public IEnumerable<Message> History
         {
             get { return m_History; }
@@ -31,15 +34,8 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Init
-        public MessageManager(int linesSpacing, int fadeoutFactor, int historySize)
+        public MessageManager(int historySize)
         {
-            if (linesSpacing < 0)
-                throw new ArgumentOutOfRangeException("linesSpacing < 0");
-            if (fadeoutFactor < 0)
-                throw new ArgumentOutOfRangeException("fadeoutFactor < 0");
-
-            m_LinesSpacing = linesSpacing;
-            m_FadeoutFactor = fadeoutFactor;
             m_HistorySize = historySize;
             m_History = new List<Message>(historySize);
         }
@@ -71,27 +67,6 @@ namespace djack.RogueSurvivor.Engine
             if (m_Messages.Count == 0)
                 return;
             m_Messages.RemoveAt(m_Messages.Count - 1);
-        }
-        #endregion
-
-        #region Drawing
-        public void Draw(IRogueUI ui, int freshMessagesTurn, int gx, int gy)
-        {
-            for(int i = 0; i < m_Messages.Count; i++)
-            {
-                Message msg = m_Messages[i];
-
-                int alpha = Math.Max(64, 255 - m_FadeoutFactor * (m_Messages.Count - 1 - i));
-                bool isLatest = (m_Messages[i].Turn >= freshMessagesTurn);
-                Color dimmedColor = Color.FromArgb(alpha, msg.Color);
-
-                if(isLatest)
-                    ui.UI_DrawStringBold(dimmedColor, msg.Text, gx, gy);
-                else
-                    ui.UI_DrawString(dimmedColor, msg.Text, gx, gy);
-
-                gy += m_LinesSpacing;
-            }
         }
         #endregion
     }

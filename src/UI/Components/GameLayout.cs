@@ -58,6 +58,11 @@ namespace djack.RogueSurvivor.UI.Components
                     RIGHTPANEL_TEXT_X, RIGHTPANEL_TEXT_Y, CANVAS_WIDTH, INVENTORYPANEL_Y
                 ), game
             ));
+            children.Add(new MessagePanel(
+                Rectangle.FromLTRB(
+                    MESSAGES_X, MESSAGES_Y, LOCATIONPANEL_X, CANVAS_WIDTH
+                ), game, MESSAGES_FADEOUT, MESSAGES_SPACING
+            ));
         }
 
         public override void Draw(IRogueUI ui)
