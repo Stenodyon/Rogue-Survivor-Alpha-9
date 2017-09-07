@@ -76,6 +76,12 @@ namespace djack.RogueSurvivor.UI.Components
 
         public override void Draw(IRogueUI ui)
         {
+            if(game.Player != null)
+                DrawStatusPanel(ui);
+        }
+
+        private void DrawStatusPanel(IRogueUI ui)
+        {
             int curY = 0;
             int col0 = 0;
             int col1 = BOLD_LINE_SPACING * 6 + 100;
