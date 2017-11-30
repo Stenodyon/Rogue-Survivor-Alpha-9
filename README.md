@@ -21,7 +21,7 @@ files, images etc...)
 
 BUILDING
 --------
-You will need ```gmcs``` and the System libraries to compile. Here are the
+You will need ```mcs``` and the System libraries to compile. Here are the
 Debian/Ubuntu packages you'll need:
 ```
 mono-mcs
