@@ -4,7 +4,8 @@ TEST_BIN=test_$(BINARY)
 
 CS=mcs
 CSFLAGS = -pkg:dotnet \
-	      -define:LINUX
+	      -define:LINUX \
+		  -lib:/usr/lib/mono/2.0
 
 SRC = $(shell find src | grep .cs$$)
 TEST_SRC = $(filter-out src/Program.cs,$(SRC)) $(shell find test | grep .cs$$)
