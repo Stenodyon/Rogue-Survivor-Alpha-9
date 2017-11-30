@@ -2,7 +2,7 @@
 BINARY=RogueSurvivor.exe
 TEST_BIN=test_$(BINARY)
 
-CS=gmcs
+CS=mcs
 CSFLAGS = -pkg:dotnet \
 	      -define:LINUX
 
